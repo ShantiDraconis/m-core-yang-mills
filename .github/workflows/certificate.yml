@@ -9,9 +9,27 @@ jobs:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
       - name: No sorry
-        run: '! rg -n "\\bsorry\\b" lean/MCore --type lean'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)' --include='*.lean' lean/MCore; then
+            echo 'SORRY_FOUND'
+            exit 1
+          else
+            rc=$?
+            if [ "$rc" -eq 1 ]; then echo 'NO_SORRY'; else exit "$rc"; fi
+          fi
       - name: No scientific axioms
-        run: '! rg -n "^\\s*axiom " lean/MCore --type lean'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '^[[:space:]]*axiom[[:space:]]' --include='*.lean' lean/MCore; then
+            echo 'SCIENTIFIC_AXIOM_FOUND'
+            exit 1
+          else
+            rc=$?
+            if [ "$rc" -eq 1 ]; then echo 'NO_SCIENTIFIC_AXIOM'; else exit "$rc"; fi
+          fi
       - name: Build target closure
         run: lake build MCore
       - name: Observe theorem axioms
