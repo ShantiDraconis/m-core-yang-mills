@@ -1,0 +1,18 @@
+name: certificate
+on:
+  push:
+  pull_request:
+jobs:
+  k0:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+      - name: No sorry
+        run: '! rg -n "\\bsorry\\b" lean/MCore --type lean'
+      - name: No scientific axioms
+        run: '! rg -n "^\\s*axiom " lean/MCore --type lean'
+      - name: Build target closure
+        run: lake build MCore
+      - name: Observe theorem axioms
+        run: lake env lean lean/MCore/Audit.lean
