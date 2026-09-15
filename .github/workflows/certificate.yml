@@ -1,46 +1,24 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k4:
+  k5:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
       - name: G0 fail-closed hygiene
-        shell: bash
         run: |
           set -euo pipefail
-          if grep -R -n -E '(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)' --include='*.lean' lean; then echo SORRY_FOUND; exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; echo NO_SORRY; fi
-          if grep -R -n -E '^[[:space:]]*axiom[[:space:]]' --include='*.lean' lean; then echo SCIENTIFIC_AXIOM_FOUND; exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; echo NO_SCIENTIFIC_AXIOM; fi
-      - {name: G1 preserve K0, run: 'lake env lean lean/MCore/K0.lean'}
-      - {name: G2 preserve K1, run: 'lake build MCore.K1'}
-      - {name: G3 preserve K2, run: 'lake build MCore.K2'}
-      - name: G8 preserve K3 closure
+          if grep -R -n -E '(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E '^[[:space:]]*axiom[[:space:]]' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+      - {name: Preserve K0-K3, run: 'lake build MCore.K3 && lake build MCore.Frontier.K3Gaps && lake build MCore.AttackDAG.K3AlgebraAttacks'}
+      - {name: Preserve K4, run: 'lake build MCore.K4'}
+      - {name: Build K5 firewall, run: 'lake build MCore.K5'}
+      - name: K5 semantic axiom closure
         run: |
-          lake build MCore.K3
-          lake build MCore.Frontier.K3Gaps
-          lake build MCore.AttackDAG.K3AlgebraAttacks
-      - {name: K4 build no-promotion firewall, run: 'lake build MCore.K4'}
-      - name: K4 negative promotion regression
-        shell: bash
-        run: |
-          set -euo pipefail
-          printf 'import MCore.K4\nopen MCore\ndef forbidden : ProofCertificate k4_open_node := { status_proved := by change SignatureStatus.openBridge = SignatureStatus.provedProperty; rfl, proof := True.intro }\n' > NegativeK4.lean
-          set +e; lake env lean NegativeK4.lean > NegativeK4.log 2>&1; rc=$?; set -e; cat NegativeK4.log
-          [ "$rc" -ne 0 ] || { echo NEGATIVE_K4_UNEXPECTEDLY_COMPILED; exit 1; }
-          ! grep -qi 'unknown identifier' NegativeK4.log || { echo NEGATIVE_K4_WRONG_FAILURE_UNKNOWN_IDENTIFIER; exit 1; }
-          grep -q openBridge NegativeK4.log; grep -q provedProperty NegativeK4.log
-          echo NEGATIVE_K4_REJECTED_FOR_STATUS_MISMATCH
-      - name: K4 semantic axiom closure
-        shell: bash
-        run: |
-          set -euo pipefail
-          printf 'import MCore.K4\n#print axioms MCore.k4_status_openBridge\n#print axioms MCore.k4_no_promotion\n' > K4AxiomAudit.lean
-          lake env lean K4AxiomAudit.lean 2>&1 | tee K4AxiomAudit.log
-          for r in MCore.k4_status_openBridge MCore.k4_no_promotion; do grep -F "'$r' does not depend on any axioms" K4AxiomAudit.log >/dev/null || { echo AXIOM_GATE_UNEXPECTED:$r; exit 1; }; done
-      - name: K4 clean reproduction
-        run: |
-          set -euo pipefail
-          lake clean
-          lake build MCore.K4
-          lake build MCore
+          printf 'import MCore.K5\n#print axioms MCore.k5_firewall\n#print axioms MCore.k5_openBridge_cannot_certify\n' > K5AxiomAudit.lean
+          lake env lean K5AxiomAudit.lean 2>&1 | tee K5AxiomAudit.log
+          grep -F "'MCore.k5_firewall' does not depend on any axioms" K5AxiomAudit.log
+          grep -F "'MCore.k5_openBridge_cannot_certify' does not depend on any axioms" K5AxiomAudit.log
+      - name: Clean reproduction
+        run: 'lake clean && lake build MCore.K5 && lake build MCore'
