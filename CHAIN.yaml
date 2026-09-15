@@ -1,0 +1,6 @@
+problem: Yang-Mills
+checkpoint: K0
+claim: architecture-and-boundary-kernel-only
+scientific_endpoint_proved: false
+signature_status: CANDIDATE_OBSTRUCTION
+next: problem-specific adapter and boundary tests

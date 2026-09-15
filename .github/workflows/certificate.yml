@@ -1,0 +1,32 @@
+name: certificate
+on: [push, pull_request]
+jobs:
+  k5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+      - name: G0 fail-closed hygiene across all source roots
+        run: |
+          set -euo pipefail
+          scan='lean MCore'
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' $scan; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' $scan; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+      - name: Compile legacy certificate firewall
+        run: 'lake env lean MCore/YM/K0.lean'
+      - {name: Preserve K0-K3, run: 'lake build MCore.K3 && lake build MCore.Frontier.K3Gaps && lake build MCore.AttackDAG.K3AlgebraAttacks'}
+      - {name: Preserve K4, run: 'lake build MCore.K4'}
+      - {name: Build K5 firewall, run: 'lake build MCore.K5'}
+      - name: K5 semantic axiom closure
+        run: |
+          printf 'import MCore.K5\n#print axioms MCore.k5_firewall\n#print axioms MCore.k5_openBridge_cannot_certify\n' > K5AxiomAudit.lean
+          lake env lean K5AxiomAudit.lean 2>&1 | tee K5AxiomAudit.log
+          grep -F "'MCore.k5_firewall' does not depend on any axioms" K5AxiomAudit.log
+          grep -F "'MCore.k5_openBridge_cannot_certify' does not depend on any axioms" K5AxiomAudit.log
+      - name: Legacy firewall semantic axiom closure
+        run: |
+          printf '#print axioms MCore.YM.openBridge_not_certified\n' >> MCore/YM/K0.lean
+          lake env lean MCore/YM/K0.lean 2>&1 | tee LegacyAxiomAudit.log
+          grep -F "'MCore.YM.openBridge_not_certified' does not depend on any axioms" LegacyAxiomAudit.log
+      - name: Clean reproduction
+        run: 'lake clean && lake env lean MCore/YM/K0.lean && lake build MCore.K5 && lake build MCore'
