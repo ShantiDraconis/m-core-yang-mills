@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k2:
+  k3:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -10,36 +10,53 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -R -n -E '(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)' --include='*.lean' lean/MCore; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; echo NO_SORRY; fi
-          if grep -R -n -E '^[[:space:]]*axiom[[:space:]]' --include='*.lean' lean/MCore; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; echo NO_SCIENTIFIC_AXIOM; fi
-      - {name: G1 preserved K0, run: 'lake env lean lean/MCore/K0.lean'}
-      - {name: G2 preserved K1, run: 'lake build MCore.K1'}
-      - {name: G3 K2 closure, run: 'lake build MCore.K2'}
-      - name: G4a positive resolution
+          if grep -R -n -E '(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; echo NO_SORRY; fi
+          if grep -R -n -E '^[[:space:]]*axiom[[:space:]]' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; echo NO_SCIENTIFIC_AXIOM; fi
+      - {name: G1 preserve K0, run: 'lake env lean lean/MCore/K0.lean'}
+      - {name: G2 preserve K1, run: 'lake build MCore.K1'}
+      - {name: G3 preserve K2, run: 'lake build MCore.K2'}
+      - name: G8 predictor
         run: |
-          printf 'import MCore.K2\n#check MCore.CertNode\n#check MCore.ProofCertificate\n#check MCore.k1_node\n#check MCore.bridge_not_certified\n' > PositiveK2.lean
-          lake env lean PositiveK2.lean
-      - name: G4b explicit OPEN_BRIDGE constructor rejection
+          mkdir -p Audit/AlgebraAudit
+          python3 m_core/algebra_audit.py --target MCore.K3 --output Audit/AlgebraAudit/K3_predictor.json
+          python3 - <<'PY'
+          import json
+          p=json.load(open('Audit/AlgebraAudit/K3_predictor.json'))
+          assert p['automatic_promotion'] is False
+          assert len(p['predicted_gaps']) == 16
+          assert all(g['disposition'] in {'PASS_CERTIFIED','OPEN_BRIDGE','REFUTED_ROUTE','REVIEW_REQUIRED'} for g in p['predicted_gaps'])
+          assert all(not g['formal_proof'] for g in p['predicted_gaps'])
+          PY
+      - name: G8 compile CI closure
+        run: |
+          lake build MCore.K3
+          lake build MCore.Frontier.K3Gaps
+          lake build MCore.AttackDAG.K3AlgebraAttacks
+          lake build MCore
+      - name: G8 negative promotion regression
         shell: bash
         run: |
           set -euo pipefail
-          printf 'import MCore.K2\nopen MCore\ndef forbidden : ProofCertificate k1_node := { status_proved := by change SignatureStatus.openBridge = SignatureStatus.provedProperty; rfl, proof := k1_status_openBridge }\n' > NegativeK2.lean
-          set +e; lake env lean NegativeK2.lean > NegativeK2.log 2>&1; rc=$?; set -e; cat NegativeK2.log
-          [ "$rc" -ne 0 ] || { echo NEGATIVE_K2_UNEXPECTEDLY_COMPILED; exit 1; }
-          ! grep -qi 'unknown identifier' NegativeK2.log || { echo NEGATIVE_K2_WRONG_FAILURE_UNKNOWN_IDENTIFIER; exit 1; }
-          grep -q openBridge NegativeK2.log; grep -q provedProperty NegativeK2.log
-          echo NEGATIVE_K2_REJECTED_FOR_EXPLICIT_STATUS_MISMATCH
-      - name: G5-G6 semantic axiom gate
+          printf 'import MCore.K3\nopen MCore\ndef forbidden : ProofCertificate k3_gap_node := { status_proved := by change SignatureStatus.openBridge = SignatureStatus.provedProperty; rfl, proof := k2_node_status_openBridge }\n' > NegativeK3Algebra.lean
+          set +e; lake env lean NegativeK3Algebra.lean > NegativeK3Algebra.log 2>&1; rc=$?; set -e; cat NegativeK3Algebra.log
+          [ "$rc" -ne 0 ] || exit 1
+          ! grep -qi 'unknown identifier' NegativeK3Algebra.log || exit 1
+          grep -q openBridge NegativeK3Algebra.log; grep -q provedProperty NegativeK3Algebra.log
+      - name: G8 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          printf 'import MCore.K2\n#print axioms MCore.k2_node_status_openBridge\n#print axioms MCore.k2_node_not_proved\n#print axioms MCore.bridge_not_certified\n' > K2AxiomAudit.lean
-          lake env lean K2AxiomAudit.lean 2>&1 | tee K2AxiomAudit.log
-          for r in MCore.k2_node_status_openBridge MCore.k2_node_not_proved MCore.bridge_not_certified; do grep -F "'$r' does not depend on any axioms" K2AxiomAudit.log >/dev/null || exit 1; done
-          echo '{"observed_axioms":[],"allowed_axioms":["propext","Quot.sound","Classical.choice"],"result":"PASS_STRONGER_NO_AXIOMS"}' > axioms_closure.json
-      - name: G7 manifest
+          printf 'import MCore.Frontier.K3Gaps\nimport MCore.AttackDAG.K3AlgebraAttacks\n#print axioms MCore.k3_gap_status_openBridge\n#print axioms MCore.k3_gap_not_proved\n#print axioms MCore.k3_gap_not_certified\n#print axioms MCore.k3_frontier_open\n#print axioms MCore.k3_attack_route_only_holds\n#print axioms MCore.k3_attack_cannot_promote\n' > K3AxiomAudit.lean
+          lake env lean K3AxiomAudit.lean 2>&1 | tee K3AxiomAudit.log
+          for r in MCore.k3_gap_status_openBridge MCore.k3_gap_not_proved MCore.k3_gap_not_certified MCore.k3_frontier_open MCore.k3_attack_route_only_holds MCore.k3_attack_cannot_promote; do grep -F "'$r' does not depend on any axioms" K3AxiomAudit.log >/dev/null || exit 1; done
+      - name: G7 manifest and clean reproduction
         shell: bash
         run: |
           set -euo pipefail
           sha=$(git rev-parse HEAD); t=$(cat lean-toolchain); l=$(sha256sum lakefile.toml|cut -d' ' -f1); m=$(sha256sum lake-manifest.json|cut -d' ' -f1)
-          printf '{"sha":"%s","toolchain":"%s","lakefile_sha256":"%s","lake_manifest_sha256":"%s","cache":"LEAN_ACTION_MANAGED_SEE_JOB_LOG","status":"CANDIDATE_GREEN"}\n' "$sha" "$t" "$l" "$m" | tee K2_CERTIFICATE_MANIFEST.json
+          printf '{"sha":"%s","toolchain":"%s","lakefile_sha256":"%s","lake_manifest_sha256":"%s","cache":"LEAN_ACTION_MANAGED_SEE_JOB_LOG","predictor":"K3-G8-v1","status":"CANDIDATE_GREEN"}\n' "$sha" "$t" "$l" "$m" | tee K3_CERTIFICATE_MANIFEST.json
+          lake clean
+          lake build MCore.K3
+          lake build MCore.Frontier.K3Gaps
+          lake build MCore.AttackDAG.K3AlgebraAttacks
+          lake build MCore
