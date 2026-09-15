@@ -3,34 +3,41 @@ on:
   push:
   pull_request:
 jobs:
-  k0:
+  k1:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - name: No sorry
+      - name: Gate - No sorry - fail-closed
         shell: bash
         run: |
           set -euo pipefail
           if grep -R -n -E '(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)' --include='*.lean' lean/MCore; then
-            echo 'SORRY_FOUND'
-            exit 1
+            echo 'SORRY_FOUND'; exit 1
           else
-            rc=$?
-            if [ "$rc" -eq 1 ]; then echo 'NO_SORRY'; else exit "$rc"; fi
+            rc=$?; if [ "$rc" -eq 1 ]; then echo 'NO_SORRY'; else exit "$rc"; fi
           fi
-      - name: No scientific axioms
+      - name: Gate - No scientific axioms - fail-closed
         shell: bash
         run: |
           set -euo pipefail
           if grep -R -n -E '^[[:space:]]*axiom[[:space:]]' --include='*.lean' lean/MCore; then
-            echo 'SCIENTIFIC_AXIOM_FOUND'
-            exit 1
+            echo 'SCIENTIFIC_AXIOM_FOUND'; exit 1
           else
-            rc=$?
-            if [ "$rc" -eq 1 ]; then echo 'NO_SCIENTIFIC_AXIOM'; else exit "$rc"; fi
+            rc=$?; if [ "$rc" -eq 1 ]; then echo 'NO_SCIENTIFIC_AXIOM'; else exit "$rc"; fi
           fi
-      - name: Build target closure
-        run: lake build MCore
-      - name: Observe theorem axioms
-        run: lake env lean lean/MCore/Audit.lean
+      - name: G1 - Build preserved K0
+        run: lake env lean lean/MCore/K0.lean
+      - name: G2 - Build K1 target closure
+        run: lake build MCore.K1
+      - name: Observe K0 and K1 theorem axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean lean/MCore/Audit.lean
+          cat > K1AxiomAudit.lean <<'LEAN'
+          import MCore.K1
+          #print axioms MCore.k1_status_openBridge
+          #print axioms MCore.k1_not_proved
+          LEAN
+          lake env lean K1AxiomAudit.lean
