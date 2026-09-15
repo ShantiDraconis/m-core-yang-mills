@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k6:
+  k7:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,26 +12,29 @@ jobs:
           scan='lean MCore'
           if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' $scan; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
           if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' $scan; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-      - name: Compile legacy certificate firewall
-        run: 'lake env lean MCore/YM/K0.lean'
-      - {name: Preserve K3, run: 'lake build MCore.K3 && lake build MCore.Frontier.K3Gaps && lake build MCore.AttackDAG.K3AlgebraAttacks'}
-      - {name: Preserve K4-K5, run: 'lake build MCore.K4 && lake build MCore.K5'}
-      - {name: Build K6 dependency kernel, run: 'lake build MCore.K6'}
-      - name: K6 semantic axiom closure
+      - {name: Legacy certificate firewall, run: 'lake env lean MCore/YM/K0.lean'}
+      - {name: G1 preserve K3-K6, run: 'lake build MCore.K3 && lake build MCore.Frontier.K3Gaps && lake build MCore.AttackDAG.K3AlgebraAttacks && lake build MCore.K4 && lake build MCore.K5 && lake build MCore.K6'}
+      - {name: G2 explicit K7 build, run: 'lake build MCore.K7'}
+      - name: G3 K7 semantic axiom closure
         run: |
-          printf 'import MCore.K6\n#print axioms MCore.k6_source_open\n#print axioms MCore.k6_target_open\n#print axioms MCore.k6_target_not_certified\n' > K6AxiomAudit.lean
-          lake env lean K6AxiomAudit.lean 2>&1 | tee K6AxiomAudit.log
-          grep -F "'MCore.k6_source_open' does not depend on any axioms" K6AxiomAudit.log
-          grep -F "'MCore.k6_target_open' does not depend on any axioms" K6AxiomAudit.log
-          grep -F "'MCore.k6_target_not_certified' does not depend on any axioms" K6AxiomAudit.log
+          printf 'import MCore.K7\n#print axioms MCore.k7_dependency_reachable\n#print axioms MCore.k7_source_open\n#print axioms MCore.k7_target_open\n#print axioms MCore.k7_target_not_certified\n' > K7AxiomAudit.lean
+          lake env lean K7AxiomAudit.lean 2>&1 | tee K7AxiomAudit.log
+          grep -F "'MCore.k7_dependency_reachable' does not depend on any axioms" K7AxiomAudit.log
+          grep -F "'MCore.k7_source_open' does not depend on any axioms" K7AxiomAudit.log
+          grep -F "'MCore.k7_target_open' does not depend on any axioms" K7AxiomAudit.log
+          grep -F "'MCore.k7_target_not_certified' does not depend on any axioms" K7AxiomAudit.log
       - name: Legacy firewall semantic axiom closure
         run: |
           printf '#print axioms MCore.YM.openBridge_not_certified\n' >> MCore/YM/K0.lean
           lake env lean MCore/YM/K0.lean 2>&1 | tee LegacyAxiomAudit.log
           grep -F "'MCore.YM.openBridge_not_certified' does not depend on any axioms" LegacyAxiomAudit.log
-      - name: Negative K6 firewall regression
+      - name: G4 negative K7 firewall
         run: |
-          printf 'import MCore.K6\nopen MCore\nexample : ¬ Nonempty (ProofCertificate k6_dependency.target) := k6_target_not_certified\n' > NegativeK6.lean
-          lake env lean NegativeK6.lean
-      - name: Clean reproduction
-        run: 'lake clean && lake env lean MCore/YM/K0.lean && lake build MCore.K6 && lake build MCore'
+          printf 'import MCore.K7\nopen MCore\nexample : ¬ Nonempty (ProofCertificate k6_dependency.target) := k7_target_not_certified\n' > NegativeK7.lean
+          lake env lean NegativeK7.lean
+      - name: G5 openBridge preservation
+        run: |
+          printf 'import MCore.K7\nopen MCore\nexample : k6_dependency.source.status = .openBridge := k7_source_open\nexample : k6_dependency.target.status = .openBridge := k7_target_open\n' > OpenBridgeK7.lean
+          lake env lean OpenBridgeK7.lean
+      - {name: G6 umbrella build, run: 'lake build MCore'}
+      - {name: G7 clean reproduction, run: 'lake clean && lake env lean MCore/YM/K0.lean && lake build MCore.K3 && lake build MCore.K4 && lake build MCore.K5 && lake build MCore.K6 && lake build MCore.K7 && lake build MCore'}
