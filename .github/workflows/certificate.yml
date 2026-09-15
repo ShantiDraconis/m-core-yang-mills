@@ -3,12 +3,12 @@ on:
   push:
   pull_request:
 jobs:
-  k1:
+  k2:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - name: Gate - No sorry - fail-closed
+      - name: G0 - No sorry - fail-closed
         shell: bash
         run: |
           set -euo pipefail
@@ -17,7 +17,7 @@ jobs:
           else
             rc=$?; if [ "$rc" -eq 1 ]; then echo 'NO_SORRY'; else exit "$rc"; fi
           fi
-      - name: Gate - No scientific axioms - fail-closed
+      - name: G0 - No scientific axioms - fail-closed
         shell: bash
         run: |
           set -euo pipefail
@@ -28,16 +28,65 @@ jobs:
           fi
       - name: G1 - Build preserved K0
         run: lake env lean lean/MCore/K0.lean
-      - name: G2 - Build K1 target closure
+      - name: G2 - Build preserved K1
         run: lake build MCore.K1
-      - name: Observe K0 and K1 theorem axioms
+      - name: G3 - Build K2 target closure
+        run: lake build MCore.K2
+      - name: G4a - Positive K2 import and name resolution
         shell: bash
         run: |
           set -euo pipefail
-          lake env lean lean/MCore/Audit.lean
-          cat > K1AxiomAudit.lean <<'LEAN'
-          import MCore.K1
-          #print axioms MCore.k1_status_openBridge
-          #print axioms MCore.k1_not_proved
+          cat > PositiveK2.lean <<'LEAN'
+          import MCore.K2
+          #check MCore.CertNode
+          #check MCore.ProofCertificate
+          #check MCore.k1_node
+          #check MCore.bridge_not_certified
           LEAN
-          lake env lean K1AxiomAudit.lean
+          lake env lean PositiveK2.lean
+      - name: G4b - OPEN_BRIDGE certificate constructor must be rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > NegativeK2.lean <<'LEAN'
+          import MCore.K2
+          open MCore
+          def forbidden : ProofCertificate k1_node :=
+            { status_proved := rfl
+              proof := k1_status_openBridge }
+          LEAN
+          set +e
+          lake env lean NegativeK2.lean > NegativeK2.log 2>&1
+          rc=$?
+          set -e
+          cat NegativeK2.log
+          if [ "$rc" -eq 0 ]; then echo 'NEGATIVE_K2_UNEXPECTEDLY_COMPILED'; exit 1; fi
+          if grep -qi 'unknown identifier' NegativeK2.log; then echo 'NEGATIVE_K2_WRONG_FAILURE_UNKNOWN_IDENTIFIER'; exit 1; fi
+          grep -q 'openBridge' NegativeK2.log || { echo 'NEGATIVE_K2_MISSING_OPENBRIDGE_DIAGNOSTIC'; exit 1; }
+          grep -q 'provedProperty' NegativeK2.log || { echo 'NEGATIVE_K2_MISSING_PROVEDPROPERTY_DIAGNOSTIC'; exit 1; }
+          echo 'NEGATIVE_K2_REJECTED_FOR_STATUS_MISMATCH'
+      - name: G5-G6 - Observe and gate K2 theorem axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > K2AxiomAudit.lean <<'LEAN'
+          import MCore.K2
+          #print axioms MCore.k2_node_status_openBridge
+          #print axioms MCore.k2_node_not_proved
+          #print axioms MCore.bridge_not_certified
+          LEAN
+          lake env lean K2AxiomAudit.lean 2>&1 | tee K2AxiomAudit.log
+          for root in MCore.k2_node_status_openBridge MCore.k2_node_not_proved MCore.bridge_not_certified; do
+            grep -F "'$root' does not depend on any axioms" K2AxiomAudit.log >/dev/null || { echo "AXIOM_GATE_UNEXPECTED:$root"; exit 1; }
+          done
+          printf '%s\n' '{"roots":["MCore.k2_node_status_openBridge","MCore.k2_node_not_proved","MCore.bridge_not_certified"],"observed_axioms":[],"allowed_axioms":["propext","Quot.sound","Classical.choice"],"result":"PASS_STRONGER_NO_AXIOMS"}' > axioms_closure.json
+          cat axioms_closure.json
+      - name: G7 - Certificate closure manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha=$(git rev-parse HEAD)
+          toolchain=$(cat lean-toolchain)
+          lakefile_hash=$(sha256sum lakefile.toml | cut -d' ' -f1)
+          manifest_hash=$(sha256sum lake-manifest.json | cut -d' ' -f1)
+          printf '{"sha":"%s","toolchain":"%s","lakefile_sha256":"%s","lake_manifest_sha256":"%s","cache":"LEAN_ACTION_MANAGED_SEE_JOB_LOG","status":"CANDIDATE_GREEN"}\n' "$sha" "$toolchain" "$lakefile_hash" "$manifest_hash" | tee K2_CERTIFICATE_MANIFEST.json
