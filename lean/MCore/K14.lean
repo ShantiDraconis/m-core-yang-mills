@@ -2,97 +2,107 @@ import MCore.K13
 
 namespace MCore
 
-/-- K14.0: abstract physical Hilbert-layer interface.
-    This is interface data, not existence of the YM4 physical Hilbert space. -/
+/-- K14.0: abstract physical Hilbert-layer interface. The scalar/analytic
+    realization is intentionally not fabricated in this dependency-light core. -/
 structure K14PhysicalHilbertData where
   State : Type
+  Scale : Type
   vacuum : State
+  zeroState : State
   physical : State → Prop
-  norm : State → ℝ
   orthogonalToVacuum : State → Prop
-  vacuum_normalized : norm vacuum = 1
+  norm : State → Scale
+  unitNorm : Scale
+  vacuum_normalized : norm vacuum = unitNorm
 
-/-- K14.1: an unbounded Hamiltonian is represented by an explicit domain
-    and an action on domain elements. Analytic self-adjointness is a property
-    to be supplied by a realization, not inferred from K13. -/
+/-- K14.1: an unbounded Hamiltonian has an explicit domain and an action on
+    domain elements. Dense definition, symmetry and self-adjointness remain
+    realization obligations rather than global axioms. -/
 structure K14HamiltonianOperator (D : K14PhysicalHilbertData) where
   domain : D.State → Prop
-  act : (ψ : D.State) → domain ψ → D.State
+  act : (psi : D.State) → domain psi → D.State
   denselyDefined : Prop
   symmetric : Prop
   selfAdjoint : Prop
 
-/-- K14.2: vacuum information is explicit realization data. -/
+/-- K14.2: vacuum data are explicit. H Omega = 0 is represented by equality
+    with the distinguished zero state, not with Omega itself. -/
 structure K14VacuumAxiom (D : K14PhysicalHilbertData)
     (H : K14HamiltonianOperator D) where
   vacuum_mem_domain : H.domain D.vacuum
-  vacuum_zero : H.act D.vacuum vacuum_mem_domain = D.vacuum
+  vacuum_zero : H.act D.vacuum vacuum_mem_domain = D.zeroState
   vacuum_isolated_in_physical_kernel : Prop
 
-/-- K14.3: mass gap is a predicate only. It does not assert existence of Δ. -/
+/-- Ordered/metric content needed to state a quantitative gap is supplied by a
+    concrete analytic realization. This keeps the core dependency-light. -/
+structure K14GapScale (D : K14PhysicalHilbertData) where
+  positive : D.Scale → Prop
+  gapBound : D.Scale → D.State → D.State → Prop
+
+/-- K14.3: mass gap is a predicate only; it asserts no witness. -/
 def K14MassGap (D : K14PhysicalHilbertData)
-    (H : K14HamiltonianOperator D) (Δ : ℝ) : Prop :=
-  0 < Δ ∧
-    ∀ (ψ : D.State) (hψ : H.domain ψ),
-      D.physical ψ → D.orthogonalToVacuum ψ →
-        Δ * D.norm ψ ≤ D.norm (H.act ψ hψ)
+    (H : K14HamiltonianOperator D) (S : K14GapScale D)
+    (delta : D.Scale) : Prop :=
+  S.positive delta ∧
+    ∀ (psi : D.State) (hpsi : H.domain psi),
+      D.physical psi → D.orthogonalToVacuum psi →
+        S.gapBound delta psi (H.act psi hpsi)
 
-/-- K14.4: abstract semigroup-decay predicate. The bridge between this
-    predicate and K14MassGap requires genuine spectral/functional calculus
-    hypotheses and is deliberately not postulated here. -/
-def K14SemigroupDecay (m : ℝ) : Prop := 0 < m
+/-- K14.4: semigroup decay remains a separately typed spectral predicate. -/
+structure K14SemigroupDecayData where
+  Rate : Type
+  positive : Rate → Prop
+  decayAtRate : Rate → Prop
 
-/-- K14.5: the scientific frontier. This records the uniformity requirements
-    without manufacturing a YM4 witness. -/
+def K14SemigroupDecay (S : K14SemigroupDecayData) : Prop :=
+  ∃ m : S.Rate, S.positive m ∧ S.decayAtRate m
+
+/-- K14.5: explicit data for the scientific clustering frontier. -/
 structure K14UniformExpClusteringData where
   Cutoff : Type
   Volume : Type
   LocalObservable : Type
-  separation : LocalObservable → ℝ
-  connectedMagnitude : Cutoff → Volume → LocalObservable → ℝ
-  observableConstant : LocalObservable → ℝ
+  Rate : Type
+  positive : Rate → Prop
+  uniformDecayBound : Rate → Cutoff → Volume → LocalObservable → Prop
 
-/-- Uniform exponential clustering is a proposition parameterized by explicit
-    correlator data. No instance for four-dimensional Yang--Mills is supplied. -/
+/-- Uniformity in both cutoff and volume is part of the proposition. No YM4
+    witness is supplied anywhere by K14. -/
 def K14UniformExpClustering (C : K14UniformExpClusteringData) : Prop :=
-  ∃ m : ℝ, 0 < m ∧
-    ∀ (a : C.Cutoff) (Λ : C.Volume) (O : C.LocalObservable),
-      C.connectedMagnitude a Λ O ≤
-        C.observableConstant O * Real.exp (-m * C.separation O)
+  ∃ m : C.Rate, C.positive m ∧
+    ∀ (a : C.Cutoff) (volume : C.Volume) (O : C.LocalObservable),
+      C.uniformDecayBound m a volume O
 
-/-- K14.5b: reconstruction/cyclicity remains an explicit bridge rather than
-    being hidden inside the phrase 'transfer matrix'. -/
+/-- K14.5b: reconstruction/cyclicity is explicit rather than hidden inside a
+    transfer-matrix slogan. -/
 def K14ReconstructionCyclicityBridge
     (C : K14UniformExpClusteringData)
-    (D : K14PhysicalHilbertData)
-    (H : K14HamiltonianOperator D) : Prop :=
-  K14UniformExpClustering C → ∃ m : ℝ, K14SemigroupDecay m
+    (S : K14SemigroupDecayData) : Prop :=
+  K14UniformExpClustering C → K14SemigroupDecay S
 
-/-- K14.6 is conditional: it packages exactly the missing bridge needed to
-    obtain a mass gap. It cannot be instantiated from K13 alone. -/
+/-- K14.6: the scientific conclusion is conditional on an explicit bridge. -/
 def K14ClusteringToMassGapBridge
     (C : K14UniformExpClusteringData)
     (D : K14PhysicalHilbertData)
-    (H : K14HamiltonianOperator D) : Prop :=
-  K14UniformExpClustering C → ∃ Δ : ℝ, K14MassGap D H Δ
+    (H : K14HamiltonianOperator D)
+    (S : K14GapScale D) : Prop :=
+  K14UniformExpClustering C → ∃ delta : D.Scale, K14MassGap D H S delta
 
-/-- A supplied bridge and a supplied clustering proof yield the conditional
-    conclusion. This theorem contains no YM4 clustering proof. -/
+/-- Pure modus ponens: this theorem contains no proof of YM4 clustering. -/
 theorem k14_conditional_mass_gap
     {C : K14UniformExpClusteringData}
     {D : K14PhysicalHilbertData}
     {H : K14HamiltonianOperator D}
-    (bridge : K14ClusteringToMassGapBridge C D H)
+    {S : K14GapScale D}
+    (bridge : K14ClusteringToMassGapBridge C D H S)
     (clustering : K14UniformExpClustering C) :
-    ∃ Δ : ℝ, K14MassGap D H Δ :=
+    ∃ delta : D.Scale, K14MassGap D H S delta :=
   bridge clustering
 
-/-- The repository's original certified target remains OPEN_BRIDGE. -/
 theorem k14_target_still_open :
     k6_dependency.target.status = .openBridge :=
   k13_target_still_open
 
-/-- K14 cannot manufacture a proof certificate for the open target. -/
 theorem k14_no_promotion :
     ¬ Nonempty (ProofCertificate k6_dependency.target) :=
   k13_no_promotion
