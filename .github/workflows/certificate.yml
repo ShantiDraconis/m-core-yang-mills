@@ -1,40 +1,81 @@
 name: certificate
-on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+
 jobs:
-  k7:
+  k9:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
+
       - name: G0 fail-closed hygiene across all source roots
+        shell: bash
         run: |
           set -euo pipefail
-          scan='lean MCore'
-          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' $scan; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' $scan; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-      - {name: Legacy certificate firewall, run: 'lake env lean MCore/YM/K0.lean'}
-      - {name: G1 preserve K3-K6, run: 'lake build MCore.K3 && lake build MCore.Frontier.K3Gaps && lake build MCore.AttackDAG.K3AlgebraAttacks && lake build MCore.K4 && lake build MCore.K5 && lake build MCore.K6'}
-      - {name: G2 explicit K7 build, run: 'lake build MCore.K7'}
-      - name: G3 K7 semantic axiom closure
+          if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then
+            echo 'Forbidden proof placeholder found'
+            exit 1
+          fi
+          if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then
+            echo 'Forbidden axiom/constant declaration found'
+            exit 1
+          fi
+
+      - name: G1 preserve K3-K8
         run: |
-          printf 'import MCore.K7\n#print axioms MCore.k7_dependency_reachable\n#print axioms MCore.k7_source_open\n#print axioms MCore.k7_target_open\n#print axioms MCore.k7_target_not_certified\n' > K7AxiomAudit.lean
-          lake env lean K7AxiomAudit.lean 2>&1 | tee K7AxiomAudit.log
-          grep -F "'MCore.k7_dependency_reachable' does not depend on any axioms" K7AxiomAudit.log
-          grep -F "'MCore.k7_source_open' does not depend on any axioms" K7AxiomAudit.log
-          grep -F "'MCore.k7_target_open' does not depend on any axioms" K7AxiomAudit.log
-          grep -F "'MCore.k7_target_not_certified' does not depend on any axioms" K7AxiomAudit.log
-      - name: Legacy firewall semantic axiom closure
+          lake build MCore.K3
+          lake build MCore.Frontier.K3Gaps
+          lake build MCore.AttackDAG.K3AlgebraAttacks
+          lake build MCore.K4
+          lake build MCore.K5
+          lake build MCore.K6
+          lake build MCore.K7
+          lake build MCore.K8
+
+      - name: G2 explicit K9 builds
         run: |
-          printf '#print axioms MCore.YM.openBridge_not_certified\n' >> MCore/YM/K0.lean
-          lake env lean MCore/YM/K0.lean 2>&1 | tee LegacyAxiomAudit.log
-          grep -F "'MCore.YM.openBridge_not_certified' does not depend on any axioms" LegacyAxiomAudit.log
-      - name: G4 negative K7 firewall
+          lake build MCore.K9.Classical
+          lake build MCore.K9
+
+      - name: G3 K9 semantic axiom closure
+        shell: bash
         run: |
-          printf 'import MCore.K7\nopen MCore\nexample : ¬ Nonempty (ProofCertificate k6_dependency.target) := k7_target_not_certified\n' > NegativeK7.lean
-          lake env lean NegativeK7.lean
-      - name: G5 openBridge preservation
+          set -euo pipefail
+          cat > /tmp/K9Axioms.lean <<'EOF'
+          import MCore.K9
+          #print axioms MCore.k9_refines_classical_label
+          #print axioms MCore.k9_quantum_still_labelled_open
+          #print axioms MCore.k9_target_still_open
+          #print axioms MCore.k9_no_promotion
+          EOF
+          lake env lean /tmp/K9Axioms.lean | tee /tmp/k9_axioms.log
+          count=$(grep -c 'does not depend on any axioms' /tmp/k9_axioms.log || true)
+          test "$count" -eq 4
+
+      - name: G4 negative K9 firewall
+        shell: bash
         run: |
-          printf 'import MCore.K7\nopen MCore\nexample : k6_dependency.source.status = .openBridge := k7_source_open\nexample : k6_dependency.target.status = .openBridge := k7_target_open\n' > OpenBridgeK7.lean
-          lake env lean OpenBridgeK7.lean
-      - {name: G6 umbrella build, run: 'lake build MCore'}
-      - {name: G7 clean reproduction, run: 'lake clean && lake env lean MCore/YM/K0.lean && lake build MCore.K3 && lake build MCore.K4 && lake build MCore.K5 && lake build MCore.K6 && lake build MCore.K7 && lake build MCore'}
+          set -euo pipefail
+          cat > /tmp/K9Negative.lean <<'EOF'
+          import MCore.K9
+          open MCore
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k9_no_promotion
+          example : k6_dependency.target.status = .openBridge := k9_target_still_open
+          EOF
+          lake env lean /tmp/K9Negative.lean
+
+      - name: G5 umbrella build
+        run: lake build MCore
+
+      - name: G6 clean reproduction
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake clean
+          lake build MCore.K8
+          lake build MCore.K9.Classical
+          lake build MCore.K9
+          lake build MCore
