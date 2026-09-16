@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k17:
+  k18:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,44 +12,46 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K16 and certified frontier
+      - name: G1 preserve K17 and certified frontier
         shell: bash
         run: |
           set -euo pipefail
-          lake build MCore.K14 MCore.K15 MCore.K16
+          lake build MCore.K15 MCore.K16 MCore.K17
           lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
-      - name: G2 explicit K17 build
-        run: lake build MCore.K17
-      - name: G3 K17 semantic axiom closure
+      - name: G2 explicit K18 build
+        run: lake build MCore.K18
+      - name: G3 K18 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K17Axioms.lean <<'EOF'
-          import MCore.K17
-          #print axioms MCore.k17_clustering_and_cyclicity_imply_semigroup_decay
-          #print axioms MCore.k17_target_still_open
-          #print axioms MCore.k17_no_promotion
+          cat >/tmp/K18Axioms.lean <<'EOF'
+          import MCore.K18
+          #print axioms MCore.k18_semigroup_decay_implies_mass_gap
+          #print axioms MCore.k18_clustering_chain_implies_mass_gap
+          #print axioms MCore.k18_target_still_open
+          #print axioms MCore.k18_no_promotion
           EOF
-          lake env lean /tmp/K17Axioms.lean | tee /tmp/k17.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k17.log || true)" -eq 3
+          lake env lean /tmp/K18Axioms.lean | tee /tmp/k18.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k18.log || true)" -eq 4
       - name: G4 negative scientific firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K17Negative.lean <<'EOF'
-          import MCore.K17
+          cat >/tmp/K18Negative.lean <<'EOF'
+          import MCore.K18
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k17_no_promotion
-          example : k6_dependency.target.status = .openBridge := k17_target_still_open
-          example {C : K14UniformExpClusteringData} {O : K17ObservableSectorData}
-              {M : K17MatrixElementDecayData} {S : K14SemigroupDecayData}
-              (toMatrix : K17ClusteringToMatrixElementsBridge C M)
-              (reconstruct : K17ReconstructionCyclicityBridge O M S)
-              (clustering : K14UniformExpClustering C)
-              (cyclic : O.cyclicGeneratedSector) : K14SemigroupDecay S :=
-            k17_clustering_and_cyclicity_imply_semigroup_decay toMatrix reconstruct clustering cyclic
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k18_no_promotion
+          example : k6_dependency.target.status = .openBridge := k18_target_still_open
+          example {S : K14SemigroupDecayData} {D : K14PhysicalHilbertData}
+              {H : K14HamiltonianOperator D} {G : K14GapScale D}
+              {E : K18SpectralSupportData D}
+              (toSpectral : K18SemigroupToSpectralBridge S D E)
+              (toGap : K18SpectralToMassGapBridge D H G E)
+              (decay : K14SemigroupDecay S) :
+              ∃ gap : D.Scale, K14MassGap D H G gap :=
+            k18_semigroup_decay_implies_mass_gap toSpectral toGap decay
           EOF
-          lake env lean /tmp/K17Negative.lean
+          lake env lean /tmp/K18Negative.lean
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -57,6 +59,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K16
           lake build MCore.K17
+          lake build MCore.K18
           lake build MCore
