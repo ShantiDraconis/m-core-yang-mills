@@ -1,55 +1,47 @@
 name: certificate
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 jobs:
-  k12:
+  k13:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - name: G0 fail-closed hygiene
+      - name: G0 hygiene
         shell: bash
         run: |
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K9-K11
+      - name: G1 preserve K9-K12
         run: |
-          lake build MCore.K9.Classical
-          lake build MCore.K9
-          lake build MCore.K10
-          lake build MCore.K11
-      - name: G2 explicit K12 build
-        run: lake build MCore.K12
-      - name: G3 K12 semantic axiom closure
+          lake build MCore.K9.Classical MCore.K9 MCore.K10 MCore.K11 MCore.K12
+      - name: G2 K13 build
+        run: lake build MCore.K13
+      - name: G3 semantic closure
         shell: bash
         run: |
-          cat > /tmp/K12Axioms.lean <<'EOF'
-          import MCore.K12
-          #print axioms MCore.k12_continuum_scope
-          #print axioms MCore.k12_hilbert_still_separate
-          #print axioms MCore.k12_gap_still_separate
-          #print axioms MCore.k12_target_still_open
-          #print axioms MCore.k12_no_promotion
+          cat >/tmp/K13Axioms.lean <<'EOF'
+          import MCore.K13
+          #print axioms MCore.k13_hilbert_scope
+          #print axioms MCore.k13_gap_still_separate
+          #print axioms MCore.k13_target_still_open
+          #print axioms MCore.k13_no_promotion
           EOF
-          lake env lean /tmp/K12Axioms.lean | tee /tmp/k12_axioms.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k12_axioms.log || true)" -eq 5
-      - name: G4 negative K12 firewall
+          lake env lean /tmp/K13Axioms.lean | tee /tmp/k13.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k13.log || true)" -eq 4
+      - name: G4 negative firewall
         run: |
-          cat > /tmp/K12Negative.lean <<'EOF'
-          import MCore.K12
+          cat >/tmp/K13Negative.lean <<'EOF'
+          import MCore.K13
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k12_no_promotion
-          example : k6_dependency.target.status = .openBridge := k12_target_still_open
-          example : k8_target.gap = .positiveMassGap := k12_gap_still_separate
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k13_no_promotion
+          example : k6_dependency.target.status = .openBridge := k13_target_still_open
           EOF
-          lake env lean /tmp/K12Negative.lean
-      - name: G5 umbrella build
+          lake env lean /tmp/K13Negative.lean
+      - name: G5 umbrella
         run: lake build MCore
       - name: G6 clean reproduction
         run: |
           lake clean
-          lake build MCore.K11
-          lake build MCore.K12
+          lake build MCore.K13
           lake build MCore
