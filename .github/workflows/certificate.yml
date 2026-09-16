@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  k9:
+  k10:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,16 +15,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then
-            echo 'Forbidden proof placeholder found'
-            exit 1
-          fi
-          if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then
-            echo 'Forbidden axiom/constant declaration found'
-            exit 1
-          fi
+          if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
+          if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
 
-      - name: G1 preserve K3-K8
+      - name: G1 preserve K3-K9
         run: |
           lake build MCore.K3
           lake build MCore.Frontier.K3Gaps
@@ -34,38 +28,40 @@ jobs:
           lake build MCore.K6
           lake build MCore.K7
           lake build MCore.K8
-
-      - name: G2 explicit K9 builds
-        run: |
           lake build MCore.K9.Classical
           lake build MCore.K9
 
-      - name: G3 K9 semantic axiom closure
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat > /tmp/K9Axioms.lean <<'EOF'
-          import MCore.K9
-          #print axioms MCore.k9_refines_classical_label
-          #print axioms MCore.k9_quantum_still_labelled_open
-          #print axioms MCore.k9_target_still_open
-          #print axioms MCore.k9_no_promotion
-          EOF
-          lake env lean /tmp/K9Axioms.lean | tee /tmp/k9_axioms.log
-          count=$(grep -c 'does not depend on any axioms' /tmp/k9_axioms.log || true)
-          test "$count" -eq 4
+      - name: G2 explicit K10 build
+        run: lake build MCore.K10
 
-      - name: G4 negative K9 firewall
+      - name: G3 K10 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat > /tmp/K9Negative.lean <<'EOF'
-          import MCore.K9
-          open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k9_no_promotion
-          example : k6_dependency.target.status = .openBridge := k9_target_still_open
+          cat > /tmp/K10Axioms.lean <<'EOF'
+          import MCore.K10
+          #print axioms MCore.k10_identity_gauge
+          #print axioms MCore.k10_classical_scope
+          #print axioms MCore.k10_quantum_not_promoted
+          #print axioms MCore.k10_target_still_open
+          #print axioms MCore.k10_no_promotion
           EOF
-          lake env lean /tmp/K9Negative.lean
+          lake env lean /tmp/K10Axioms.lean | tee /tmp/k10_axioms.log
+          count=$(grep -c 'does not depend on any axioms' /tmp/k10_axioms.log || true)
+          test "$count" -eq 5
+
+      - name: G4 negative K10 firewall
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/K10Negative.lean <<'EOF'
+          import MCore.K10
+          open MCore
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k10_no_promotion
+          example : k6_dependency.target.status = .openBridge := k10_target_still_open
+          example : k8_target.quantum = .quantumConstruction := k10_quantum_not_promoted
+          EOF
+          lake env lean /tmp/K10Negative.lean
 
       - name: G5 umbrella build
         run: lake build MCore
@@ -75,7 +71,7 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K8
           lake build MCore.K9.Classical
           lake build MCore.K9
+          lake build MCore.K10
           lake build MCore
