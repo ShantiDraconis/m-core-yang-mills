@@ -19,10 +19,7 @@ jobs:
           lake build MCore.K9.Classical MCore.K9 MCore.K10 MCore.K11 MCore.K12 MCore.K13
           lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
       - name: G2 explicit K14 build
-        shell: bash
-        run: |
-          set -euo pipefail
-          lake build MCore.K14
+        run: lake build MCore.K14
       - name: G3 K14 semantic axiom closure
         shell: bash
         run: |
@@ -45,18 +42,15 @@ jobs:
           example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k14_no_promotion
           example : k6_dependency.target.status = .openBridge := k14_target_still_open
           example {C : K14UniformExpClusteringData} {D : K14PhysicalHilbertData}
-              {H : K14HamiltonianOperator D}
-              (bridge : K14ClusteringToMassGapBridge C D H)
+              {H : K14HamiltonianOperator D} {S : K14GapScale D}
+              (bridge : K14ClusteringToMassGapBridge C D H S)
               (h : K14UniformExpClustering C) :
-              ∃ Δ : ℝ, K14MassGap D H Δ :=
+              ∃ delta : D.Scale, K14MassGap D H S delta :=
             k14_conditional_mass_gap bridge h
           EOF
           lake env lean /tmp/K14Negative.lean
       - name: G5 umbrella build
-        shell: bash
-        run: |
-          set -euo pipefail
-          lake build MCore
+        run: lake build MCore
       - name: G6 clean reproduction
         shell: bash
         run: |
