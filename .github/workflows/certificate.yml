@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k14:
+  k15:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,43 +12,42 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve certified frontier
+      - name: G1 preserve K14 and certified frontier
         shell: bash
         run: |
           set -euo pipefail
-          lake build MCore.K9.Classical MCore.K9 MCore.K10 MCore.K11 MCore.K12 MCore.K13
+          lake build MCore.K9.Classical MCore.K9 MCore.K10 MCore.K11 MCore.K12 MCore.K13 MCore.K14
           lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
-      - name: G2 explicit K14 build
-        run: lake build MCore.K14
-      - name: G3 K14 semantic axiom closure
+      - name: G2 explicit K15 build
+        run: lake build MCore.K15
+      - name: G3 K15 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K14Axioms.lean <<'EOF'
-          import MCore.K14
-          #print axioms MCore.k14_conditional_mass_gap
-          #print axioms MCore.k14_target_still_open
-          #print axioms MCore.k14_no_promotion
+          cat >/tmp/K15Axioms.lean <<'EOF'
+          import MCore.K15
+          #print axioms MCore.k15_complete_program_implies_clustering
+          #print axioms MCore.k15_complete_program_implies_mass_gap
+          #print axioms MCore.k15_target_still_open
+          #print axioms MCore.k15_no_promotion
           EOF
-          lake env lean /tmp/K14Axioms.lean | tee /tmp/k14.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k14.log || true)" -eq 3
+          lake env lean /tmp/K15Axioms.lean | tee /tmp/k15.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k15.log || true)" -eq 4
       - name: G4 negative scientific firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K14Negative.lean <<'EOF'
-          import MCore.K14
+          cat >/tmp/K15Negative.lean <<'EOF'
+          import MCore.K15
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k14_no_promotion
-          example : k6_dependency.target.status = .openBridge := k14_target_still_open
-          example {C : K14UniformExpClusteringData} {D : K14PhysicalHilbertData}
-              {H : K14HamiltonianOperator D} {S : K14GapScale D}
-              (bridge : K14ClusteringToMassGapBridge C D H S)
-              (h : K14UniformExpClustering C) :
-              ∃ delta : D.Scale, K14MassGap D H S delta :=
-            k14_conditional_mass_gap bridge h
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k15_no_promotion
+          example : k6_dependency.target.status = .openBridge := k15_target_still_open
+          example {P : K15ClusteringProgram} {C : K14UniformExpClusteringData}
+              (bridge : K15ProgramToClusteringBridge P C)
+              (complete : K15ProgramComplete P) : K14UniformExpClustering C :=
+            k15_complete_program_implies_clustering bridge complete
           EOF
-          lake env lean /tmp/K14Negative.lean
+          lake env lean /tmp/K15Negative.lean
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -56,6 +55,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K13
           lake build MCore.K14
+          lake build MCore.K15
           lake build MCore
