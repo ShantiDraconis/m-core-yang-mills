@@ -7,6 +7,8 @@ import MCore.K3
 import MCore.K4
 import MCore.K5
 import MCore.K6
+import MCore.K7
+import MCore.K8
 import MCore.Frontier.K3Gaps
 import MCore.AttackDAG.K3AlgebraAttacks
 import MCore.Audit
