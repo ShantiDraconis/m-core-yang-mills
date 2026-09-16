@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k16:
+  k17:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,43 +12,44 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K15 and certified frontier
+      - name: G1 preserve K16 and certified frontier
         shell: bash
         run: |
           set -euo pipefail
-          lake build MCore.K9.Classical MCore.K9 MCore.K10 MCore.K11 MCore.K12 MCore.K13 MCore.K14 MCore.K15
+          lake build MCore.K14 MCore.K15 MCore.K16
           lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
-      - name: G2 explicit K16 build
-        run: lake build MCore.K16
-      - name: G3 K16 semantic axiom closure
+      - name: G2 explicit K17 build
+        run: lake build MCore.K17
+      - name: G3 K17 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K16Axioms.lean <<'EOF'
-          import MCore.K16
-          #print axioms MCore.k16_refinement_completes_k15
-          #print axioms MCore.k16_obligations_imply_mass_gap
-          #print axioms MCore.k16_target_still_open
-          #print axioms MCore.k16_no_promotion
+          cat >/tmp/K17Axioms.lean <<'EOF'
+          import MCore.K17
+          #print axioms MCore.k17_clustering_and_cyclicity_imply_semigroup_decay
+          #print axioms MCore.k17_target_still_open
+          #print axioms MCore.k17_no_promotion
           EOF
-          lake env lean /tmp/K16Axioms.lean | tee /tmp/k16.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k16.log || true)" -eq 4
+          lake env lean /tmp/K17Axioms.lean | tee /tmp/k17.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k17.log || true)" -eq 3
       - name: G4 negative scientific firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K16Negative.lean <<'EOF'
-          import MCore.K16
+          cat >/tmp/K17Negative.lean <<'EOF'
+          import MCore.K17
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k16_no_promotion
-          example : k6_dependency.target.status = .openBridge := k16_target_still_open
-          -- Scientific obligations remain assumptions: this file deliberately
-          -- contains no construction of K16ObligationsHold for YM4.
-          example {O : K16ScientificObligations} {P : K15ClusteringProgram}
-              (hO : K16ObligationsHold O) (hR : K16RefinesK15 O P) :
-              K15ProgramComplete P := k16_refinement_completes_k15 hO hR
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k17_no_promotion
+          example : k6_dependency.target.status = .openBridge := k17_target_still_open
+          example {C : K14UniformExpClusteringData} {O : K17ObservableSectorData}
+              {M : K17MatrixElementDecayData} {S : K14SemigroupDecayData}
+              (toMatrix : K17ClusteringToMatrixElementsBridge C M)
+              (reconstruct : K17ReconstructionCyclicityBridge O M S)
+              (clustering : K14UniformExpClustering C)
+              (cyclic : O.cyclicGeneratedSector) : K14SemigroupDecay S :=
+            k17_clustering_and_cyclicity_imply_semigroup_decay toMatrix reconstruct clustering cyclic
           EOF
-          lake env lean /tmp/K16Negative.lean
+          lake env lean /tmp/K17Negative.lean
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -56,6 +57,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K15
           lake build MCore.K16
+          lake build MCore.K17
           lake build MCore
