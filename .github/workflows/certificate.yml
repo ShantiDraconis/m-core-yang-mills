@@ -1,47 +1,67 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k13:
+  k14:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - name: G0 hygiene
+      - name: G0 fail-closed hygiene
         shell: bash
         run: |
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K9-K12
-        run: |
-          lake build MCore.K9.Classical MCore.K9 MCore.K10 MCore.K11 MCore.K12
-      - name: G2 K13 build
-        run: lake build MCore.K13
-      - name: G3 semantic closure
+      - name: G1 preserve certified frontier
         shell: bash
         run: |
-          cat >/tmp/K13Axioms.lean <<'EOF'
-          import MCore.K13
-          #print axioms MCore.k13_hilbert_scope
-          #print axioms MCore.k13_gap_still_separate
-          #print axioms MCore.k13_target_still_open
-          #print axioms MCore.k13_no_promotion
-          EOF
-          lake env lean /tmp/K13Axioms.lean | tee /tmp/k13.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k13.log || true)" -eq 4
-      - name: G4 negative firewall
+          set -euo pipefail
+          lake build MCore.K9.Classical MCore.K9 MCore.K10 MCore.K11 MCore.K12 MCore.K13
+          lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
+      - name: G2 explicit K14 build
+        shell: bash
         run: |
-          cat >/tmp/K13Negative.lean <<'EOF'
-          import MCore.K13
+          set -euo pipefail
+          lake build MCore.K14
+      - name: G3 K14 semantic axiom closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/K14Axioms.lean <<'EOF'
+          import MCore.K14
+          #print axioms MCore.k14_conditional_mass_gap
+          #print axioms MCore.k14_target_still_open
+          #print axioms MCore.k14_no_promotion
+          EOF
+          lake env lean /tmp/K14Axioms.lean | tee /tmp/k14.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k14.log || true)" -eq 3
+      - name: G4 negative scientific firewall
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/K14Negative.lean <<'EOF'
+          import MCore.K14
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k13_no_promotion
-          example : k6_dependency.target.status = .openBridge := k13_target_still_open
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k14_no_promotion
+          example : k6_dependency.target.status = .openBridge := k14_target_still_open
+          example {C : K14UniformExpClusteringData} {D : K14PhysicalHilbertData}
+              {H : K14HamiltonianOperator D}
+              (bridge : K14ClusteringToMassGapBridge C D H)
+              (h : K14UniformExpClustering C) :
+              ∃ Δ : ℝ, K14MassGap D H Δ :=
+            k14_conditional_mass_gap bridge h
           EOF
-          lake env lean /tmp/K13Negative.lean
-      - name: G5 umbrella
-        run: lake build MCore
-      - name: G6 clean reproduction
+          lake env lean /tmp/K14Negative.lean
+      - name: G5 umbrella build
+        shell: bash
         run: |
+          set -euo pipefail
+          lake build MCore
+      - name: G6 clean reproduction
+        shell: bash
+        run: |
+          set -euo pipefail
           lake clean
           lake build MCore.K13
+          lake build MCore.K14
           lake build MCore
