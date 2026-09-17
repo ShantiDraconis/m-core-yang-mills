@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k30:
+  final-core:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,45 +12,46 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K29 boundary
-        run: lake build MCore.K28 MCore.K29
-      - name: G2 explicit K30 build
-        run: lake build MCore.K30
-      - name: G3 K30 axiom closure
+      - name: G1 preserve frozen K30 boundary
+        run: lake build MCore.K29 MCore.K30
+      - name: G2 compressed FinalCore build
+        run: lake build MCore.FinalCore
+      - name: G3 FinalCore axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K30Axioms.lean <<'EOF'
-          import MCore.K30
-          #print axioms MCore.k30_uniform_clustering_implies_pointwise
-          #print axioms MCore.k30_obligations_build_realization
-          #print axioms MCore.k30_witness_builds_transfer
-          #print axioms MCore.k30_witness_closes_conditional_chain
-          #print axioms MCore.k30_target_still_open
-          #print axioms MCore.k30_no_promotion
+          cat >/tmp/FinalCoreAxioms.lean <<'EOF'
+          import MCore.FinalCore
+          #print axioms MCore.final_frontier_blocks_close_k20
+          #print axioms MCore.final_spectral_realization_implies_mass_gap
+          #print axioms MCore.final_core_closes_conditional_chain
+          #print axioms MCore.final_core_target_still_open
+          #print axioms MCore.final_core_no_promotion
           EOF
-          lake env lean /tmp/K30Axioms.lean | tee /tmp/k30.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k30.log || true)" -eq 6
-      - name: G4 obligation, clustering, and endpoint firewall
+          lake env lean /tmp/FinalCoreAxioms.lean | tee /tmp/final-core.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/final-core.log || true)" -eq 5
+      - name: G4 dense endpoint and epistemic firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K30Negative.lean <<'EOF'
-          import MCore.K30
+          cat >/tmp/FinalCoreChecks.lean <<'EOF'
+          import MCore.FinalCore
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k30_no_promotion
-          example : k6_dependency.target.status = .openBridge := k30_target_still_open
-          example {S : K30ClusteringSystemV2}
-              (U : K30UniformExponentialClusteringV2 S) :
-              K30PointwiseClusteringV2 S :=
-            k30_uniform_clustering_implies_pointwise U
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := final_core_no_promotion
+          example : k6_dependency.target.status = .openBridge := final_core_target_still_open
+          example {D : K14PhysicalHilbertData}
+              {H : K14HamiltonianOperator D}
+              {G : K14GapScale D}
+              (R : K29SpectralGapRealization D H G) :
+              ∃ gap : D.Scale, K14MassGap D H G gap :=
+            final_spectral_realization_implies_mass_gap R
           EOF
-          lake env lean /tmp/K30Negative.lean
-          grep -q 'exponentiallyControlled : Bound → Bound → MassScale → Distance → Prop' lean/MCore/K30.lean
-          grep -q 'K30SpectralTransferWitness' lean/MCore/K30.lean
-          grep -q 'k30_witness_closes_conditional_chain' lean/MCore/K30.lean
-          if grep -R -n -E '^theorem .*K20FrontierClosed.*K29SpectralGapRealization' lean/MCore/K30.lean; then exit 1; fi
-          if grep -R -n -E '^theorem .*pointwise.*(implies|to).*uniform|^def .*pointwise.*(implies|to).*uniform' lean/MCore/K30.lean; then exit 1; fi
+          lake env lean /tmp/FinalCoreChecks.lean
+          grep -q 'construction : K22ConstructionBlock F' lean/MCore/FinalCore.lean
+          grep -q 'infrared : K22InfraredBlock F' lean/MCore/FinalCore.lean
+          grep -q 'limits : K22LimitBlock F' lean/MCore/FinalCore.lean
+          grep -q 'spectral : K29SpectralGapRealization D H G' lean/MCore/FinalCore.lean
+          if grep -R -n -E '^theorem .*K20FrontierClosed.*K29SpectralGapRealization' lean/MCore/FinalCore.lean; then exit 1; fi
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -58,6 +59,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K29
           lake build MCore.K30
+          lake build MCore.FinalCore
           lake build MCore
