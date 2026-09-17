@@ -20,6 +20,7 @@ import MCore.K15
 import MCore.K16
 import MCore.K17
 import MCore.K18
+import MCore.K19
 import MCore.Frontier.K3Gaps
 import MCore.AttackDAG.K3AlgebraAttacks
 import MCore.Audit
