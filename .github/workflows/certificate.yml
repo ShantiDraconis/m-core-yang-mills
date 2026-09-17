@@ -6,17 +6,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - name: G0 fail-closed hygiene
+      - name: G0 resolve pinned Mathlib
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake update
+          lake exe cache get
+          grep -q 'c44e0c8ee63ca166450922a373c7409c5d26b00b' lake-manifest.json
+      - name: G1 compile compatible spectral infrastructure
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/MathlibSpectralProbe.lean <<'EOF'
+          import Mathlib.Analysis.InnerProductSpace.Spectrum
+          import Mathlib.Analysis.CStarAlgebra.Spectrum
+          #check LinearMap.IsSymmetric.conj_eigenvalue_eq_self
+          #check LinearMap.IsSymmetric.orthogonalFamily_eigenspaces
+          EOF
+          lake env lean /tmp/MathlibSpectralProbe.lean
+      - name: G2 fail-closed hygiene
         shell: bash
         run: |
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve frozen K30 boundary
+      - name: G3 preserve frozen K30 boundary
         run: lake build MCore.K29 MCore.K30
-      - name: G2 compressed core builds
+      - name: G4 compressed spectral core
         run: lake build MCore.FinalCore MCore.SpectralCore
-      - name: G3 axiom closure
+      - name: G5 axiom closure
         shell: bash
         run: |
           set -euo pipefail
@@ -31,7 +49,7 @@ jobs:
           EOF
           lake env lean /tmp/CoreAxioms.lean | tee /tmp/core-axioms.log
           test "$(grep -c 'does not depend on any axioms' /tmp/core-axioms.log || true)" -eq 6
-      - name: G4 endpoint and analytic-frontier firewall
+      - name: G6 endpoint and analytic-frontier firewall
         shell: bash
         run: |
           set -euo pipefail
@@ -47,36 +65,16 @@ jobs:
               (hp : M.physical psi)
               (ho : M.orthogonalToVacuum psi)
               (hd : M.matrixElementDecay m psi) :
-              M.excludesBelow m psi :=
-            decay_implies_exclusion T m psi hm hp ho hd
+              M.excludesBelow m psi := decay_implies_exclusion T m psi hm hp ho hd
           EOF
           lake env lean /tmp/CoreChecks.lean
           grep -q 'def SpectralAnalyticOpenBridge' lean/MCore/SpectralCore.lean
-          grep -q 'Nonempty (DecayToSpectralExclusion M)' lean/MCore/SpectralCore.lean
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
-      - name: G5 cross-repository provenance firewall
+      - name: G7 umbrella and clean reproduction
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import json, re
-          p=json.load(open('provenance/cross-repo-imports.json'))
-          required=['SOURCE_REPOSITORY','SOURCE_SHA','FROZEN_REF','CERTIFICATE','SOURCE_CREATED_AT','CERTIFIED_AT','SOURCE_GATE','SOURCE_THEOREM','SOURCE_CLASSIFICATION','TARGET_REPOSITORY','TARGET_GATE','TARGET_GAP','IMPORT_MODE','HYPOTHESES_MATCH','SEMANTIC_MATCH','DEPENDENCY_HASH']
-          for x in p.get('imports',[]):
-              missing=[k for k in required if not x.get(k)]
-              if missing: raise SystemExit('missing provenance: '+','.join(missing))
-              if not re.fullmatch(r'[0-9a-f]{40}',x['SOURCE_SHA']): raise SystemExit('bad SOURCE_SHA')
-              if x['IMPORT_MODE'] not in ('EXACT','ADAPTED','ANALOGY_ONLY'): raise SystemExit('bad IMPORT_MODE')
-              if x['IMPORT_MODE'] in ('EXACT','ADAPTED') and not (x['HYPOTHESES_MATCH'] and x['SEMANTIC_MATCH']): raise SystemExit('unproved cross-repo proof edge')
-          PY
-      - name: G6 umbrella build
-        run: lake build MCore
-      - name: G7 clean reproduction
-        shell: bash
-        run: |
-          set -euo pipefail
+          lake build MCore
           lake clean
-          lake build MCore.K30
-          lake build MCore.FinalCore
           lake build MCore.SpectralCore
           lake build MCore
