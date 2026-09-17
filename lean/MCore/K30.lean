@@ -2,6 +2,48 @@ import MCore.K29
 
 namespace MCore
 
+/-- Forward correction of the K25 clustering interface.  The prefactor and the
+mass scale are distinct inputs of the exponential-control predicate. -/
+structure K30ClusteringSystemV2 where
+  Cutoff : Type
+  Volume : Type
+  Observable : Type
+  Point : Type
+  Bound : Type
+  MassScale : Type
+  Distance : Type
+  connectedCorrelation :
+    Cutoff → Volume → Observable → Observable → Point → Point → Bound
+  separation : Point → Point → Distance
+  exponentiallyControlled : Bound → Bound → MassScale → Distance → Prop
+
+structure K30UniformExponentialClusteringV2 (S : K30ClusteringSystemV2) where
+  prefactor : S.Bound
+  massScale : S.MassScale
+  holds : ∀ a V A B x y,
+    S.exponentiallyControlled
+      (S.connectedCorrelation a V A B x y)
+      prefactor massScale (S.separation x y)
+
+structure K30PointwiseClusteringV2 (S : K30ClusteringSystemV2) where
+  prefactorAt : S.Cutoff → S.Volume → S.Bound
+  massScaleAt : S.Cutoff → S.Volume → S.MassScale
+  holds : ∀ a V A B x y,
+    S.exponentiallyControlled
+      (S.connectedCorrelation a V A B x y)
+      (prefactorAt a V) (massScaleAt a V) (S.separation x y)
+
+theorem k30_uniform_clustering_implies_pointwise
+    {S : K30ClusteringSystemV2}
+    (U : K30UniformExponentialClusteringV2 S) :
+    K30PointwiseClusteringV2 S := {
+  prefactorAt := fun _ _ => U.prefactor
+  massScaleAt := fun _ _ => U.massScale
+  holds := by
+    intro a V A B x y
+    exact U.holds a V A B x y
+}
+
 /-- K30 separates the remaining scientific transfer into four independently
 inspectable obligations. None is derived merely from frontier closure. -/
 structure K30SpectralTransferObligations
