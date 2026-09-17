@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k19:
+  k20:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,41 +12,41 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K18 and certified frontier
+      - name: G1 preserve K19 and full certified interface chain
         shell: bash
         run: |
           set -euo pipefail
-          lake build MCore.K16 MCore.K17 MCore.K18
+          lake build MCore.K14 MCore.K15 MCore.K16 MCore.K17 MCore.K18 MCore.K19
           lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
-      - name: G2 explicit K19 build
-        run: lake build MCore.K19
-      - name: G3 K19 semantic axiom closure
+      - name: G2 explicit K20 build
+        run: lake build MCore.K20
+      - name: G3 K20 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K19Axioms.lean <<'EOF'
-          import MCore.K19
-          #print axioms MCore.k19_uniform_gap_survives_limits_conditionally
-          #print axioms MCore.k19_target_still_open
-          #print axioms MCore.k19_no_promotion
+          cat >/tmp/K20Axioms.lean <<'EOF'
+          import MCore.K20
+          #print axioms MCore.k20_closed_frontier_implies_mass_gap
+          #print axioms MCore.k20_target_still_open
+          #print axioms MCore.k20_no_promotion
+          #print axioms MCore.k20_interfaces_certified
+          #print axioms MCore.k20_frontier_not_marked_closed
           EOF
-          lake env lean /tmp/K19Axioms.lean | tee /tmp/k19.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k19.log || true)" -eq 3
-      - name: G4 negative limit firewall
+          lake env lean /tmp/K20Axioms.lean | tee /tmp/k20.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k20.log || true)" -eq 5
+      - name: G4 final epistemic firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K19Negative.lean <<'EOF'
-          import MCore.K19
+          cat >/tmp/K20Negative.lean <<'EOF'
+          import MCore.K20
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k19_no_promotion
-          example : k6_dependency.target.status = .openBridge := k19_target_still_open
-          -- Existence of a continuum limit is deliberately insufficient by itself.
-          example {A : K19ApproximationFamily} {G : K19UniformGapData A}
-              {L : K19ContinuumLimitData A G} (h : L.continuumLimitExists) :
-              L.continuumLimitExists := h
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k20_no_promotion
+          example : k6_dependency.target.status = .openBridge := k20_target_still_open
+          example : k20_interface_audit_state.interfacesCertified := k20_interfaces_certified
+          example : ¬ k20_interface_audit_state.scientificFrontierClosed := k20_frontier_not_marked_closed
           EOF
-          lake env lean /tmp/K19Negative.lean
+          lake env lean /tmp/K20Negative.lean
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -54,6 +54,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K18
           lake build MCore.K19
+          lake build MCore.K20
           lake build MCore
