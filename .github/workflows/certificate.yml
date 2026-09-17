@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k26:
+  k27:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,36 +12,36 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K25 uniform-clustering boundary
-        run: lake build MCore.K24 MCore.K25
-      - name: G2 explicit K26 build
-        run: lake build MCore.K26
-      - name: G3 K26 semantic axiom closure
+      - name: G1 preserve K26 spectral boundary
+        run: lake build MCore.K25 MCore.K26
+      - name: G2 explicit K27 build
+        run: lake build MCore.K27
+      - name: G3 K27 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K26Axioms.lean <<'EOF'
-          import MCore.K26
-          #print axioms MCore.k26_bridge_supplies_infrared_auxiliaries
-          #print axioms MCore.k26_target_still_open
-          #print axioms MCore.k26_no_promotion
+          cat >/tmp/K27Axioms.lean <<'EOF'
+          import MCore.K27
+          #print axioms MCore.k27_bridge_builds_limit_block
+          #print axioms MCore.k27_target_still_open
+          #print axioms MCore.k27_no_promotion
           EOF
-          lake env lean /tmp/K26Axioms.lean | tee /tmp/k26.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k26.log || true)" -eq 3
-      - name: G4 observable-sector spectral firewall
+          lake env lean /tmp/K27Axioms.lean | tee /tmp/k27.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k27.log || true)" -eq 3
+      - name: G4 pointwise-gap-to-uniform-limit firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K26Negative.lean <<'EOF'
-          import MCore.K26
+          cat >/tmp/K27Negative.lean <<'EOF'
+          import MCore.K27
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k26_no_promotion
-          example : k6_dependency.target.status = .openBridge := k26_target_still_open
-          -- Observable matrix-element decay is not definitionally a physical spectral gap.
-          -- The decay-to-spectral transfer remains explicit K26DecayToSpectralBridge data.
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k27_no_promotion
+          example : k6_dependency.target.status = .openBridge := k27_target_still_open
+          -- Pointwise positivity does not provide a regulator-independent lower bound.
+          -- Uniform positivity does not by itself prove preservation under either limit.
           EOF
-          lake env lean /tmp/K26Negative.lean
-          if grep -R -n -E '^theorem .*K26ObservableDecayWitness.*K26DecayToSpectralBridge|^theorem .*K26ObservableDecayWitness.*spectralSupportAboveGap' lean/MCore/K26.lean; then exit 1; fi
+          lake env lean /tmp/K27Negative.lean
+          if grep -R -n -E '^theorem .*K27PointwisePositiveGap.*K27UniformPositiveGap|^theorem .*K27UniformPositiveGap.*K27LimitWitness' lean/MCore/K27.lean; then exit 1; fi
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -49,6 +49,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K25
           lake build MCore.K26
+          lake build MCore.K27
           lake build MCore
