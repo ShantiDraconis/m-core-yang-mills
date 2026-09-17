@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k21:
+  k22:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,41 +12,43 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K20 epistemic boundary
+      - name: G1 preserve K21 witness boundary
         shell: bash
         run: |
           set -euo pipefail
-          lake build MCore.K18 MCore.K19 MCore.K20
+          lake build MCore.K19 MCore.K20 MCore.K21
           lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
-      - name: G2 explicit K21 build
-        run: lake build MCore.K21
-      - name: G3 K21 semantic axiom closure
+      - name: G2 explicit K22 build
+        run: lake build MCore.K22
+      - name: G3 K22 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K21Axioms.lean <<'EOF'
-          import MCore.K21
-          #print axioms MCore.k21_witnesses_close_frontier
-          #print axioms MCore.k21_witnesses_imply_mass_gap_conditionally
-          #print axioms MCore.k21_target_still_open
-          #print axioms MCore.k21_no_promotion
+          cat >/tmp/K22Axioms.lean <<'EOF'
+          import MCore.K22
+          #print axioms MCore.k22_blocks_assemble_witnesses
+          #print axioms MCore.k22_blocks_imply_mass_gap_conditionally
+          #print axioms MCore.k22_target_still_open
+          #print axioms MCore.k22_no_promotion
           EOF
-          lake env lean /tmp/K21Axioms.lean | tee /tmp/k21.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k21.log || true)" -eq 4
-      - name: G4 witness and no-promotion firewall
+          lake env lean /tmp/K22Axioms.lean | tee /tmp/k22.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k22.log || true)" -eq 4
+      - name: G4 scientific-block firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K21Negative.lean <<'EOF'
-          import MCore.K21
+          cat >/tmp/K22Negative.lean <<'EOF'
+          import MCore.K22
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k21_no_promotion
-          example : k6_dependency.target.status = .openBridge := k21_target_still_open
-          example {F : K20ScientificFrontier} (W : K21FrontierWitnesses F) :
-              K20FrontierClosed F := k21_witnesses_close_frontier W
-          -- No inhabitant of K21FrontierWitnesses for actual YM4 is constructed here.
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k22_no_promotion
+          example : k6_dependency.target.status = .openBridge := k22_target_still_open
+          example {F : K20ScientificFrontier}
+              (C : K22ConstructionBlock F) (I : K22InfraredBlock F)
+              (L : K22LimitBlock F) : K21FrontierWitnesses F :=
+            k22_blocks_assemble_witnesses C I L
+          -- Blocks are inputs; no actual YM4 block is fabricated by this gate.
           EOF
-          lake env lean /tmp/K21Negative.lean
+          lake env lean /tmp/K22Negative.lean
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -54,6 +56,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K20
           lake build MCore.K21
+          lake build MCore.K22
           lake build MCore
