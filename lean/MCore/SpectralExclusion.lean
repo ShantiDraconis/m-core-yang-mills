@@ -3,26 +3,12 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 namespace MCore
 
-/-!
-# Spectral exclusion core
-
-This file isolates and proves the arithmetic/measure-theoretic heart of S1.
-It deliberately does not assume a C₀-semigroup, a spectral theorem for
-unbounded operators, or a projection-valued measure.  Those are separate
-analytic realization obligations.
--/
-
-/-- Abstract positive spectral state measure.  `laplace t` is intended to be
-`⟨ψ, exp (-tH) ψ⟩`; `massBelow r` is intended to be `μψ([0,r])`.
-The lower-bound law is exactly the consequence of positivity of the spectral
-measure needed by the asymptotic argument. -/
 structure PositiveSpectralLaplaceData where
   laplace : ℝ → ℝ
   massBelow : ℝ → ℝ
   lowerBound : ∀ t r : ℝ, 0 ≤ t → 0 ≤ r →
     Real.exp (-t * r) * massBelow r ≤ laplace t
 
-/-- Exponential decay package. -/
 structure ExponentialDecayData (L : ℝ → ℝ) where
   C : ℝ
   m : ℝ
@@ -30,15 +16,9 @@ structure ExponentialDecayData (L : ℝ → ℝ) where
   m_pos : 0 < m
   upperBound : ∀ t : ℝ, 0 ≤ t → L t ≤ C * Real.exp (-m * t)
 
-/-- Quantitative contradiction threshold.  If positive mass `q` lies below
-`r < m`, then any `t` with `C < q * exp ((m-r)t)` contradicts decay rate `m`.
-This formulation avoids logarithms and is the minimal algebraic core. -/
 theorem positive_mass_below_rate_contradiction
     (q C m r t : ℝ)
-    (hq : 0 < q)
-    (hC : 0 ≤ C)
-    (hgap : r < m)
-    (ht : 0 ≤ t)
+    (hq : 0 < q) (hC : 0 ≤ C) (hgap : r < m) (ht : 0 ≤ t)
     (hlower : Real.exp (-t * r) * q ≤ C * Real.exp (-m * t))
     (hlarge : C < q * Real.exp ((m - r) * t)) : False := by
   have hem : 0 < Real.exp (m * t) := Real.exp_pos _
@@ -51,19 +31,19 @@ theorem positive_mass_below_rate_contradiction
   have hid2 : Real.exp (-m * t) * Real.exp (m * t) = 1 := by
     rw [← Real.exp_add]
     simp
-  rw [mul_assoc, hid1, mul_assoc, hid2, mul_one] at hmul
-  exact (not_lt_of_ge hmul) hlarge
+  have hnorm : q * Real.exp ((m - r) * t) ≤ C := by
+    calc
+      q * Real.exp ((m - r) * t)
+          = (Real.exp (-t * r) * q) * Real.exp (m * t) := by
+              rw [mul_assoc, mul_comm q, hid1]
+      _ ≤ (C * Real.exp (-m * t)) * Real.exp (m * t) := hmul
+      _ = C := by rw [mul_assoc, hid2, mul_one]
+  exact (not_lt_of_ge hnorm) hlarge
 
-/-- Dense S1 law: decay plus the positive-measure lower bound excludes any
-positive spectral mass at every strict sub-rate `r < m`, provided the elementary
-Archimedean growth witness is supplied.  The witness is pure real analysis and
-is intentionally visible rather than hidden as a spectral assumption. -/
 theorem spectral_exclusion_at_subrate
     (S : PositiveSpectralLaplaceData)
     (D : ExponentialDecayData S.laplace)
-    (r : ℝ)
-    (hr0 : 0 ≤ r)
-    (hrm : r < D.m)
+    (r : ℝ) (hr0 : 0 ≤ r) (hrm : r < D.m)
     (growth : ∀ q : ℝ, 0 < q → ∃ t : ℝ,
       0 ≤ t ∧ D.C < q * Real.exp ((D.m - r) * t)) :
     S.massBelow r ≤ 0 := by
@@ -77,17 +57,12 @@ theorem spectral_exclusion_at_subrate
   exact positive_mass_below_rate_contradiction
     (S.massBelow r) D.C D.m r t hq D.C_nonneg hrm ht hchain hlarge
 
-/-- The exact remaining analytic interface for S1.  A concrete spectral theorem
-must produce the lower-bound law; real analysis must produce exponential growth.
-No Yang–Mills conclusion is assumed here. -/
 structure SpectralExclusionRealization where
   spectral : PositiveSpectralLaplaceData
   decay : ExponentialDecayData spectral.laplace
   growth : ∀ r : ℝ, 0 ≤ r → r < decay.m → ∀ q : ℝ, 0 < q → ∃ t : ℝ,
     0 ≤ t ∧ decay.C < q * Real.exp ((decay.m - r) * t)
 
-/-- Once the realization exists, every nonnegative strict sub-rate has zero
-positive spectral mass (assuming mass itself is nonnegative). -/
 theorem realized_exclusion
     (R : SpectralExclusionRealization)
     (mass_nonneg : ∀ r : ℝ, 0 ≤ r → 0 ≤ R.spectral.massBelow r)
