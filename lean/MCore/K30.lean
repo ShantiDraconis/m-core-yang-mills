@@ -36,34 +36,46 @@ structure K30SpectralTransferWitness
   clusteringToSemigroup : O.clusteringTransfersToSemigroup
   spectralExclusion : O.semigroupExcludesLowSpectrum
 
-theorem k30_obligations_build_realization
+/-- Constructor, not a theorem: its codomain is data in `Type`, not `Prop`. -/
+def k30_obligations_build_realization
     {F : K20ScientificFrontier}
     {D : K14PhysicalHilbertData}
     {H : K14HamiltonianOperator D}
     {G : K14GapScale D}
     (O : K30SpectralTransferObligations F D H G)
     (W : K30SpectralTransferWitness O)
-    (hF : K20FrontierClosed F) : K29SpectralGapRealization D H G := by
-  refine {
-    gap := O.gap
-    gapPositive := O.positiveGap
-    excludesLowSpectrum := ?_
-  }
-  intro psi hpsi hphysical horthogonal
-  exact O.exclusionFromObligations hF W.physicalSector W.density
-    W.clusteringToSemigroup W.spectralExclusion psi hpsi hphysical horthogonal
+    (hF : K20FrontierClosed F) : K29SpectralGapRealization D H G := {
+  gap := O.gap
+  gapPositive := O.positiveGap
+  excludesLowSpectrum := fun psi hpsi hphysical horthogonal =>
+    O.exclusionFromObligations hF W.physicalSector W.density
+      W.clusteringToSemigroup W.spectralExclusion psi hpsi hphysical horthogonal
+}
 
-theorem k30_witness_builds_transfer
+/-- Constructor for the remaining transfer interface. -/
+def k30_witness_builds_transfer
     {F : K20ScientificFrontier}
     {D : K14PhysicalHilbertData}
     {H : K14HamiltonianOperator D}
     {G : K14GapScale D}
     (O : K30SpectralTransferObligations F D H G)
     (W : K30SpectralTransferWitness O) :
-    K29FrontierToSpectralRealization F D H G := by
-  refine { transfer := ?_ }
-  intro hF
-  exact k30_obligations_build_realization O W hF
+    K29FrontierToSpectralRealization F D H G := {
+  transfer := fun hF => k30_obligations_build_realization O W hF
+}
+
+/-- Once the explicit K30 witness exists, the already-certified K29 chain
+propagates all the way to the mass-gap predicate; no K31 wrapper is needed. -/
+theorem k30_witness_closes_conditional_chain
+    {F : K20ScientificFrontier}
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    (B : K28FrontierBlocks F)
+    (O : K30SpectralTransferObligations F D H G)
+    (W : K30SpectralTransferWitness O) :
+    ∃ gap : D.Scale, K14MassGap D H G gap :=
+  k29_blocks_and_transfer_yield_mass_gap B (k30_witness_builds_transfer O W)
 
 theorem k30_target_still_open :
     k6_dependency.target.status = .openBridge := k29_target_still_open
