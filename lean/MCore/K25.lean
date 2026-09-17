@@ -2,9 +2,6 @@ import MCore.K24
 
 namespace MCore
 
-/-- K25 isolates the infrared statement needed later for a spectral gap.
-The same constants live outside the cutoff/volume quantifiers, encoding
-uniformity structurally rather than as a comment. -/
 structure K25ClusteringSystem where
   Cutoff : Type
   Volume : Type
@@ -26,9 +23,6 @@ structure K25UniformExponentialClustering (S : K25ClusteringSystem) where
       massScale
       (S.separation O₁ O₂)
 
-/-- A cutoff/volume dependent family is intentionally weaker: its parameters
-are allowed to vary with the regulator.  There is no theorem converting this
-structure to `K25UniformExponentialClustering`. -/
 structure K25PointwiseClustering (S : K25ClusteringSystem) where
   prefactorAt : S.Cutoff → S.Volume → S.Bound
   massScaleAt : S.Cutoff → S.Volume → S.Bound
@@ -39,10 +33,8 @@ structure K25PointwiseClustering (S : K25ClusteringSystem) where
       (massScaleAt a V)
       (S.separation O₁ O₂)
 
-/-- The scientific bridge from a concrete uniform clustering theorem to the
-K22 infrared block remains explicit. -/
 structure K25ClusteringToInfraredBridge
-    {F : K20ScientificFrontier}
+    (F : K20ScientificFrontier)
     (S : K25ClusteringSystem)
     (U : K25UniformExponentialClustering S) where
   clusteringFeeds : F.uniformExponentialClustering
@@ -55,7 +47,7 @@ theorem k25_uniform_clustering_builds_infrared_block
     {F : K20ScientificFrontier}
     {S : K25ClusteringSystem}
     {U : K25UniformExponentialClustering S}
-    (B : K25ClusteringToInfraredBridge S U)
+    (B : K25ClusteringToInfraredBridge F S U)
     (hc : B.observableCyclicityStillRequired)
     (hs : B.semigroupTransferStillRequired) : K22InfraredBlock F := {
   uniformExponentialClustering := B.clusteringFeeds
