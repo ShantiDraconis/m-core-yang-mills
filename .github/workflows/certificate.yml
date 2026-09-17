@@ -23,7 +23,7 @@ jobs:
           cat >/tmp/K28Axioms.lean <<'EOF'
           import MCore.K28
           #print axioms MCore.k28_blocks_recover_frontier
-          #print axioms MCore.k28_conditional_endpoint
+          #print axioms MCore.k28_conditional_mass_gap
           #print axioms MCore.k28_target_still_open
           #print axioms MCore.k28_no_promotion
           EOF
@@ -38,11 +38,11 @@ jobs:
           open MCore
           example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k28_no_promotion
           example : k6_dependency.target.status = .openBridge := k28_target_still_open
-          -- Recovering K20FrontierClosed from supplied block witnesses is bookkeeping.
-          -- The target proposition still requires K20FrontierToMassGapBridge explicitly.
+          -- Frontier closure only yields a mass-gap witness when the parameterized
+          -- K20FrontierToMassGapBridge and physical Hilbert data are supplied.
           EOF
           lake env lean /tmp/K28Negative.lean
-          if grep -R -n -E '^theorem .*K28FrontierBlocks.*k6_dependency\.target\.proposition' lean/MCore/K28.lean | grep -v 'k28_conditional_endpoint'; then exit 1; fi
+          if grep -R -n -E '^theorem .*K28FrontierBlocks.*k6_dependency\.target\.proposition' lean/MCore/K28.lean; then exit 1; fi
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
