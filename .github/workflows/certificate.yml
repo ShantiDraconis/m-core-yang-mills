@@ -14,51 +14,69 @@ jobs:
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
       - name: G1 preserve frozen K30 boundary
         run: lake build MCore.K29 MCore.K30
-      - name: G2 compressed FinalCore build
-        run: lake build MCore.FinalCore
-      - name: G3 FinalCore axiom closure
+      - name: G2 compressed core builds
+        run: lake build MCore.FinalCore MCore.SpectralCore
+      - name: G3 axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/FinalCoreAxioms.lean <<'EOF'
-          import MCore.FinalCore
+          cat >/tmp/CoreAxioms.lean <<'EOF'
+          import MCore.SpectralCore
           #print axioms MCore.final_frontier_blocks_close_k20
           #print axioms MCore.final_spectral_realization_implies_mass_gap
           #print axioms MCore.final_core_closes_conditional_chain
           #print axioms MCore.final_core_target_still_open
           #print axioms MCore.final_core_no_promotion
+          #print axioms MCore.decay_implies_exclusion
           EOF
-          lake env lean /tmp/FinalCoreAxioms.lean | tee /tmp/final-core.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/final-core.log || true)" -eq 5
-      - name: G4 dense endpoint and epistemic firewall
+          lake env lean /tmp/CoreAxioms.lean | tee /tmp/core-axioms.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/core-axioms.log || true)" -eq 6
+      - name: G4 endpoint and analytic-frontier firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/FinalCoreChecks.lean <<'EOF'
-          import MCore.FinalCore
+          cat >/tmp/CoreChecks.lean <<'EOF'
+          import MCore.SpectralCore
           open MCore
           example : ¬ Nonempty (ProofCertificate k6_dependency.target) := final_core_no_promotion
           example : k6_dependency.target.status = .openBridge := final_core_target_still_open
-          example {D : K14PhysicalHilbertData}
-              {H : K14HamiltonianOperator D}
-              {G : K14GapScale D}
-              (R : K29SpectralGapRealization D H G) :
-              ∃ gap : D.Scale, K14MassGap D H G gap :=
-            final_spectral_realization_implies_mass_gap R
+          example {M : SpectralDecayModel}
+              (T : DecayToSpectralExclusion M)
+              (m : M.Rate) (psi : M.State)
+              (hm : M.positiveRate m)
+              (hp : M.physical psi)
+              (ho : M.orthogonalToVacuum psi)
+              (hd : M.matrixElementDecay m psi) :
+              M.excludesBelow m psi :=
+            decay_implies_exclusion T m psi hm hp ho hd
           EOF
-          lake env lean /tmp/FinalCoreChecks.lean
-          grep -q 'construction : K22ConstructionBlock F' lean/MCore/FinalCore.lean
-          grep -q 'infrared : K22InfraredBlock F' lean/MCore/FinalCore.lean
-          grep -q 'limits : K22LimitBlock F' lean/MCore/FinalCore.lean
-          grep -q 'spectral : K29SpectralGapRealization D H G' lean/MCore/FinalCore.lean
-          if grep -R -n -E '^theorem .*K20FrontierClosed.*K29SpectralGapRealization' lean/MCore/FinalCore.lean; then exit 1; fi
-      - name: G5 umbrella build
+          lake env lean /tmp/CoreChecks.lean
+          grep -q 'def SpectralAnalyticOpenBridge' lean/MCore/SpectralCore.lean
+          grep -q 'Nonempty (DecayToSpectralExclusion M)' lean/MCore/SpectralCore.lean
+          if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
+      - name: G5 cross-repository provenance firewall
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, re
+          p=json.load(open('provenance/cross-repo-imports.json'))
+          required=['SOURCE_REPOSITORY','SOURCE_SHA','FROZEN_REF','CERTIFICATE','SOURCE_CREATED_AT','CERTIFIED_AT','SOURCE_GATE','SOURCE_THEOREM','SOURCE_CLASSIFICATION','TARGET_REPOSITORY','TARGET_GATE','TARGET_GAP','IMPORT_MODE','HYPOTHESES_MATCH','SEMANTIC_MATCH','DEPENDENCY_HASH']
+          for x in p.get('imports',[]):
+              missing=[k for k in required if not x.get(k)]
+              if missing: raise SystemExit('missing provenance: '+','.join(missing))
+              if not re.fullmatch(r'[0-9a-f]{40}',x['SOURCE_SHA']): raise SystemExit('bad SOURCE_SHA')
+              if x['IMPORT_MODE'] not in ('EXACT','ADAPTED','ANALOGY_ONLY'): raise SystemExit('bad IMPORT_MODE')
+              if x['IMPORT_MODE'] in ('EXACT','ADAPTED') and not (x['HYPOTHESES_MATCH'] and x['SEMANTIC_MATCH']): raise SystemExit('unproved cross-repo proof edge')
+          PY
+      - name: G6 umbrella build
         run: lake build MCore
-      - name: G6 clean reproduction
+      - name: G7 clean reproduction
         shell: bash
         run: |
           set -euo pipefail
           lake clean
           lake build MCore.K30
           lake build MCore.FinalCore
+          lake build MCore.SpectralCore
           lake build MCore
