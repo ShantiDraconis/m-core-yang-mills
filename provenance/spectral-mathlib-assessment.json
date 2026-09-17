@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "target_gap": "DecayToSpectralExclusion",
+  "target_repository": "ShantiDraconis/m-core-yang-mills",
+  "target_module": "MCore.SpectralCore",
+  "current_dependency_state": {
+    "lakefile_mathlib_declared": false,
+    "lake_manifest_packages": 0,
+    "classification": "DEPENDENCY_MISSING"
+  },
+  "candidate_external_library": {
+    "repository": "leanprover-community/mathlib4",
+    "observed_commit": "ce4e02294743af1f5d7f9fbf62b6819f0102fb80",
+    "relevant_modules": [
+      "Mathlib/Analysis/CStarAlgebra/Spectrum.lean",
+      "Mathlib/Analysis/InnerProductSpace/Spectrum.lean",
+      "Mathlib/Analysis/InnerProductSpace/Rayleigh.lean",
+      "Mathlib/Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Unital.lean"
+    ],
+    "observed_capabilities": [
+      "self-adjoint spectrum is real",
+      "self-adjoint spectral radius results on complete inner-product spaces",
+      "spectral mapping for continuous functional calculus"
+    ],
+    "import_mode": "ADAPTED",
+    "reason": "Mathlib supplies spectral infrastructure but not the Yang-Mills-specific decay witness or the current K14 abstract semantics. A concrete adapter/model must be proved."
+  },
+  "required_before_proof_import": [
+    "pin a Mathlib revision compatible with Lean 4.19.0",
+    "hydrate lake-manifest and compile the dependency",
+    "define a concrete Hilbert-space Hamiltonian model",
+    "prove self-adjointness/nonnegativity assumptions in that model",
+    "prove the exponential semigroup/matrix-element estimate",
+    "prove the adapter from concrete spectral exclusion to K29/K14 gap semantics"
+  ],
+  "epistemic_status": "OPEN_BRIDGE"
+}
