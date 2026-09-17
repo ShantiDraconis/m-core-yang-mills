@@ -1,5 +1,6 @@
 import MCore.SpectralConcreteAdapter
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 namespace MCore
 
@@ -15,6 +16,57 @@ structure ExponentialDecayData (L : ℝ → ℝ) where
   C_nonneg : 0 ≤ C
   m_pos : 0 < m
   upperBound : ∀ t : ℝ, 0 ≤ t → L t ≤ C * Real.exp (-m * t)
+
+/-- G1: exponential escape with an explicit witness.  No assumption `C ≥ q` is used. -/
+theorem exponential_growth_escape
+    (q : ℝ) (hq : 0 < q) (C : ℝ) (hC : 0 ≤ C)
+    (m r : ℝ) (hmr : 0 < m - r) :
+    ∃ t : ℝ, 0 ≤ t ∧ C < q * Real.exp ((m - r) * t) := by
+  rcases eq_or_lt_of_le hC with hC0 | hCpos
+  · subst C
+    exact ⟨0, le_rfl, by simpa using hq⟩
+  · let a : ℝ := m - r
+    let x : ℝ := C / q
+    have ha : 0 < a := hmr
+    have hx : 0 < x := div_pos hCpos hq
+    let t : ℝ := max 0 (Real.log x / a) + 1
+    have ht : 0 ≤ t := by
+      dsimp [t]
+      have hmax : 0 ≤ max 0 (Real.log x / a) := le_max_left _ _
+      linarith
+    have hdiv : Real.log x / a ≤ max 0 (Real.log x / a) := le_max_right _ _
+    have hlog_le : Real.log x ≤ a * max 0 (Real.log x / a) := by
+      exact (div_le_iff₀ ha).mp hdiv
+    have hlog_lt : Real.log x < a * t := by
+      dsimp [t]
+      nlinarith
+    have hxexp : x < Real.exp (a * t) := by
+      rw [← Real.exp_log hx]
+      exact Real.exp_lt_exp.mpr hlog_lt
+    have hmul : q * x < q * Real.exp (a * t) :=
+      mul_lt_mul_of_pos_left hxexp hq
+    have hqx : q * x = C := by
+      dsimp [x]
+      field_simp [ne_of_gt hq]
+    refine ⟨t, ht, ?_⟩
+    simpa [a, hqx] using hmul
+
+/-- F3: pointwise positive rates need not admit a positive uniform lower bound. -/
+theorem pointwise_pos_not_uniform :
+    ∃ m : ℕ → ℝ, (∀ n, 0 < m n) ∧ ¬ ∃ c : ℝ, 0 < c ∧ ∀ n, c ≤ m n := by
+  refine ⟨fun n => 1 / (n + 1 : ℝ), ?_, ?_⟩
+  · intro n
+    positivity
+  · rintro ⟨c, hc, hc_le⟩
+    obtain ⟨n, hn⟩ := exists_nat_gt (1 / c)
+    have hnpos : (0 : ℝ) < n + 1 := by positivity
+    have hprod : 1 < (n + 1 : ℝ) * c := by
+      have := (div_lt_iff₀ hc).mp hn
+      simpa [mul_comm] using this
+    have hlt : 1 / (n + 1 : ℝ) < c := by
+      rw [div_lt_iff₀ hnpos]
+      exact hprod
+    exact (not_lt_of_ge (hc_le n)) hlt
 
 theorem positive_mass_below_rate_contradiction
     (q C m r t : ℝ)
@@ -43,13 +95,12 @@ theorem positive_mass_below_rate_contradiction
 theorem spectral_exclusion_at_subrate
     (S : PositiveSpectralLaplaceData)
     (D : ExponentialDecayData S.laplace)
-    (r : ℝ) (hr0 : 0 ≤ r) (hrm : r < D.m)
-    (growth : ∀ q : ℝ, 0 < q → ∃ t : ℝ,
-      0 ≤ t ∧ D.C < q * Real.exp ((D.m - r) * t)) :
+    (r : ℝ) (hr0 : 0 ≤ r) (hrm : r < D.m) :
     S.massBelow r ≤ 0 := by
   by_contra h
   have hq : 0 < S.massBelow r := lt_of_not_ge h
-  obtain ⟨t, ht, hlarge⟩ := growth (S.massBelow r) hq
+  obtain ⟨t, ht, hlarge⟩ := exponential_growth_escape
+    (S.massBelow r) hq D.C D.C_nonneg D.m r (sub_pos.mpr hrm)
   have hlower := S.lowerBound t r ht hr0
   have hupper := D.upperBound t ht
   have hchain : Real.exp (-t * r) * S.massBelow r ≤
@@ -57,11 +108,11 @@ theorem spectral_exclusion_at_subrate
   exact positive_mass_below_rate_contradiction
     (S.massBelow r) D.C D.m r t hq D.C_nonneg hrm ht hchain hlarge
 
+/-- The growth witness is now discharged internally; the remaining S1 realization
+contains only the positive spectral lower-bound law and exponential decay. -/
 structure SpectralExclusionRealization where
   spectral : PositiveSpectralLaplaceData
   decay : ExponentialDecayData spectral.laplace
-  growth : ∀ r : ℝ, 0 ≤ r → r < decay.m → ∀ q : ℝ, 0 < q → ∃ t : ℝ,
-    0 ≤ t ∧ decay.C < q * Real.exp ((decay.m - r) * t)
 
 theorem realized_exclusion
     (R : SpectralExclusionRealization)
@@ -70,7 +121,6 @@ theorem realized_exclusion
     R.spectral.massBelow r = 0 := by
   apply le_antisymm
   · exact spectral_exclusion_at_subrate R.spectral R.decay r hr0 hrm
-      (R.growth r hr0 hrm)
   · exact mass_nonneg r hr0
 
 end MCore
