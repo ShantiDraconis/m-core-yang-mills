@@ -3,7 +3,7 @@ import MCore.K29
 namespace MCore
 
 /-- K30 separates the remaining scientific transfer into four independently
-inspectable obligations.  None is derived merely from frontier closure. -/
+inspectable obligations. None is derived merely from frontier closure. -/
 structure K30SpectralTransferObligations
     (F : K20ScientificFrontier)
     (D : K14PhysicalHilbertData)
@@ -43,12 +43,15 @@ theorem k30_obligations_build_realization
     {G : K14GapScale D}
     (O : K30SpectralTransferObligations F D H G)
     (W : K30SpectralTransferWitness O)
-    (hF : K20FrontierClosed F) : K29SpectralGapRealization D H G := {
-  gap := O.gap
-  gapPositive := O.positiveGap
-  excludesLowSpectrum := O.exclusionFromObligations hF W.physicalSector W.density
-    W.clusteringToSemigroup W.spectralExclusion
-}
+    (hF : K20FrontierClosed F) : K29SpectralGapRealization D H G := by
+  refine {
+    gap := O.gap
+    gapPositive := O.positiveGap
+    excludesLowSpectrum := ?_
+  }
+  intro psi hpsi hphysical horthogonal
+  exact O.exclusionFromObligations hF W.physicalSector W.density
+    W.clusteringToSemigroup W.spectralExclusion psi hpsi hphysical horthogonal
 
 theorem k30_witness_builds_transfer
     {F : K20ScientificFrontier}
@@ -57,9 +60,10 @@ theorem k30_witness_builds_transfer
     {G : K14GapScale D}
     (O : K30SpectralTransferObligations F D H G)
     (W : K30SpectralTransferWitness O) :
-    K29FrontierToSpectralRealization F D H G := {
-  transfer := k30_obligations_build_realization O W
-}
+    K29FrontierToSpectralRealization F D H G := by
+  refine { transfer := ?_ }
+  intro hF
+  exact k30_obligations_build_realization O W hF
 
 theorem k30_target_still_open :
     k6_dependency.target.status = .openBridge := k29_target_still_open
