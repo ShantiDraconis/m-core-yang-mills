@@ -22,6 +22,7 @@ jobs:
           set -euo pipefail
           cat >/tmp/K30Axioms.lean <<'EOF'
           import MCore.K30
+          #print axioms MCore.k30_uniform_clustering_implies_pointwise
           #print axioms MCore.k30_obligations_build_realization
           #print axioms MCore.k30_witness_builds_transfer
           #print axioms MCore.k30_witness_closes_conditional_chain
@@ -29,8 +30,8 @@ jobs:
           #print axioms MCore.k30_no_promotion
           EOF
           lake env lean /tmp/K30Axioms.lean | tee /tmp/k30.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k30.log || true)" -eq 5
-      - name: G4 obligation and endpoint firewall
+          test "$(grep -c 'does not depend on any axioms' /tmp/k30.log || true)" -eq 6
+      - name: G4 obligation, clustering, and endpoint firewall
         shell: bash
         run: |
           set -euo pipefail
@@ -39,11 +40,17 @@ jobs:
           open MCore
           example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k30_no_promotion
           example : k6_dependency.target.status = .openBridge := k30_target_still_open
+          example {S : K30ClusteringSystemV2}
+              (U : K30UniformExponentialClusteringV2 S) :
+              K30PointwiseClusteringV2 S :=
+            k30_uniform_clustering_implies_pointwise U
           EOF
           lake env lean /tmp/K30Negative.lean
-          if grep -R -n -E '^theorem .*K20FrontierClosed.*K29SpectralGapRealization' lean/MCore/K30.lean; then exit 1; fi
+          grep -q 'exponentiallyControlled : Bound → Bound → MassScale → Distance → Prop' lean/MCore/K30.lean
           grep -q 'K30SpectralTransferWitness' lean/MCore/K30.lean
           grep -q 'k30_witness_closes_conditional_chain' lean/MCore/K30.lean
+          if grep -R -n -E '^theorem .*K20FrontierClosed.*K29SpectralGapRealization' lean/MCore/K30.lean; then exit 1; fi
+          if grep -R -n -E '^theorem .*pointwise.*(implies|to).*uniform|^def .*pointwise.*(implies|to).*uniform' lean/MCore/K30.lean; then exit 1; fi
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
