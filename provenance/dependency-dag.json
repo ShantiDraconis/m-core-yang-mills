@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "repository": "ShantiDraconis/m-core-yang-mills",
+  "root_certified_sha": "9aecfca6a10024585b4dbf20f849e1e75265a9e6",
+  "historical_horizon": "K0-K30",
+  "operational_nodes": [
+    {"id":"CONSTRUCTION","type":"OPEN_BRIDGE","maps_to":"K22ConstructionBlock"},
+    {"id":"INFRARED","type":"OPEN_BRIDGE","maps_to":"K22InfraredBlock"},
+    {"id":"LIMITS","type":"OPEN_BRIDGE","maps_to":"K22LimitBlock"},
+    {"id":"SPECTRAL","type":"OPEN_BRIDGE","maps_to":"K29SpectralGapRealization"},
+    {"id":"MASS_GAP","type":"CONDITIONAL_ENDPOINT","maps_to":"K14MassGap"}
+  ],
+  "edges": [
+    {"from":["CONSTRUCTION","INFRARED","LIMITS"],"to":"K20_FRONTIER_CLOSED","theorem":"MCore.final_frontier_blocks_close_k20","classification":"PROVABLE"},
+    {"from":["SPECTRAL"],"to":"MASS_GAP","theorem":"MCore.final_spectral_realization_implies_mass_gap","classification":"PROVABLE"}
+  ],
+  "compression_rule": "Remove any operational node that is only a mechanically derivable wrapper; retain it in historical provenance."
+}
