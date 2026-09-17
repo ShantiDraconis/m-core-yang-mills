@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k28:
+  k29:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,37 +12,38 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K27 limit boundary
-        run: lake build MCore.K26 MCore.K27
-      - name: G2 explicit K28 build
-        run: lake build MCore.K28
-      - name: G3 K28 semantic axiom closure
+      - name: G1 preserve exact K28 boundary
+        run: lake build MCore.K27 MCore.K28
+      - name: G2 explicit K29 build
+        run: lake build MCore.K29
+      - name: G3 K29 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K28Axioms.lean <<'EOF'
-          import MCore.K28
-          #print axioms MCore.k28_blocks_recover_frontier
-          #print axioms MCore.k28_conditional_mass_gap
-          #print axioms MCore.k28_target_still_open
-          #print axioms MCore.k28_no_promotion
+          cat >/tmp/K29Axioms.lean <<'EOF'
+          import MCore.K29
+          #print axioms MCore.k29_realization_is_mass_gap
+          #print axioms MCore.k29_transfer_builds_k20_bridge
+          #print axioms MCore.k29_blocks_and_transfer_yield_mass_gap
+          #print axioms MCore.k29_target_still_open
+          #print axioms MCore.k29_no_promotion
           EOF
-          lake env lean /tmp/K28Axioms.lean | tee /tmp/k28.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k28.log || true)" -eq 4
-      - name: G4 assembled-frontier endpoint firewall
+          lake env lean /tmp/K29Axioms.lean | tee /tmp/k29.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k29.log || true)" -eq 5
+      - name: G4 spectral-realization firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K28Negative.lean <<'EOF'
-          import MCore.K28
+          cat >/tmp/K29Negative.lean <<'EOF'
+          import MCore.K29
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k28_no_promotion
-          example : k6_dependency.target.status = .openBridge := k28_target_still_open
-          -- Frontier closure only yields a mass-gap witness when the parameterized
-          -- K20FrontierToMassGapBridge and physical Hilbert data are supplied.
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k29_no_promotion
+          example : k6_dependency.target.status = .openBridge := k29_target_still_open
+          -- K20FrontierClosed alone cannot construct K29SpectralGapRealization.
+          -- Positivity and exclusion of low spectrum remain explicit witness fields.
           EOF
-          lake env lean /tmp/K28Negative.lean
-          if grep -R -n -E '^theorem .*K28FrontierBlocks.*k6_dependency\.target\.proposition' lean/MCore/K28.lean; then exit 1; fi
+          lake env lean /tmp/K29Negative.lean
+          if grep -R -n -E '^theorem .*K20FrontierClosed.*K29SpectralGapRealization' lean/MCore/K29.lean; then exit 1; fi
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -50,6 +51,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K27
           lake build MCore.K28
+          lake build MCore.K29
           lake build MCore
