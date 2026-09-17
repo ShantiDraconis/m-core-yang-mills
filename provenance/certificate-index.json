@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "repository": "ShantiDraconis/m-core-yang-mills",
+  "certificates": [
+    {
+      "gate": "K30",
+      "sha": "9aecfca6a10024585b4dbf20f849e1e75265a9e6",
+      "frozen_ref": "frozen-K30-green-9aecfca6",
+      "certificate_ref": "cert/K30-9aecfca6-run35201786839",
+      "workflow_run": 35201786839,
+      "workflow_job": 105138018310,
+      "source_created_at": "2026-09-17T08:49:36Z",
+      "classification": "INTERFACE_GREEN / SCIENTIFIC_OPEN_BRIDGE",
+      "notes": "Immutable certified root for FinalCore. Certification records mechanical/interface closure, not a proof of the Yang-Mills Millennium target."
+    }
+  ]
+}
