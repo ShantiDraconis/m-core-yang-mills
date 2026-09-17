@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "policy": "Cross-Repository Certified Import Protocol",
+  "target_repository": "ShantiDraconis/m-core-yang-mills",
+  "target_branch": "final-core-YM",
+  "rules": {
+    "require_full_source_sha": true,
+    "require_frozen_ref": true,
+    "require_certificate": true,
+    "require_source_created_at": true,
+    "require_certified_at": true,
+    "require_source_gate": true,
+    "require_source_theorem": true,
+    "require_source_classification": true,
+    "require_target_gap": true,
+    "require_import_mode": true,
+    "require_hypotheses_match": true,
+    "require_semantic_match": true,
+    "require_dependency_hash": true,
+    "allowed_import_modes": ["EXACT", "ADAPTED", "ANALOGY_ONLY"],
+    "incompatible_status": "CROSS_REPO_INCOMPATIBLE"
+  },
+  "imports": []
+}
