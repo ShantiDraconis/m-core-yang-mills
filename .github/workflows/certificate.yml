@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k24:
+  k25:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,34 +12,36 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K23 construction boundary
-        run: lake build MCore.K21 MCore.K22 MCore.K23
-      - name: G2 explicit K24 build
-        run: lake build MCore.K24
-      - name: G3 K24 semantic axiom closure
+      - name: G1 preserve K24 regulator boundary
+        run: lake build MCore.K23 MCore.K24
+      - name: G2 explicit K25 build
+        run: lake build MCore.K25
+      - name: G3 K25 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K24Axioms.lean <<'EOF'
-          import MCore.K24
-          #print axioms MCore.k24_measure_controls_feed_k23
-          #print axioms MCore.k24_target_still_open
-          #print axioms MCore.k24_no_promotion
+          cat >/tmp/K25Axioms.lean <<'EOF'
+          import MCore.K25
+          #print axioms MCore.k25_uniform_clustering_builds_infrared_block
+          #print axioms MCore.k25_target_still_open
+          #print axioms MCore.k25_no_promotion
           EOF
-          lake env lean /tmp/K24Axioms.lean | tee /tmp/k24.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k24.log || true)" -eq 3
-      - name: G4 regulator-uniformity firewall
+          lake env lean /tmp/K25Axioms.lean | tee /tmp/k25.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k25.log || true)" -eq 3
+      - name: G4 pointwise-to-uniform firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K24Negative.lean <<'EOF'
-          import MCore.K24
+          cat >/tmp/K25Negative.lean <<'EOF'
+          import MCore.K25
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k24_no_promotion
-          example : k6_dependency.target.status = .openBridge := k24_target_still_open
-          -- A regulated model, cutoff tightness, or volume tightness alone does not construct the target.
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k25_no_promotion
+          example : k6_dependency.target.status = .openBridge := k25_target_still_open
+          -- No conversion K25PointwiseClustering -> K25UniformExponentialClustering is provided.
+          -- Cyclicity and semigroup/spectral transfer remain independent obligations.
           EOF
-          lake env lean /tmp/K24Negative.lean
+          lake env lean /tmp/K25Negative.lean
+          if grep -R -n -E 'K25PointwiseClustering.*→.*K25UniformExponentialClustering|K25PointwiseClustering.*->.*K25UniformExponentialClustering' lean/MCore/K25.lean; then exit 1; fi
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -47,6 +49,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K23
           lake build MCore.K24
+          lake build MCore.K25
           lake build MCore
