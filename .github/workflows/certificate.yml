@@ -1,7 +1,7 @@
 name: certificate
 on: [push, pull_request]
 jobs:
-  k23:
+  k24:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,41 +12,34 @@ jobs:
           set -euo pipefail
           if grep -R -n -E '\b(sorry|admit)\b' lean MCore --include='*.lean'; then exit 1; fi
           if grep -R -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean MCore --include='*.lean'; then exit 1; fi
-      - name: G1 preserve K22 scientific partition
+      - name: G1 preserve K23 construction boundary
+        run: lake build MCore.K21 MCore.K22 MCore.K23
+      - name: G2 explicit K24 build
+        run: lake build MCore.K24
+      - name: G3 K24 semantic axiom closure
         shell: bash
         run: |
           set -euo pipefail
-          lake build MCore.K20 MCore.K21 MCore.K22
-          lake build MCore.Frontier.K3Gaps MCore.AttackDAG.K3AlgebraAttacks
-      - name: G2 explicit K23 build
-        run: lake build MCore.K23
-      - name: G3 K23 semantic axiom closure
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat >/tmp/K23Axioms.lean <<'EOF'
-          import MCore.K23
-          #print axioms MCore.k23_inputs_build_construction_block
-          #print axioms MCore.k23_target_still_open
-          #print axioms MCore.k23_no_promotion
+          cat >/tmp/K24Axioms.lean <<'EOF'
+          import MCore.K24
+          #print axioms MCore.k24_measure_controls_feed_k23
+          #print axioms MCore.k24_target_still_open
+          #print axioms MCore.k24_no_promotion
           EOF
-          lake env lean /tmp/K23Axioms.lean | tee /tmp/k23.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k23.log || true)" -eq 3
-      - name: G4 construction firewall
+          lake env lean /tmp/K24Axioms.lean | tee /tmp/k24.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/k24.log || true)" -eq 3
+      - name: G4 regulator-uniformity firewall
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/K23Negative.lean <<'EOF'
-          import MCore.K23
+          cat >/tmp/K24Negative.lean <<'EOF'
+          import MCore.K24
           open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k23_no_promotion
-          example : k6_dependency.target.status = .openBridge := k23_target_still_open
-          example {F : K20ScientificFrontier} (C : K23ConstructiveYM4Data F)
-              (h : K23ConstructionInputsHold C) : K22ConstructionBlock F :=
-            k23_inputs_build_construction_block C h
-          -- No K23ConstructionInputsHold witness for actual YM4 is constructed here.
+          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k24_no_promotion
+          example : k6_dependency.target.status = .openBridge := k24_target_still_open
+          -- A regulated model, cutoff tightness, or volume tightness alone does not construct the target.
           EOF
-          lake env lean /tmp/K23Negative.lean
+          lake env lean /tmp/K24Negative.lean
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
@@ -54,6 +47,6 @@ jobs:
         run: |
           set -euo pipefail
           lake clean
-          lake build MCore.K22
           lake build MCore.K23
+          lake build MCore.K24
           lake build MCore
