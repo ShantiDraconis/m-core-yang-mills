@@ -33,7 +33,8 @@ structure K30PointwiseClusteringV2 (S : K30ClusteringSystemV2) where
       (S.connectedCorrelation a V A B x y)
       (prefactorAt a V) (massScaleAt a V) (S.separation x y)
 
-theorem k30_uniform_clustering_implies_pointwise
+/-- Constructor, not a theorem: the codomain is clustering witness data in Type. -/
+def k30_uniform_clustering_implies_pointwise
     {S : K30ClusteringSystemV2}
     (U : K30UniformExponentialClusteringV2 S) :
     K30PointwiseClusteringV2 S := {
