@@ -24,12 +24,13 @@ jobs:
           import MCore.K30
           #print axioms MCore.k30_obligations_build_realization
           #print axioms MCore.k30_witness_builds_transfer
+          #print axioms MCore.k30_witness_closes_conditional_chain
           #print axioms MCore.k30_target_still_open
           #print axioms MCore.k30_no_promotion
           EOF
           lake env lean /tmp/K30Axioms.lean | tee /tmp/k30.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/k30.log || true)" -eq 4
-      - name: G4 obligation firewall
+          test "$(grep -c 'does not depend on any axioms' /tmp/k30.log || true)" -eq 5
+      - name: G4 obligation and endpoint firewall
         shell: bash
         run: |
           set -euo pipefail
@@ -38,10 +39,11 @@ jobs:
           open MCore
           example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k30_no_promotion
           example : k6_dependency.target.status = .openBridge := k30_target_still_open
-          -- No theorem is allowed to erase the explicit K30 witness obligations.
           EOF
           lake env lean /tmp/K30Negative.lean
           if grep -R -n -E '^theorem .*K20FrontierClosed.*K29SpectralGapRealization' lean/MCore/K30.lean; then exit 1; fi
+          grep -q 'K30SpectralTransferWitness' lean/MCore/K30.lean
+          grep -q 'k30_witness_closes_conditional_chain' lean/MCore/K30.lean
       - name: G5 umbrella build
         run: lake build MCore
       - name: G6 clean reproduction
