@@ -15,26 +15,19 @@ theorem k28_blocks_recover_frontier
   rcases B.construction with ⟨hc, hr, hh⟩
   rcases B.infrared with ⟨hcl, hcyc, hsg⟩
   rcases B.limits with ⟨hug, hcont, htherm, hpres⟩
-  exact {
-    constructiveYM4 := hc
-    reflectionPositiveReconstruction := hr
-    physicalHilbertRealization := hh
-    uniformExponentialClustering := hcl
-    observableCyclicity := hcyc
-    semigroupSpectralTransfer := hsg
-    uniformRegulatedGap := hug
-    continuumLimitControl := hcont
-    thermodynamicLimitControl := htherm
-    gapPreservedUnderLimits := hpres
-  }
+  exact ⟨hc, hr, hh, hcl, hcyc, hsg, hug, hcont, htherm, hpres⟩
 
-/-- The endpoint remains conditional on an explicit bridge from the closed
-scientific frontier to the target proposition. -/
-theorem k28_conditional_endpoint
+/-- The endpoint remains conditional on the physical Hilbert realization and an
+explicit K20 bridge.  K28 does not manufacture either one. -/
+theorem k28_conditional_mass_gap
     {F : K20ScientificFrontier}
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
     (B : K28FrontierBlocks F)
-    (bridge : K20FrontierToMassGapBridge F) : k6_dependency.target.proposition :=
-  bridge.closes (k28_blocks_recover_frontier B)
+    (bridge : K20FrontierToMassGapBridge F D H G) :
+    ∃ gap : D.Scale, K14MassGap D H G gap :=
+  bridge (k28_blocks_recover_frontier B)
 
 theorem k28_target_still_open :
     k6_dependency.target.status = .openBridge := k27_target_still_open
