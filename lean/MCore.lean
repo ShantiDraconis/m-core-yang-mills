@@ -31,6 +31,7 @@ import MCore.K26
 import MCore.K27
 import MCore.K28
 import MCore.K29
+import MCore.K30
 import MCore.Frontier.K3Gaps
 import MCore.AttackDAG.K3AlgebraAttacks
 import MCore.Audit
