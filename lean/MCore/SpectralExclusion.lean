@@ -36,7 +36,7 @@ theorem exponential_growth_escape
       linarith
     have hdiv : Real.log x / a ≤ max 0 (Real.log x / a) := le_max_right _ _
     have hlog_le : Real.log x ≤ a * max 0 (Real.log x / a) := by
-      exact (div_le_iff₀ ha).mp hdiv
+      simpa [mul_comm] using (div_le_iff₀ ha).mp hdiv
     have hlog_lt : Real.log x < a * t := by
       dsimp [t]
       nlinarith
@@ -60,12 +60,16 @@ theorem pointwise_pos_not_uniform :
   · rintro ⟨c, hc, hc_le⟩
     obtain ⟨n, hn⟩ := exists_nat_gt (1 / c)
     have hnpos : (0 : ℝ) < n + 1 := by positivity
-    have hprod : 1 < (n + 1 : ℝ) * c := by
-      have := (div_lt_iff₀ hc).mp hn
-      simpa [mul_comm] using this
+    have hn_base : 1 < (n : ℝ) * c := by
+      have h := (div_lt_iff₀ hc).mp hn
+      simpa [mul_comm] using h
+    have hn_step : (n : ℝ) * c < (n + 1 : ℝ) * c := by
+      have hnlt : (n : ℝ) < n + 1 := by norm_num
+      exact mul_lt_mul_of_pos_right hnlt hc
+    have hprod : 1 < (n + 1 : ℝ) * c := lt_trans hn_base hn_step
     have hlt : 1 / (n + 1 : ℝ) < c := by
       rw [div_lt_iff₀ hnpos]
-      exact hprod
+      simpa [mul_comm] using hprod
     exact (not_lt_of_ge (hc_le n)) hlt
 
 theorem positive_mass_below_rate_contradiction
@@ -86,8 +90,8 @@ theorem positive_mass_below_rate_contradiction
   have hnorm : q * Real.exp ((m - r) * t) ≤ C := by
     calc
       q * Real.exp ((m - r) * t)
-          = (Real.exp (-t * r) * q) * Real.exp (m * t) := by
-              rw [mul_assoc, mul_comm q, hid1]
+          = q * (Real.exp (-t * r) * Real.exp (m * t)) := by rw [hid1]
+      _ = (Real.exp (-t * r) * q) * Real.exp (m * t) := by ring
       _ ≤ (C * Real.exp (-m * t)) * Real.exp (m * t) := hmul
       _ = C := by rw [mul_assoc, hid2, mul_one]
   exact (not_lt_of_ge hnorm) hlarge
