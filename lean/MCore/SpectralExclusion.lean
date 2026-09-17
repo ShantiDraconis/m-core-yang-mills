@@ -51,7 +51,7 @@ theorem exponential_growth_escape
     refine ⟨t, ht, ?_⟩
     simpa [a, hqx] using hmul
 
-/-- F3: pointwise positive rates need not admit a positive uniform lower bound. -/
+/-- F3: pointwise positive rates need not have a positive uniform lower bound. -/
 theorem pointwise_pos_not_uniform :
     ∃ m : ℕ → ℝ, (∀ n, 0 < m n) ∧ ¬ ∃ c : ℝ, 0 < c ∧ ∀ n, c ≤ m n := by
   refine ⟨fun n => 1 / (n + 1 : ℝ), ?_, ?_⟩
