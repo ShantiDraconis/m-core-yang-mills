@@ -74,7 +74,8 @@ theorem positive_cutoff_gap_not_physical_uniform :
       exact lt_of_le_of_lt (min_le_right _ _) (half_lt_self hm0)
     have h := hbound a ha ha1
     have hsimp : a ^ 2 / a = a := by
-      field_simp [ne_of_gt ha]
+      rw [pow_two]
+      exact mul_div_cancel_left₀ a (ne_of_gt ha)
     rw [hsimp] at h
     exact (not_lt_of_ge h) ham
 
