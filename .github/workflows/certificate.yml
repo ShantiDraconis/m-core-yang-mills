@@ -1,10 +1,14 @@
 name: certificate
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   final-core:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: leanprover/lean-action@v1
         with:
           build: false
@@ -83,6 +87,16 @@ jobs:
           lake env lean /tmp/CoreChecks.lean
           grep -q 'def SpectralAnalyticOpenBridge' lean/MCore/SpectralCore.lean
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
+      - name: G7 umbrella and clean reproduction
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build MCore
+          lake clean
+          lake build MCore.SpectralCore
+          lake build MCore
+          echo "A1_MECHANICAL_REPRODUCTION=PASS"
+
       - name: G6b axiom-gate negative controls
         shell: bash
         env:
@@ -140,11 +154,3 @@ jobs:
             /tmp/g6b-footprint.txt
           if-no-files-found: warn
 
-      - name: G7 umbrella and clean reproduction
-        shell: bash
-        run: |
-          set -euo pipefail
-          lake build MCore
-          lake clean
-          lake build MCore.SpectralCore
-          lake build MCore
