@@ -24,7 +24,7 @@ structure RegulatedYM4Construction where
   Signature : ModelSignature
   StateSpace : Signature.Regulator → Signature.Volume → Type
   measurableState : ∀ a L, MeasurableSpace (StateSpace a L)
-  regulatedMeasure : ∀ a L, @Measure (StateSpace a L) (measurableState a L)
+  regulatedMeasure : ∀ a L, Measure (StateSpace a L) (measurableState a L)
   admissible : Signature.Regulator → Signature.Volume → Prop
   GaugeAction :
     ∀ a L, Signature.GaugeGroup → StateSpace a L → StateSpace a L
