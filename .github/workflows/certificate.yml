@@ -85,6 +85,9 @@ jobs:
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
       - name: G6b physical scaling adversarial audit
         shell: bash
+        env:
+          AXIOM_GATE_PATTERN: 'depends on axioms: \\[.*\\]'
+          G6B_ALLOWED_AXIOMS: ''
         run: |
           set -euo pipefail
           lake build MCore.PhysicalGapScaling
@@ -95,7 +98,7 @@ jobs:
           #print axioms MCore.positive_cutoff_gap_not_physical_uniform
           EOF
           lake env lean /tmp/PhysicalGapChecks.lean | tee /tmp/physical-gap-axioms.log
-          ! grep -Eq '^axioms:.*(Classical.choice|propext|Quot.sound)' /tmp/physical-gap-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/physical-gap-axioms.log /tmp/g6b-footprint.txt
 
       - name: G7 umbrella and clean reproduction
         shell: bash
