@@ -1,0 +1,118 @@
+name: certify-a1-measure-repair
+
+on:
+  push:
+    branches:
+      - 'fix/a1-regulated-measure-fiber'
+  pull_request:
+    branches:
+      - 'infra/a1-real-lock-c44e0c8'
+
+permissions:
+  contents: read
+
+jobs:
+  certify-repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Repair footprint
+        shell: bash
+        run: |
+          set -euo pipefail
+          PARENT=6137c89afd6c85401838fe29c13f102500f861d9
+          git merge-base --is-ancestor "$PARENT" HEAD
+          if git diff --name-status "$PARENT"..HEAD | grep '^D'; then
+            echo "FAIL: deletion detected"
+            exit 1
+          fi
+          while read -r status path; do
+            test -z "${path:-}" && continue
+            case "$path" in
+              lean/MCore/YangMills/A1/RegulatedConstruction.lean|.github/workflows/certify-a1-measure-repair.yml) ;;
+              *) echo "FAIL: unexpected repair delta $status $path"; exit 1 ;;
+            esac
+          done < <(git diff --name-status "$PARENT"..HEAD)
+          git diff --unified=0 "$PARENT"..HEAD -- lean/MCore/YangMills/A1/RegulatedConstruction.lean | tee /tmp/a1-repair.diff
+          grep -q -- '-  measure : @Measure State measurable' /tmp/a1-repair.diff
+          grep -q -- '+  measure : @MeasureTheory.Measure State measurable' /tmp/a1-repair.diff
+          echo "A1_REPAIR_FOOTPRINT=PASS"
+
+      - name: Real lock unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f lake-manifest.json
+          jq -e '.packages | length == 9' lake-manifest.json >/dev/null
+          jq -e '.packages[] | select(.name=="mathlib") | select(.rev=="c44e0c8ee63ca166450922a373c7409c5d26b00b") | select(.inputRev=="c44e0c8ee63ca166450922a373c7409c5d26b00b")' lake-manifest.json >/dev/null
+          git diff --quiet 6137c89afd6c85401838fe29c13f102500f861d9..HEAD -- lake-manifest.json
+          echo "A1_REAL_LOCK_PRESERVED=PASS"
+
+      - name: Install pinned Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.19.0
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Hydrate committed lock only
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake exe cache get
+
+      - name: Compile repaired A1
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.RegulatedConstruction
+          lake build MCore.YangMills.A1.UniformityFirewalls
+
+      - name: No-placeholder firewall
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx)([^[:alnum:]_]|$)|^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean/MCore/YangMills/A1 --include='*.lean'; then
+            exit 1
+          fi
+
+      - name: Negative controls and axiom footprint
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/A1RepairChecks.lean <<'EOF'
+          import MCore.YangMills.A1.UniformityFirewalls
+          open MCore.YangMills.A1
+          #check pointwise_cutoff_volume_positive_not_uniform
+          #check positive_cutoff_gap_firewall
+          #check finite_volume_gap_firewall
+          #check adapter_requires_all_coordinates
+          #print axioms pointwise_cutoff_volume_positive_not_uniform
+          #print axioms positive_cutoff_gap_firewall
+          #print axioms finite_volume_gap_firewall
+          #print axioms adapter_requires_all_coordinates
+          EOF
+          lake env lean /tmp/A1RepairChecks.lean | tee /tmp/a1-repair-axioms.log
+          ! grep -q 'sorryAx' /tmp/a1-repair-axioms.log
+          echo "A1_NEGATIVE_CONTROLS=PASS"
+
+      - name: Frontier remains open
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'def A1UniformityBridge' lean/MCore/YangMills/A1/RegulatedConstruction.lean
+          grep -q 'Nonempty (UniformRegulatorControl C)' lean/MCore/YangMills/A1/RegulatedConstruction.lean
+          echo "A1_MECHANICAL_GREEN=YES"
+          echo "A1_SCIENTIFIC=OPEN_BRIDGE"
+
+      - name: Clean reproduction
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake clean
+          lake build MCore.YangMills.A1.RegulatedConstruction
+          lake build MCore.YangMills.A1.UniformityFirewalls
+          echo "A1_CLEAN_REPRODUCTION=PASS"
