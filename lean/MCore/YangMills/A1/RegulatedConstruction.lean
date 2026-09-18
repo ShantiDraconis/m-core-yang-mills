@@ -20,17 +20,20 @@ structure ModelSignature where
   Action : Type
   Observable : Type
 
+structure RegulatedMeasureFiber where
+  State : Type
+  measurable : MeasurableSpace State
+  measure : @Measure State measurable
+
 structure RegulatedYM4Construction where
   Signature : ModelSignature
-  StateSpace : Signature.Regulator → Signature.Volume → Type
-  measurableState : ∀ a L, MeasurableSpace (StateSpace a L)
-  regulatedMeasure : ∀ a L, Measure (StateSpace a L) (measurableState a L)
+  fiber : Signature.Regulator → Signature.Volume → RegulatedMeasureFiber
   admissible : Signature.Regulator → Signature.Volume → Prop
   GaugeAction :
-    ∀ a L, Signature.GaugeGroup → StateSpace a L → StateSpace a L
+    ∀ a L, Signature.GaugeGroup → (fiber a L).State → (fiber a L).State
   ObservableValue : Type
   observable :
-    ∀ a L, Signature.Observable → StateSpace a L → ObservableValue
+    ∀ a L, Signature.Observable → (fiber a L).State → ObservableValue
   gaugeInvariantMeasure : Prop
   gaugeInvariantObservables : Prop
   reflectionPositive : Prop
@@ -97,7 +100,7 @@ theorem adapter_requires_all_coordinates
     T.observableCompatible := h
 
 def PointwiseToUniformBridge (C : RegulatedYM4Construction) : Prop :=
-  (∀ a L, C.admissible a L → Nonempty (C.StateSpace a L)) →
+  (∀ a L, C.admissible a L → Nonempty (C.fiber a L).State) →
   A1UniformityBridge C
 
 structure A1Certificate where
