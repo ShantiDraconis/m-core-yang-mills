@@ -1,0 +1,77 @@
+name: audit-8x5-ym
+
+on:
+  push:
+    branches: [audit/multistate-proof-refutation-v1]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  classify-8x5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: leanprover/lean-action@v1
+        with: {build: false, test: false, lint: false}
+
+      - name: L1 HEAD_EXATO
+        run: |
+          set -euo pipefail
+          test ${#GITHUB_SHA} -eq 40
+          git cat-file -e 60c42799076112d273117ff1d75b271db1ccf8d6^{commit}
+
+      - name: L2 FROZEN_S1
+        run: |
+          set -euo pipefail
+          git show 60c42799076112d273117ff1d75b271db1ccf8d6:MCore/YM/K0.lean > /tmp/S1.lean
+          grep -q 'openBridge_not_certified' /tmp/S1.lean
+
+      - name: L3 ENDPOINT fail-closed classification
+        run: |
+          set -euo pipefail
+          grep -q 'YM-SIGNATURE-ADAPTER' FRONTIER.yaml
+          grep -q 'scientific_endpoint_proved: false' CHAIN.yaml
+          grep -q '"L3_ENDPOINT_DEFINITION": "BLOCKING_ENDPOINT_UNTYPED"' audit/8x5/YM_8x5_STATE.json
+          echo 'L3=BLOCKING_ENDPOINT_UNTYPED'
+
+      - name: L4 COMPRESSION blocked by L3
+        run: |
+          grep -q '"L4_COMPRESSION": "BLOCKED_BY_L3"' audit/8x5/YM_8x5_STATE.json
+
+      - name: L5 five-axis hold
+        run: |
+          set -euo pipefail
+          lake build MCore.Audit8x5
+          for axis in HC Q S K A; do
+            grep -q '"'$axis'": "PENDING"' audit/8x5/YM_8x5_STATE.json
+          done
+
+      - name: L6 residue classifier
+        run: |
+          grep -q '"id": "YM_FINAL_PROPOSITION_NOT_TYPED"' audit/8x5/YM_8x5_STATE.json
+
+      - name: L7 BUILD
+        run: |
+          set -euo pipefail
+          lake clean
+          lake build MCore.Audit8x5
+          lake build MCore
+
+      - name: L8 NO-PLACEBO
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean MCore 2>/dev/null; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean MCore 2>/dev/null; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          printf 'import MCore.Audit8x5\n#print axioms MCore.Audit8x5.no_placebo_generic\n' > Axiom8x5.lean
+          lake env lean Axiom8x5.lean 2>&1 | tee Axiom8x5.log
+          if grep -E 'sorryAx' Axiom8x5.log; then exit 1; fi
+
+      - name: No emission
+        run: |
+          grep -q '"emit_closed_closed_closed": false' audit/8x5/YM_8x5_STATE.json
+          echo 'AUDIT_MECHANICAL=GREEN_IF_JOB_SUCCESS'
+          echo 'L3=BLOCKING'
+          echo 'FECHADO_FECHADO_FECHADO=NO'

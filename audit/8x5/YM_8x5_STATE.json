@@ -1,0 +1,36 @@
+{
+  "schema": "8x5-certification-v1",
+  "problem": "Yang-Mills",
+  "write_branch": "audit/multistate-proof-refutation-v1",
+  "source_head_exact": "60c42799076112d273117ff1d75b271db1ccf8d6",
+  "frozen_s1": {
+    "repo": "ShantiDraconis/m-core-yang-mills",
+    "sha": "60c42799076112d273117ff1d75b271db1ccf8d6",
+    "path": "MCore/YM/K0.lean",
+    "theorem": "openBridge_not_certified"
+  },
+  "locks": {
+    "L1_HEAD_EXATO": "REVIEWED",
+    "L2_FROZEN_S1": "REVIEWED",
+    "L3_ENDPOINT_DEFINITION": "BLOCKING_ENDPOINT_UNTYPED",
+    "L4_COMPRESSION": "BLOCKED_BY_L3",
+    "L5_6D_AUDIT": "PENDING_TYPED_ENDPOINT",
+    "L6_RESIDUE_CLASSIFIER": "REVIEWED",
+    "L7_BUILD": "PENDING",
+    "L8_NO_PLACEBO": "PENDING"
+  },
+  "sigma": {
+    "HC": "PENDING",
+    "Q": "PENDING",
+    "S": "PENDING",
+    "K": "PENDING",
+    "A": "PENDING"
+  },
+  "residue": {
+    "state": "BLOCKING",
+    "position": "L3_ENDPOINT_DEFINITION",
+    "nature": "HC",
+    "id": "YM_FINAL_PROPOSITION_NOT_TYPED"
+  },
+  "emit_closed_closed_closed": false
+}
