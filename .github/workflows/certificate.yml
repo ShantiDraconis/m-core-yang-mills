@@ -83,11 +83,41 @@ jobs:
           lake env lean /tmp/CoreChecks.lean
           grep -q 'def SpectralAnalyticOpenBridge' lean/MCore/SpectralCore.lean
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
+      - name: G6b axiom-gate negative controls
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: ''
+        run: |
+          set -euo pipefail
+          test_gate() {
+            local input="$1"
+            local expected="$2"
+            printf '%s\n' "$input" >/tmp/axiom-test.log
+            set +e
+            EXPECTED_THEOREM_COUNT=1 bash scripts/axiom-gate-G6b.sh /tmp/axiom-test.log /tmp/footprint.txt
+            local code=$?
+            set -e
+            if [ "$expected" = "RED" ] && [ "$code" -eq 0 ]; then
+              echo "NEGATIVE_CONTROL_FAIL expected RED: $input"
+              exit 1
+            fi
+            if [ "$expected" = "GREEN" ] && [ "$code" -ne 0 ]; then
+              echo "NEGATIVE_CONTROL_FAIL expected GREEN: $input"
+              exit 1
+            fi
+          }
+          test_gate "'foo' depends on axioms: [Classical.choice]" RED
+          test_gate "'foo' depends on axioms: [propext, Quot.sound]" RED
+          test_gate "'foo' depends on axioms: [propext, Classical.choice, Quot.sound]" RED
+          test_gate "'foo' does not depend on any axioms" GREEN
+          test_gate "'foo' depends on axioms: [sorryAx]" RED
+          echo "G6B_NEGATIVE_CONTROLS=PASS"
+
       - name: G6b physical scaling adversarial audit
         shell: bash
         env:
-          AXIOM_GATE_PATTERN: 'depends on axioms: \\[.*\\]'
           G6B_ALLOWED_AXIOMS: ''
+          EXPECTED_THEOREM_COUNT: '3'
         run: |
           set -euo pipefail
           lake build MCore.PhysicalGapScaling
@@ -97,8 +127,18 @@ jobs:
           #print axioms MCore.finite_volume_gap_not_uniform
           #print axioms MCore.positive_cutoff_gap_not_physical_uniform
           EOF
-          lake env lean /tmp/PhysicalGapChecks.lean | tee /tmp/physical-gap-axioms.log
+          lake env lean /tmp/PhysicalGapChecks.lean 2>&1 | tee /tmp/physical-gap-axioms.log
           bash scripts/axiom-gate-G6b.sh /tmp/physical-gap-axioms.log /tmp/g6b-footprint.txt
+
+      - name: Upload G6b axiom evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g6b-axiom-evidence-${{ github.run_id }}
+          path: |
+            /tmp/physical-gap-axioms.log
+            /tmp/g6b-footprint.txt
+          if-no-files-found: warn
 
       - name: G7 umbrella and clean reproduction
         shell: bash
