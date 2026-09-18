@@ -6,7 +6,7 @@ on:
       - 'infra/a1-real-lock-c44e0c8'
   pull_request:
     branches:
-      - 'audit/a1-concrete-regulated-ym4'
+      - 'audit-base/a1-8c148cd8'
 
 permissions:
   contents: read
