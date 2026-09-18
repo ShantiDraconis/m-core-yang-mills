@@ -10,15 +10,21 @@ jobs:
           build: false
           test: false
           lint: false
-      - name: G0 resolve pinned Mathlib
+      - name: G0 pinned manifest check
         shell: bash
         run: |
           set -euo pipefail
-          # Exact certification must consume the committed dependency lock.
-          # Do not run `lake update` (which may rewrite the manifest), and do
-          # not assume Mathlib's optional cache executable exists.
-          test -f lake-manifest.json
-          grep -q 'c44e0c8ee63ca166450922a373c7409c5d26b00b' lake-manifest.json
+          set -x
+          ls -la
+          test -f lake-manifest.json || { echo "FAIL: lake-manifest.json missing"; ls -la .lake/ 2>&1 || true; exit 1; }
+          echo "== lake-manifest.json found =="
+          cat lake-manifest.json
+          echo "== pinned revs in manifest =="
+          grep -o '"rev": "[^"]*"' lake-manifest.json || true
+          grep -q 'c44e0c8ee63ca166450922a373c7409c5d26b00b' lake-manifest.json || {
+            echo "FAIL: expected rev c44e0c8ee63ca166450922a373c7409c5d26b00b not found"
+            exit 1
+          }
           lake env lean --version
       - name: G1 compile compatible spectral infrastructure
         shell: bash
