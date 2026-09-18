@@ -75,3 +75,5 @@ jobs:
           echo 'AUDIT_MECHANICAL=GREEN_IF_JOB_SUCCESS'
           echo 'L3=BLOCKING'
           echo 'FECHADO_FECHADO_FECHADO=NO'
+
+# audit rerun trigger: 2026-09-18 batch
