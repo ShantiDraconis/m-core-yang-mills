@@ -74,6 +74,20 @@ jobs:
           lake env lean /tmp/CoreChecks.lean
           grep -q 'def SpectralAnalyticOpenBridge' lean/MCore/SpectralCore.lean
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
+      - name: G6b physical scaling adversarial audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build MCore.PhysicalGapScaling
+          cat >/tmp/PhysicalGapChecks.lean <<'EOF'
+          import MCore.PhysicalGapScaling
+          #print axioms MCore.physical_mass_bound_iterates
+          #print axioms MCore.finite_volume_gap_not_uniform
+          #print axioms MCore.positive_cutoff_gap_not_physical_uniform
+          EOF
+          lake env lean /tmp/PhysicalGapChecks.lean | tee /tmp/physical-gap-axioms.log
+          test "$(grep -c 'does not depend on any axioms' /tmp/physical-gap-axioms.log || true)" -eq 3
+
       - name: G7 umbrella and clean reproduction
         shell: bash
         run: |
