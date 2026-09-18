@@ -9,7 +9,7 @@ on:
       - 'audit/a1-concrete-regulated-ym4'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   generate-lock:
@@ -57,3 +57,18 @@ jobs:
           fi
           jq -e '.packages | length > 0' lake-manifest.json >/dev/null
           echo "GENERATED_LOCK=REAL_NONEMPTY"
+
+      - name: Commit Lake-generated lock
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lake-manifest.json
+          if git diff --cached --quiet; then
+            echo "LOCK_ALREADY_CURRENT=true"
+          else
+            git commit -m "infra: commit Lake-generated dependency lock"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
