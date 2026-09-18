@@ -1,0 +1,182 @@
+name: gen-lock-c44e0c8
+
+on:
+  push:
+    branches:
+      - 'infra/a1-real-lock-c44e0c8'
+  pull_request:
+    branches:
+      - 'audit/a1-concrete-regulated-ym4'
+
+permissions:
+  contents: write
+
+jobs:
+  generate-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pinned Lean toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.19.0
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Generate real Lake lock
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "LEAN_TOOLCHAIN=$(cat lean-toolchain)"
+          echo "LAKEFILE_TOML_BEGIN"
+          cat lakefile.toml
+          echo "LAKEFILE_TOML_END"
+          if test -f lake-manifest.json; then
+            cp lake-manifest.json /tmp/committed-lake-manifest.json
+          fi
+          rm -f lake-manifest.json
+          lake update mathlib
+          test -f lake-manifest.json
+          if test -f /tmp/committed-lake-manifest.json; then
+            cmp -s /tmp/committed-lake-manifest.json lake-manifest.json || {
+              echo "FAIL: regenerated lock differs from committed lock"
+              diff -u /tmp/committed-lake-manifest.json lake-manifest.json || true
+              exit 1
+            }
+            echo "REGENERATED_LOCK_MATCHES_COMMITTED=true"
+          fi
+          echo "LOCK_PACKAGES"
+          jq -c '.packages[] | {name, rev, inputRev}' lake-manifest.json
+          jq -e '.packages[] | select(.name=="mathlib") | select(.rev=="c44e0c8ee63ca166450922a373c7409c5d26b00b") | select(.inputRev=="c44e0c8ee63ca166450922a373c7409c5d26b00b")' lake-manifest.json >/dev/null
+          echo "LOCK_JSON_BASE64_BEGIN"
+          base64 -w0 lake-manifest.json
+          echo
+          echo "LOCK_JSON_BASE64_END"
+          sha256sum lake-manifest.json
+
+      - name: Prove stale parent lock differs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git show 8c148cd898676434e93bff5a6b25a4ae97dae73c:lake-manifest.json > /tmp/parent-manifest.json
+          if cmp -s /tmp/parent-manifest.json lake-manifest.json; then
+            echo "FAIL: generated manifest unexpectedly equals stale parent"
+            exit 1
+          fi
+          jq -e '.packages | length > 0' lake-manifest.json >/dev/null
+          echo "GENERATED_LOCK=REAL_NONEMPTY"
+
+      - name: Commit Lake-generated lock
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lake-manifest.json
+          if git diff --cached --quiet; then
+            echo "LOCK_ALREADY_CURRENT=true"
+          else
+            git commit -m "infra: commit Lake-generated dependency lock"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+  a1-mechanical:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: G0 committed real lock
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=8c148cd898676434e93bff5a6b25a4ae97dae73c
+          git merge-base --is-ancestor "$BASE" HEAD
+          test -f lake-manifest.json
+          test "$(cat lean-toolchain)" = "leanprover/lean4:v4.19.0"
+          jq -e '.packages | length == 9' lake-manifest.json >/dev/null
+          jq -e '.packages[] | select(.name=="mathlib") | select(.rev=="c44e0c8ee63ca166450922a373c7409c5d26b00b") | select(.inputRev=="c44e0c8ee63ca166450922a373c7409c5d26b00b")' lake-manifest.json >/dev/null
+          echo "G0_REAL_LOCK=PASS"
+
+      - name: Frozen scientific footprint
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=8c148cd898676434e93bff5a6b25a4ae97dae73c
+          git diff --quiet "$BASE"..HEAD -- lean MCore lakefile.toml lean-toolchain
+          if git diff --name-status "$BASE"..HEAD | grep '^D'; then exit 1; fi
+          echo "A1_FROZEN_SCIENTIFIC_FOOTPRINT=PASS"
+
+      - name: Install pinned Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.19.0
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Hydrate committed lock only
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake exe cache get
+          echo "A1_CERT_LAKE_UPDATE=DISABLED"
+
+      - name: Build A1 regulated core
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.RegulatedConstruction
+          lake build MCore.YangMills.A1.UniformityFirewalls
+
+      - name: A1 source no-placebo
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx)([^[:alnum:]_]|$)|^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean/MCore/YangMills/A1 --include='*.lean'; then
+            exit 1
+          fi
+          echo "A1_NO_PLACEBO=PASS"
+
+      - name: Negative controls and footprint
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/A1Checks.lean <<'EOF'
+          import MCore.YangMills.A1.UniformityFirewalls
+          open MCore.YangMills.A1
+          #check pointwise_cutoff_volume_positive_not_uniform
+          #check positive_cutoff_gap_firewall
+          #check finite_volume_gap_firewall
+          #check adapter_requires_all_coordinates
+          #print axioms pointwise_cutoff_volume_positive_not_uniform
+          #print axioms positive_cutoff_gap_firewall
+          #print axioms finite_volume_gap_firewall
+          #print axioms adapter_requires_all_coordinates
+          EOF
+          lake env lean /tmp/A1Checks.lean | tee /tmp/a1-axioms.log
+          ! grep -q 'sorryAx' /tmp/a1-axioms.log
+          echo "A1_NEGATIVE_CONTROLS=PASS"
+
+      - name: Preserve scientific frontier
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'def A1UniformityBridge' lean/MCore/YangMills/A1/RegulatedConstruction.lean
+          grep -q 'Nonempty (UniformRegulatorControl C)' lean/MCore/YangMills/A1/RegulatedConstruction.lean
+          grep -q 'def PointwiseToUniformBridge' lean/MCore/YangMills/A1/RegulatedConstruction.lean
+          echo "A1_MECHANICAL_GREEN=YES"
+          echo "A1_SCIENTIFIC=OPEN_BRIDGE"
+
+      - name: Clean reproduction
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake clean
+          lake build MCore.YangMills.A1.RegulatedConstruction
+          lake build MCore.YangMills.A1.UniformityFirewalls
+          echo "A1_CLEAN_REPRODUCTION=PASS"
