@@ -19,7 +19,6 @@ jobs:
         run: |
           set -euo pipefail
           lake update
-          lake exe cache get
       - name: G0 fail-closed hygiene across all source roots
         run: |
           set -euo pipefail
