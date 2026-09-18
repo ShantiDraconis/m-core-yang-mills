@@ -3,16 +3,14 @@ import MCore.K24
 
 namespace MCore.YangMills.A1
 
-/-- Epistemic classification for imported mathematical results.
-No adapted result is promoted to continuum YM4 closure. -/
+open Filter Topology
+
 inductive ImportStatus
   | adapted
   | analogyOnly
   | openBridge
 deriving DecidableEq, Repr
 
-/-- Quantifier firewall: all coordinates that must agree before results from
-different regulated constructions may be composed. -/
 structure ModelSignature where
   Dimension : Type
   GaugeGroup : Type
@@ -22,15 +20,11 @@ structure ModelSignature where
   Action : Type
   Observable : Type
 
-/-- A concrete regulated model. Unlike K24's MeasureModel : Type, this carries
-an actual Mathlib measure for every regulator/volume pair. -/
 structure RegulatedYM4Construction where
   Signature : ModelSignature
   StateSpace : Signature.Regulator → Signature.Volume → Type
-  measurableState :
-    ∀ a L, MeasurableSpace (StateSpace a L)
-  regulatedMeasure :
-    ∀ a L, @Measure (StateSpace a L) (measurableState a L)
+  measurableState : ∀ a L, MeasurableSpace (StateSpace a L)
+  regulatedMeasure : ∀ a L, @Measure (StateSpace a L) (measurableState a L)
   admissible : Signature.Regulator → Signature.Volume → Prop
   GaugeAction :
     ∀ a L, Signature.GaugeGroup → StateSpace a L → StateSpace a L
@@ -42,18 +36,39 @@ structure RegulatedYM4Construction where
   reflectionPositive : Prop
   positiveTransferOperator : Prop
 
-/-- Uniformity data are deliberately separate from finite-regulator existence. -/
-structure UniformRegulatorControl (C : RegulatedYM4Construction) where
-  regulatorUniform : Prop
-  volumeUniform : Prop
-  compatibleJointFamily : Prop
+/-- A1 uses explicit real coordinates for the limiting directions. The maps
+keep the construction's regulator/volume types distinct from their numerical
+scales. -/
+structure A1LimitCoordinates (C : RegulatedYM4Construction) where
+  cutoffValue : C.Signature.Regulator → ℝ
+  volumeValue : C.Signature.Volume → ℝ
 
-/-- The sole A1 compatibility frontier. Possessing individually valid regulated
-results does not manufacture this witness. -/
+/-- Hardened A1 uniformity: the scientific content is no longer three opaque
+Props. Both one-variable limits and the joint cutoff/volume limit are explicit.
+The joint limit is the compatibility requirement that prevents stitching
+unrelated theorems from different regulated models. -/
+structure UniformRegulatorControl (C : RegulatedYM4Construction) where
+  coordinates : A1LimitCoordinates C
+  estimate : C.Signature.Regulator → C.Signature.Volume → ℝ
+  nonnegative : ∀ a L, 0 ≤ estimate a L
+  cutoffLimit :
+    ∀ L, Tendsto (fun a => estimate a L)
+      (comap coordinates.cutoffValue (nhdsWithin 0 (Set.Ioi 0))) (nhds 0)
+  volumeLimit :
+    ∀ a, Tendsto (fun L => estimate a L)
+      (comap coordinates.volumeValue atTop) (nhds 0)
+  jointLimit :
+    Tendsto (fun p : C.Signature.Regulator × C.Signature.Volume =>
+      estimate p.1 p.2)
+      ((comap coordinates.cutoffValue (nhdsWithin 0 (Set.Ioi 0))) ×ˢ
+       (comap coordinates.volumeValue atTop))
+      (nhds 0)
+
+/-- Possessing pointwise regulated constructions does not manufacture this
+witness. -/
 def A1UniformityBridge (C : RegulatedYM4Construction) : Prop :=
   Nonempty (UniformRegulatorControl C)
 
-/-- A result can be reused only through an explicit signature comparison. -/
 structure SignatureAdapter (A B : ModelSignature) where
   dimensionCompatible : Prop
   gaugeGroupCompatible : Prop
@@ -73,7 +88,6 @@ def SignatureAdapter.Valid {A B : ModelSignature}
   T.actionCompatible ∧
   T.observableCompatible
 
-/-- Firewall theorem: an adapter structure alone proves no compatibility. -/
 theorem adapter_requires_all_coordinates
     {A B : ModelSignature} (T : SignatureAdapter A B)
     (h : T.Valid) :
@@ -82,21 +96,14 @@ theorem adapter_requires_all_coordinates
     T.couplingCompatible ∧ T.actionCompatible ∧
     T.observableCompatible := h
 
-/-- Pointwise existence never yields joint regulator/volume uniformity by
-logical packaging alone. This is an interface, not an implication theorem. -/
 def PointwiseToUniformBridge (C : RegulatedYM4Construction) : Prop :=
-  (∀ a L, C.admissible a L →
-    Nonempty (C.StateSpace a L)) →
+  (∀ a L, C.admissible a L → Nonempty (C.StateSpace a L)) →
   A1UniformityBridge C
 
-/-- Concrete A1 output. It requires both a regulated construction and the
-uniformity witness; neither is manufactured here. -/
 structure A1Certificate where
   construction : RegulatedYM4Construction
   uniformity : UniformRegulatorControl construction
 
-/-- Bridge to legacy K24 is intentionally one-way and requires explicit proofs
-of every legacy proposition. -/
 structure LegacyK24Adapter
     (C : RegulatedYM4Construction)
     (R : K24RegulatorFamily)
@@ -109,8 +116,6 @@ structure LegacyK24Adapter
   cutoffTight : P.cutoffTightness
   volumeTight : P.volumeTightness
 
-/-- Counterexample schema: finite/pointwise witnesses cannot be silently
-promoted to A1 uniformity. The missing implication remains named explicitly. -/
 def UniformityPromotionWouldRequire
     (C : RegulatedYM4Construction) : Prop :=
   PointwiseToUniformBridge C
