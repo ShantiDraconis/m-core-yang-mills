@@ -14,9 +14,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          lake update
-          lake exe cache get
+          # Exact certification must consume the committed dependency lock.
+          # Do not run `lake update` (which may rewrite the manifest), and do
+          # not assume Mathlib's optional cache executable exists.
+          test -f lake-manifest.json
           grep -q 'c44e0c8ee63ca166450922a373c7409c5d26b00b' lake-manifest.json
+          lake env lean --version
       - name: G1 compile compatible spectral infrastructure
         shell: bash
         run: |
