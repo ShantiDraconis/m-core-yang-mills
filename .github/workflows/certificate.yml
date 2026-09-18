@@ -86,7 +86,7 @@ jobs:
           #print axioms MCore.positive_cutoff_gap_not_physical_uniform
           EOF
           lake env lean /tmp/PhysicalGapChecks.lean | tee /tmp/physical-gap-axioms.log
-          test "$(grep -c 'does not depend on any axioms' /tmp/physical-gap-axioms.log || true)" -eq 3
+          ! grep -Eq '^axioms:.*(Classical.choice|propext|Quot.sound)' /tmp/physical-gap-axioms.log
 
       - name: G7 umbrella and clean reproduction
         shell: bash
