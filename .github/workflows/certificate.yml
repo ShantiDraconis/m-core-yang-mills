@@ -47,5 +47,14 @@ jobs:
         run: |
           printf 'import MCore.K6\nopen MCore\nexample : ¬ Nonempty (ProofCertificate k6_dependency.target) := k6_target_not_certified\n' > NegativeK6.lean
           lake env lean NegativeK6.lean
+      - name: Backward endpoint-type firewall
+        run: |
+          set -euo pipefail
+          lake build MCore.BackwardAudit.EndpointTypeResidue
+          test ! -e lean/MCore/BackwardAudit/HypotheticalClosureOracle.lean
+          lake env lean lean/MCore/BackwardAudit/EndpointTypeResidue.lean 2>&1 | tee BackwardEndpoint.log
+          if grep -E 'sorryAx' BackwardEndpoint.log; then exit 1; fi
+          grep -F "'MCore.BackwardAudit.endpoint_route_is_massGap' does not depend on any axioms" BackwardEndpoint.log
+          grep -F "'MCore.BackwardAudit.endpoint_proposition_still_untyped' does not depend on any axioms" BackwardEndpoint.log
       - name: Clean reproduction
         run: 'lake clean && lake env lean MCore/YM/K0.lean && lake build MCore.K6 && lake build MCore'
