@@ -23,7 +23,7 @@ structure ModelSignature where
 structure RegulatedMeasureFiber where
   State : Type
   measurable : MeasurableSpace State
-  measure : @Measure State measurable
+  measure : @MeasureTheory.Measure State measurable
 
 structure RegulatedYM4Construction where
   Signature : ModelSignature
