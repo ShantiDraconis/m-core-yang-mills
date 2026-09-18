@@ -1,0 +1,59 @@
+name: gen-lock-c44e0c8
+
+on:
+  push:
+    branches:
+      - 'infra/a1-real-lock-c44e0c8'
+  pull_request:
+    branches:
+      - 'audit/a1-concrete-regulated-ym4'
+
+permissions:
+  contents: read
+
+jobs:
+  generate-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pinned Lean toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.19.0
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Generate real Lake lock
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "LEAN_TOOLCHAIN=$(cat lean-toolchain)"
+          echo "LAKEFILE_TOML_BEGIN"
+          cat lakefile.toml
+          echo "LAKEFILE_TOML_END"
+          rm -f lake-manifest.json
+          lake update mathlib
+          test -f lake-manifest.json
+          echo "LOCK_PACKAGES"
+          jq -c '.packages[] | {name, rev, inputRev}' lake-manifest.json
+          jq -e '.packages[] | select(.name=="mathlib") | select(.rev=="c44e0c8ee63ca166450922a373c7409c5d26b00b") | select(.inputRev=="c44e0c8ee63ca166450922a373c7409c5d26b00b")' lake-manifest.json >/dev/null
+          echo "LOCK_JSON_BASE64_BEGIN"
+          base64 -w0 lake-manifest.json
+          echo
+          echo "LOCK_JSON_BASE64_END"
+          sha256sum lake-manifest.json
+
+      - name: Prove stale parent lock differs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git show 8c148cd898676434e93bff5a6b25a4ae97dae73c:lake-manifest.json > /tmp/parent-manifest.json
+          if cmp -s /tmp/parent-manifest.json lake-manifest.json; then
+            echo "FAIL: generated manifest unexpectedly equals stale parent"
+            exit 1
+          fi
+          jq -e '.packages | length > 0' lake-manifest.json >/dev/null
+          echo "GENERATED_LOCK=REAL_NONEMPTY"
