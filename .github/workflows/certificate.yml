@@ -3,6 +3,7 @@ on: [push, pull_request]
 jobs:
   final-core:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
@@ -92,7 +93,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          lake build MCore
+          # One clean end-to-end rebuild is sufficient: MCore owns the dependency DAG.
           lake clean
-          lake build MCore.SpectralCore
-          lake build MCore
+          timeout 20m lake build MCore
+          # Cheap post-build semantic checks; do not trigger a second full rebuild.
+          timeout 2m lake env lean /tmp/CoreChecks.lean
+          timeout 2m lake env lean /tmp/PhysicalGapChecks.lean
