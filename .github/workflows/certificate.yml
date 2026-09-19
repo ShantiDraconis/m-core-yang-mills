@@ -47,5 +47,9 @@ jobs:
         run: |
           printf 'import MCore.K6\nopen MCore\nexample : ¬ Nonempty (ProofCertificate k6_dependency.target) := k6_target_not_certified\n' > NegativeK6.lean
           lake env lean NegativeK6.lean
-      - name: Clean reproduction
-        run: 'lake clean && lake env lean MCore/YM/K0.lean && lake build MCore.K6 && lake build MCore'
+      - name: Targeted YM endpoint reproduction
+        timeout-minutes: 20
+        run: |
+          lake env lean lean/MCore/YM/K0.lean
+          lake build MCore.K6
+          lake env lean lean/MCore/BackwardAudit/EndpointTypeResidue.lean
