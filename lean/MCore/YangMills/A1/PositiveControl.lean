@@ -39,12 +39,12 @@ def toySignature : ModelSignature where
   Action := Unit
   Observable := Unit
 
-def toyFiber (_ : ℝ) (_ : ℕ) : RegulatedMeasureFiber where
+noncomputable def toyFiber (_ : ℝ) (_ : ℕ) : RegulatedMeasureFiber where
   State := Unit
   measurable := inferInstance
   measure := Measure.dirac ()
 
-def toyConstruction : RegulatedYM4Construction where
+noncomputable def toyConstruction : RegulatedYM4Construction where
   Signature := toySignature
   fiber := toyFiber
   admissible := fun _ _ => True
@@ -60,19 +60,19 @@ theorem toy_measure_invariance : MeasureInvariance toyConstruction where
   measurableGauge := fun _ _ _ => measurable_id
   map_eq := fun _ _ _ => by
     show Measure.map (fun x : Unit => x) (Measure.dirac ()) = Measure.dirac ()
-    simpa using Measure.map_dirac measurable_id ()
+    exact Measure.map_dirac measurable_id ()
 
 theorem toy_observable_invariance : ObservableInvariance toyConstruction where
   invariant := fun _ _ _ _ _ => rfl
 
-def toyReflectionPositivity : ReflectionPositivityData toyConstruction where
+noncomputable def toyReflectionPositivity : ReflectionPositivityData toyConstruction where
   Test := Unit
   reflect := id
   pairing := fun _ _ => 1
   hermitianReflection := fun _ => by simp
   nonnegative := fun _ => by simp
 
-def toyPositiveTransfer : PositiveTransferData toyConstruction where
+noncomputable def toyPositiveTransfer : PositiveTransferData toyConstruction where
   State := ℂ
   instNormedAddCommGroup := inferInstance
   instInnerProductSpace := inferInstance
@@ -81,14 +81,14 @@ def toyPositiveTransfer : PositiveTransferData toyConstruction where
   symmetric := fun _ _ => by simp
   contraction := fun _ => by simp
 
-def toyLimitCoordinates : A1LimitCoordinates toyConstruction where
+noncomputable def toyLimitCoordinates : A1LimitCoordinates toyConstruction where
   cutoffValue := id
   volumeValue := fun L => (L : ℝ)
 
 /-- The degenerate (identically-zero) case explicitly excluded from counting
 as a physical mass-gap estimate: it is uniform for the trivial reason that it
 carries no gap at all. -/
-def toyUniformity : UniformRegulatorControl toyConstruction where
+noncomputable def toyUniformity : UniformRegulatorControl toyConstruction where
   coordinates := toyLimitCoordinates
   estimate := fun _ _ => 0
   nonnegative := fun _ _ => le_refl 0
