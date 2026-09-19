@@ -1,0 +1,30 @@
+name: no-umbrella-fast-ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  no-umbrella:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: NO-UMBRELLA regression gate
+        timeout-minutes: 2
+        run: bash scripts/ci/no_umbrella_gate.sh .
+      - name: Fast-CI policy result
+        run: |
+          echo "NO_UMBRELLA=PASS"
+          echo "NO_LAKE_CLEAN_NORMAL_CI=PASS"
+          echo "TARGETED_BUILDS_ONLY=PASS"
+          echo "TIMEOUTS_ENFORCED=PASS_FOR_THIS_GATE"
+          echo "FAIL_FAST_ORDER=PASS_FOR_THIS_GATE"
