@@ -8,10 +8,13 @@ open MeasureTheory
 opaque proposition at the certification boundary. -/
 structure MeasureInvariance (C : RegulatedYM4Construction) : Prop where
   measurableGauge :
-    ∀ a L g, Measurable (C.GaugeAction a L g)
+    ∀ a L g, @Measurable (C.fiber a L).State (C.fiber a L).State
+      (C.fiber a L).measurable (C.fiber a L).measurable (C.GaugeAction a L g)
   map_eq :
     ∀ a L g,
-      Measure.map (C.GaugeAction a L g) (C.fiber a L).measure =
+      @Measure.map (C.fiber a L).State (C.fiber a L).State
+        (C.fiber a L).measurable (C.fiber a L).measurable
+        (C.GaugeAction a L g) (C.fiber a L).measure =
         (C.fiber a L).measure
 
 /-- Typed gauge invariance of every regulated observable. -/
@@ -29,17 +32,17 @@ structure ReflectionPositivityData (C : RegulatedYM4Construction) where
   Test : Type
   reflect : Test → Test
   pairing : Test → Test → ℂ
-  hermitianReflection : ∀ f, pairing (reflect f) f = Complex.conj (pairing f (reflect f))
+  hermitianReflection : ∀ f, pairing (reflect f) f = star (pairing f (reflect f))
   nonnegative : ∀ f, 0 ≤ (pairing (reflect f) f).re
 
 /-- Minimal typed transfer-operator contract at A1. The Hilbert realization is
 data, while positivity/self-adjointness/contraction are explicit laws. -/
 structure PositiveTransferData (C : RegulatedYM4Construction) where
   State : Type
-  instNormedAddCommGroup : NormedAddCommGroup State
-  instInnerProductSpace : InnerProductSpace ℂ State
+  [instNormedAddCommGroup : NormedAddCommGroup State]
+  [instInnerProductSpace : InnerProductSpace ℂ State]
   transfer : State →L[ℂ] State
-  positive : ∀ x, 0 ≤ (inner x (transfer x)).re
+  positive : ∀ x, 0 ≤ (inner x (transfer x) : ℂ).re
   symmetric : ∀ x y, inner (transfer x) y = inner x (transfer y)
   contraction : ∀ x, ‖transfer x‖ ≤ ‖x‖
 
