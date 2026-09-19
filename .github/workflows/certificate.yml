@@ -33,19 +33,19 @@ jobs:
             exit 1
           }
           python3 - <<'PY'
-import json
-m=json.load(open("lake-manifest.json"))
-pkgs=m.get("packages", [])
-if not pkgs:
-    raise SystemExit("FAIL: committed lake-manifest.json is unresolved (packages is empty)")
-mathlib=[p for p in pkgs if p.get("name")=="mathlib"]
-if not mathlib:
-    raise SystemExit("FAIL: resolved manifest has no mathlib package entry")
-rev=mathlib[0].get("rev")
-expected="c44e0c8ee63ca166450922a373c7409c5d26b00b"
-if rev != expected:
-    raise SystemExit(f"FAIL: resolved mathlib rev {rev!r} != {expected}")
-print("PASS: manifest resolves mathlib at", rev)
+          import json
+          m=json.load(open("lake-manifest.json"))
+          pkgs=m.get("packages", [])
+          if not pkgs:
+              raise SystemExit("FAIL: committed lake-manifest.json is unresolved (packages is empty)")
+          mathlib=[p for p in pkgs if p.get("name")=="mathlib"]
+          if not mathlib:
+              raise SystemExit("FAIL: resolved manifest has no mathlib package entry")
+          rev=mathlib[0].get("rev")
+          expected="c44e0c8ee63ca166450922a373c7409c5d26b00b"
+          if rev != expected:
+              raise SystemExit(f"FAIL: resolved mathlib rev {rev!r} != {expected}")
+          print("PASS: manifest resolves mathlib at", rev)
 PY
           lake env lean --version
       - name: G1 compile compatible spectral infrastructure
