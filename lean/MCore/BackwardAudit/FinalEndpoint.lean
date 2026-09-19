@@ -1,33 +1,42 @@
-import Mathlib
+import MCore.K0
 
 namespace MCore.YM
 
-/-- Semantic interface for the Yang--Mills existence and mass-gap endpoint.
-    A concrete implementation must instantiate these predicates with the
-    rigorous 4-dimensional quantum Yang--Mills theory for the chosen compact
-    simple gauge group. -/
+/-- Kernel-portable semantic interface for the Yang--Mills existence and
+    positive mass-gap endpoint. -/
 structure EndpointSemantics where
   ExistsQuantumTheory : Prop
-  HasMassGap : ℝ → Prop
+  GapWitness : Type
+  Positive : GapWitness → Prop
+  HasMassGap : GapWitness → Prop
 
-/-- Interface-level Yang--Mills endpoint: existence plus a strictly positive
-    spectral mass gap. This states the target and proves nothing about it. -/
+/-- Existence of the quantum theory together with a positive gap witness.
+    This only states the endpoint. -/
 def FinalEndpoint (S : EndpointSemantics) : Prop :=
-  S.ExistsQuantumTheory ∧ ∃ Δ : ℝ, 0 < Δ ∧ S.HasMassGap Δ
+  S.ExistsQuantumTheory ∧
+    ∃ Δ : S.GapWitness, S.Positive Δ ∧ S.HasMassGap Δ
 
+/-- Adapter obligation connecting the abstract endpoint to a concrete
+    construction/spectral semantics. -/
 structure ConcreteTheoryAdapter (S : EndpointSemantics) where
   ConcreteExists : Prop
-  ConcreteHasMassGap : ℝ → Prop
+  ConcretePositive : S.GapWitness → Prop
+  ConcreteHasMassGap : S.GapWitness → Prop
   existence_match : S.ExistsQuantumTheory ↔ ConcreteExists
+  positive_match : ∀ Δ, S.Positive Δ ↔ ConcretePositive Δ
   gap_match : ∀ Δ, S.HasMassGap Δ ↔ ConcreteHasMassGap Δ
 
 theorem endpoint_transport
     (S : EndpointSemantics)
     (A : ConcreteTheoryAdapter S)
     (h : FinalEndpoint S) :
-    A.ConcreteExists ∧ ∃ Δ : ℝ, 0 < Δ ∧ A.ConcreteHasMassGap Δ := by
-  rcases h with ⟨hex, Δ, hΔ, hgap⟩
-  exact ⟨A.existence_match.mp hex, Δ, hΔ, (A.gap_match Δ).mp hgap⟩
+    A.ConcreteExists ∧
+      ∃ Δ : S.GapWitness,
+        A.ConcretePositive Δ ∧ A.ConcreteHasMassGap Δ := by
+  rcases h with ⟨hex, Δ, hpos, hgap⟩
+  exact ⟨A.existence_match.mp hex, Δ,
+    (A.positive_match Δ).mp hpos,
+    (A.gap_match Δ).mp hgap⟩
 
 #print axioms endpoint_transport
 
