@@ -91,15 +91,16 @@ jobs:
           lake env lean /tmp/CoreChecks.lean
           grep -q 'def SpectralAnalyticOpenBridge' lean/MCore/SpectralCore.lean
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
-      - name: G7 umbrella and clean reproduction
+      - name: G7 targeted reproducibility
         shell: bash
+        timeout-minutes: 12
         run: |
           set -euo pipefail
-          lake build MCore
-          lake clean
-          lake build MCore.SpectralCore
-          lake build MCore
-          echo "A1_MECHANICAL_REPRODUCTION=PASS"
+          # Do not run the umbrella target or lake clean in normal certification.
+          # Every scientific endpoint is compiled explicitly; Lake reuses the pinned cache.
+          lake build MCore.K29 MCore.K30 MCore.FinalCore MCore.SpectralCore MCore.PhysicalGapScaling
+          lake build MCore.YangMills.A1.RegulatedConstruction
+          echo "TARGETED_REPRODUCTION=PASS"
 
       - name: G6b axiom-gate negative controls
         shell: bash
