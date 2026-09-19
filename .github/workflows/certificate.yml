@@ -99,7 +99,7 @@ jobs:
           # Do not run the umbrella target or lake clean in normal certification.
           # Every scientific endpoint is compiled explicitly; Lake reuses the pinned cache.
           lake build MCore.K29 MCore.K30 MCore.FinalCore MCore.SpectralCore MCore.PhysicalGapScaling
-          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.Hardening MCore.YangMills.A1.PositiveControl
+          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.Hardening MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
           echo "TARGETED_REPRODUCTION=PASS"
 
       - name: G6b axiom-gate negative controls
@@ -149,6 +149,21 @@ jobs:
           lake env lean /tmp/PhysicalGapChecks.lean 2>&1 | tee /tmp/physical-gap-axioms.log
           bash scripts/axiom-gate-G6b.sh /tmp/physical-gap-axioms.log /tmp/g6b-footprint.txt
 
+      - name: G6b positive-control axiom audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '1'
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.PositiveControl
+          cat >/tmp/PositiveControlChecks.lean <<'EOF'
+          import MCore.YangMills.A1.PositiveControl
+          #print axioms MCore.YangMills.A1.toy_a1_scientific_witness
+          EOF
+          lake env lean /tmp/PositiveControlChecks.lean 2>&1 | tee /tmp/positive-control-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/positive-control-axioms.log /tmp/g6b-positive-control-footprint.txt
+
       - name: Upload G6b axiom evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -157,5 +172,7 @@ jobs:
           path: |
             /tmp/physical-gap-axioms.log
             /tmp/g6b-footprint.txt
+            /tmp/positive-control-axioms.log
+            /tmp/g6b-positive-control-footprint.txt
           if-no-files-found: warn
 

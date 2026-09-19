@@ -83,7 +83,7 @@ noncomputable def toyPositiveTransfer : PositiveTransferData toyConstruction whe
 
 noncomputable def toyLimitCoordinates : A1LimitCoordinates toyConstruction where
   cutoffValue := id
-  volumeValue := fun L => (L : ℝ)
+  volumeValue := fun (L : ℕ) => (L : ℝ)
 
 /-- The degenerate (identically-zero) case explicitly excluded from counting
 as a physical mass-gap estimate: it is uniform for the trivial reason that it
