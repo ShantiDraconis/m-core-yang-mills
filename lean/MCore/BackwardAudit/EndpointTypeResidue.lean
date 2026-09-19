@@ -11,10 +11,16 @@ def endpointTypeResidue : String :=
 theorem endpoint_route_is_massGap :
     k1Target.route = .massGap := by rfl
 
+def concreteTheoryAdapterClosed : Bool := false
+
 theorem endpoint_proposition_is_typed :
     endpointPropositionTyped = true := by rfl
 
+theorem concrete_theory_adapter_still_open :
+    concreteTheoryAdapterClosed = false := by rfl
+
 #print axioms MCore.BackwardAudit.endpoint_route_is_massGap
 #print axioms MCore.BackwardAudit.endpoint_proposition_is_typed
+#print axioms MCore.BackwardAudit.concrete_theory_adapter_still_open
 
 end MCore.BackwardAudit
