@@ -25,10 +25,28 @@ jobs:
           cat lake-manifest.json
           echo "== pinned revs in manifest =="
           grep -o '"rev": "[^"]*"' lake-manifest.json || true
-          grep -q 'c44e0c8ee63ca166450922a373c7409c5d26b00b' lake-manifest.json || {
-            echo "FAIL: expected rev c44e0c8ee63ca166450922a373c7409c5d26b00b not found"
+          echo "== declared mathlib pin in lakefile.toml =="
+          grep -A4 '^\[\[require\]\]' lakefile.toml
+          grep -q 'name = "mathlib"' lakefile.toml || { echo "FAIL: mathlib requirement missing"; exit 1; }
+          grep -q 'rev = "c44e0c8ee63ca166450922a373c7409c5d26b00b"' lakefile.toml || {
+            echo "FAIL: expected Mathlib input rev not declared"
             exit 1
           }
+          python3 - <<'PY'
+import json
+m=json.load(open("lake-manifest.json"))
+pkgs=m.get("packages", [])
+if not pkgs:
+    raise SystemExit("FAIL: committed lake-manifest.json is unresolved (packages is empty)")
+mathlib=[p for p in pkgs if p.get("name")=="mathlib"]
+if not mathlib:
+    raise SystemExit("FAIL: resolved manifest has no mathlib package entry")
+rev=mathlib[0].get("rev")
+expected="c44e0c8ee63ca166450922a373c7409c5d26b00b"
+if rev != expected:
+    raise SystemExit(f"FAIL: resolved mathlib rev {rev!r} != {expected}")
+print("PASS: manifest resolves mathlib at", rev)
+PY
           lake env lean --version
       - name: G1 compile compatible spectral infrastructure
         shell: bash
