@@ -43,7 +43,7 @@ structure PositiveTransferData (C : RegulatedYM4Construction) where
   [instInnerProductSpace : InnerProductSpace ℂ State]
   transfer : State →L[ℂ] State
   positive : ∀ x, 0 ≤ (inner x (transfer x) : ℂ).re
-  symmetric : ∀ x y, inner (transfer x) y = inner x (transfer y)
+  symmetric : ∀ x y, (inner (transfer x) y : ℂ) = inner x (transfer y)
   contraction : ∀ x, ‖transfer x‖ ≤ ‖x‖
 
 attribute [instance] PositiveTransferData.instNormedAddCommGroup
