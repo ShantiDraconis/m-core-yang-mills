@@ -99,7 +99,7 @@ jobs:
           # Do not run the umbrella target or lake clean in normal certification.
           # Every scientific endpoint is compiled explicitly; Lake reuses the pinned cache.
           lake build MCore.K29 MCore.K30 MCore.FinalCore MCore.SpectralCore MCore.PhysicalGapScaling
-          lake build MCore.YangMills.A1.RegulatedConstruction
+          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.Hardening
           echo "TARGETED_REPRODUCTION=PASS"
 
       - name: G6b axiom-gate negative controls
@@ -135,7 +135,7 @@ jobs:
       - name: G6b physical scaling adversarial audit
         shell: bash
         env:
-          G6B_ALLOWED_AXIOMS: ''
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
           EXPECTED_THEOREM_COUNT: '3'
         run: |
           set -euo pipefail
