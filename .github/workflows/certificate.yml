@@ -49,11 +49,12 @@ jobs:
       - name: Backward endpoint-type firewall
         run: |
           set -euo pipefail
-          lake build MCore.BackwardAudit.EndpointTypeResidue
+          lake build MCore.BackwardAudit.FinalEndpoint MCore.BackwardAudit.EndpointTypeResidue
           test ! -e lean/MCore/BackwardAudit/HypotheticalClosureOracle.lean
           lake env lean lean/MCore/BackwardAudit/EndpointTypeResidue.lean 2>&1 | tee BackwardEndpoint.log
           if grep -E 'sorryAx' BackwardEndpoint.log; then exit 1; fi
           grep -F "'MCore.BackwardAudit.endpoint_route_is_massGap' does not depend on any axioms" BackwardEndpoint.log
-          grep -F "'MCore.BackwardAudit.endpoint_proposition_still_untyped' does not depend on any axioms" BackwardEndpoint.log
+          grep -F "'MCore.BackwardAudit.endpoint_proposition_is_typed' does not depend on any axioms" BackwardEndpoint.log
+          grep -F "'MCore.BackwardAudit.concrete_theory_adapter_still_open' does not depend on any axioms" BackwardEndpoint.log
       - name: Clean reproduction
         run: 'lake clean && lake env lean MCore/YM/K0.lean && lake build MCore.K6 && lake build MCore'
