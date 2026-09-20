@@ -25,11 +25,14 @@ structure A1PhysicalData (C : RegulatedYM4Construction) where
   volumeValue : C.Signature.Volume → ℝ
   observableToReal : C.ObservableValue → ℝ
   reflection :
-    ∀ a L, (C.fiber a L).State → (C.fiber a L).State
+    ∀ (a : C.Signature.Regulator) (L : C.Signature.Volume),
+      (C.fiber a L).State → (C.fiber a L).State
   regulatedAction :
-    ∀ a L, C.Signature.Action
+    ∀ (_a : C.Signature.Regulator) (_L : C.Signature.Volume),
+      C.Signature.Action
   kernelFromAction :
-    ∀ a L, C.Signature.Action →
+    ∀ (a : C.Signature.Regulator) (L : C.Signature.Volume),
+      C.Signature.Action →
       (C.fiber a L).State → (C.fiber a L).State → ℂ
   cutoffCofinal :
     ∀ ε : ℝ, 0 < ε →
