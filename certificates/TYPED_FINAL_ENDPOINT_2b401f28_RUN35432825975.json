@@ -1,0 +1,20 @@
+{
+  "schema": "mcore.frontier.certificate.v1",
+  "problem": "Yang-Mills existence and mass gap",
+  "certified_source_sha": "2b401f28942221beb36256b9d8ce9c44cc2b9c6d",
+  "frozen_ref": "frozen/typed-final-endpoint-green-2b401f28",
+  "certificate_ref": "cert/typed-final-endpoint-2b401f28-run35432825975",
+  "workflow_run": 35432825975,
+  "workflow_job": 105870314819,
+  "conclusion": "SUCCESS",
+  "certified_scope": "kernel-portable typing of existence plus positive mass-gap endpoint and transport interface",
+  "certified_theorems": [
+    "MCore.YM.endpoint_transport",
+    "MCore.BackwardAudit.endpoint_proposition_is_typed",
+    "MCore.BackwardAudit.concrete_theory_adapter_still_open"
+  ],
+  "formal_status": "ENDPOINT_TYPING_CERTIFIED",
+  "mathematical_endpoint_status": "OPEN",
+  "remaining_frontier": "instantiate ConcreteTheoryAdapter for rigorous 4D quantum Yang-Mills theory and prove FinalEndpoint",
+  "no_mathematical_promotion": true
+}
