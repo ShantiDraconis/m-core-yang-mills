@@ -99,7 +99,7 @@ jobs:
           # Do not run the umbrella target or lake clean in normal certification.
           # Every scientific endpoint is compiled explicitly; Lake reuses the pinned cache.
           lake build MCore.K29 MCore.K30 MCore.FinalCore MCore.SpectralCore MCore.PhysicalGapScaling
-          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.UniformityTriviality MCore.YangMills.A1.Hardening MCore.YangMills.A1.PhantomBridgeTriviality MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
+          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.UniformityTriviality MCore.YangMills.A1.Hardening MCore.YangMills.A1.PhantomBridgeTriviality MCore.YangMills.A1.FrontierDecompositionV2 MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
           echo "TARGETED_REPRODUCTION=PASS"
 
       - name: G6b axiom-gate negative controls
@@ -204,6 +204,27 @@ jobs:
           echo "B3_B4_B5_CURRENT_INTERFACES_TRIVIALLY_DISCHARGEABLE=PASS"
           echo "A1_ENDPOINT_REDUCES_TO_B1_B2=PASS"
 
+      - name: G6b A1 frontier-v2 audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: ''
+          EXPECTED_THEOREM_COUNT: '4'
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.FrontierDecompositionV2
+          cat >/tmp/A1FrontierV2Checks.lean <<'EOF'
+          import MCore.YangMills.A1.FrontierDecompositionV2
+          #print axioms MCore.YangMills.A1.a1_v2_has_six_nodes
+          #print axioms MCore.YangMills.A1.a1_v2_invalidates_exactly_three_legacy_interfaces
+          #print axioms MCore.YangMills.A1.a1_v2_has_exactly_one_blocking_node
+          #print axioms MCore.YangMills.A1.a1_v2_blocking_node_is_k20_k30
+          EOF
+          lake env lean /tmp/A1FrontierV2Checks.lean 2>&1 | tee /tmp/a1-frontier-v2-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/a1-frontier-v2-axioms.log /tmp/g6b-a1-frontier-v2-footprint.txt
+          echo "A1_FRONTIER_V2=PASS"
+          echo "LEGACY_B3_B4_B5=INVALIDATED"
+          echo "CURRENT_BLOCKING_NODE=B6_K20_K30_CONCRETE_PHYSICAL_REALIZATION"
+
       - name: Upload G6b axiom evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -218,5 +239,7 @@ jobs:
             /tmp/g6b-b5-triviality-footprint.txt
             /tmp/phantom-bridge-axioms.log
             /tmp/g6b-phantom-bridge-footprint.txt
+            /tmp/a1-frontier-v2-axioms.log
+            /tmp/g6b-a1-frontier-v2-footprint.txt
           if-no-files-found: warn
 
