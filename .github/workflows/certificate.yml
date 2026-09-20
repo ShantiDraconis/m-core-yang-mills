@@ -177,7 +177,7 @@ jobs:
           #print axioms MCore.YangMills.A1.uniform_v2_mass_nonzero
           #print axioms MCore.YangMills.A1.uniform_v2_gap_not_identically_zero
           #print axioms MCore.YangMills.A1.uniform_v2_gap_is_transfer_gap
-          #print axioms MCore.YangMills.A1.a1_v2_exposes_B1_B2_B3_B4_B5
+          #print axioms MCore.YangMills.A1.a1_v2_open_bridge_exposes_B1_B2_B3_B4_B5
           EOF
           lake env lean /tmp/A1HardeningV2Checks.lean 2>&1 | tee /tmp/a1-hardening-v2-axioms.log
           bash scripts/axiom-gate-G6b.sh /tmp/a1-hardening-v2-axioms.log /tmp/g6b-a1-hardening-v2-footprint.txt
