@@ -174,6 +174,7 @@ jobs:
           lake build MCore.YangMills.A1.UniformityTriviality
           cat >/tmp/B5TrivialityChecks.lean <<'EOF'
           import MCore.YangMills.A1.UniformityTriviality
+          set_option pp.width 200
           #print axioms MCore.YangMills.A1.uniform_regulator_control_inhabited_for_every_construction
           #print axioms MCore.YangMills.A1.a1_uniformity_bridge_inhabited_for_every_construction
           #print axioms MCore.YangMills.A1.pointwise_to_uniform_bridge_vacuously_holds
@@ -193,6 +194,7 @@ jobs:
           lake build MCore.YangMills.A1.PhantomBridgeTriviality
           cat >/tmp/PhantomBridgeChecks.lean <<'EOF'
           import MCore.YangMills.A1.PhantomBridgeTriviality
+          set_option pp.width 200
           #print axioms MCore.YangMills.A1.reflection_positivity_data_inhabited_for_every_construction
           #print axioms MCore.YangMills.A1.positive_transfer_data_inhabited_for_every_construction
           #print axioms MCore.YangMills.A1.a1_scientific_open_bridge_iff_B1_B2
