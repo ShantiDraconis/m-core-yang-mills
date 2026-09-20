@@ -99,7 +99,7 @@ jobs:
           # Do not run the umbrella target or lake clean in normal certification.
           # Every scientific endpoint is compiled explicitly; Lake reuses the pinned cache.
           lake build MCore.K29 MCore.K30 MCore.FinalCore MCore.SpectralCore MCore.PhysicalGapScaling
-          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.Hardening MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
+          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.UniformityTriviality MCore.YangMills.A1.Hardening MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
           echo "TARGETED_REPRODUCTION=PASS"
 
       - name: G6b axiom-gate negative controls
@@ -164,6 +164,25 @@ jobs:
           lake env lean /tmp/PositiveControlChecks.lean 2>&1 | tee /tmp/positive-control-axioms.log
           bash scripts/axiom-gate-G6b.sh /tmp/positive-control-axioms.log /tmp/g6b-positive-control-footprint.txt
 
+      - name: G6b B5 triviality RED audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '3'
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.UniformityTriviality
+          cat >/tmp/B5TrivialityChecks.lean <<'EOF'
+          import MCore.YangMills.A1.UniformityTriviality
+          #print axioms MCore.YangMills.A1.uniform_regulator_control_inhabited_for_every_construction
+          #print axioms MCore.YangMills.A1.a1_uniformity_bridge_inhabited_for_every_construction
+          #print axioms MCore.YangMills.A1.pointwise_to_uniform_bridge_vacuously_holds
+          EOF
+          lake env lean /tmp/B5TrivialityChecks.lean 2>&1 | tee /tmp/b5-triviality-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/b5-triviality-axioms.log /tmp/g6b-b5-triviality-footprint.txt
+          echo "B5_CURRENT_DEFINITION_TRIVIALLY_INHABITED=PASS"
+          echo "B5_BLOCKING_OPEN_CLASSIFICATION=INVALIDATED"
+
       - name: Upload G6b axiom evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -174,5 +193,7 @@ jobs:
             /tmp/g6b-footprint.txt
             /tmp/positive-control-axioms.log
             /tmp/g6b-positive-control-footprint.txt
+            /tmp/b5-triviality-axioms.log
+            /tmp/g6b-b5-triviality-footprint.txt
           if-no-files-found: warn
 
