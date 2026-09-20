@@ -99,7 +99,7 @@ jobs:
           # Do not run the umbrella target or lake clean in normal certification.
           # Every scientific endpoint is compiled explicitly; Lake reuses the pinned cache.
           lake build MCore.K29 MCore.K30 MCore.FinalCore MCore.SpectralCore MCore.PhysicalGapScaling
-          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.Hardening MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
+          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.Hardening MCore.YangMills.A1.HardeningV2 MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
           echo "TARGETED_REPRODUCTION=PASS"
 
       - name: G6b axiom-gate negative controls
@@ -164,6 +164,74 @@ jobs:
           lake env lean /tmp/PositiveControlChecks.lean 2>&1 | tee /tmp/positive-control-axioms.log
           bash scripts/axiom-gate-G6b.sh /tmp/positive-control-axioms.log /tmp/g6b-positive-control-footprint.txt
 
+      - name: G6b A1 hardening-v2 axiom audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '4'
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.HardeningV2
+          cat >/tmp/A1HardeningV2Checks.lean <<'EOF'
+          import MCore.YangMills.A1.HardeningV2
+          #print axioms MCore.YangMills.A1.uniform_v2_mass_nonzero
+          #print axioms MCore.YangMills.A1.uniform_v2_gap_not_identically_zero
+          #print axioms MCore.YangMills.A1.uniform_v2_gap_is_transfer_gap
+          #print axioms MCore.YangMills.A1.a1_v2_exposes_B1_B2_B3_B4_B5
+          EOF
+          lake env lean /tmp/A1HardeningV2Checks.lean 2>&1 | tee /tmp/a1-hardening-v2-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/a1-hardening-v2-axioms.log /tmp/g6b-a1-hardening-v2-footprint.txt
+          echo "A1_HARDENING_V2_AXIOMS=PASS"
+
+      - name: G6c A1 hardening-v2 negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cat >/tmp/BadB3.lean <<'EOF'
+          import MCore.YangMills.A1.HardeningV2
+          open MCore.YangMills.A1
+          noncomputable def badB3
+              (C : RegulatedYM4Construction) (P : A1PhysicalData C) :
+              ReflectionPositivityDataV2 C P where
+            pairing := fun _ _ _ _ => 0
+            h_reflection_pos := by intro; intro; intro; exact le_rfl
+          EOF
+          if lake env lean /tmp/BadB3.lean >/tmp/bad-b3.log 2>&1; then
+            echo "NEGATIVE_CONTROL_FAIL: B3 without h_pairing_def compiled"
+            exit 1
+          fi
+          grep -q "h_pairing_def" /tmp/bad-b3.log
+
+          cat >/tmp/BadZeroMass.lean <<'EOF'
+          import MCore.YangMills.A1.HardeningV2
+          open MCore.YangMills.A1
+          theorem impossible_zero_mass
+              {C : RegulatedYM4Construction}
+              {P : A1PhysicalData C}
+              {B3 : ReflectionPositivityDataV2 C P}
+              {B4 : PositiveTransferDataV2 C P}
+              (U : UniformRegulatorControlV2 C P B3 B4)
+              (h : U.m0 = 0) : False := by
+            have hp := U.hm0
+            rw [h] at hp
+            exact (lt_irrefl 0) hp
+          EOF
+          lake env lean /tmp/BadZeroMass.lean
+
+          cat >/tmp/RequiredLinks.lean <<'EOF'
+          import MCore.YangMills.A1.HardeningV2
+          open MCore.YangMills.A1
+          #check ReflectionPositivityDataV2.h_pairing_def
+          #check PositiveTransferDataV2.h_transfer_from_C
+          #check UniformRegulatorControlV2.h_gap_eq
+          #check UniformRegulatorControlV2.hm0
+          #check A1PhysicalData.cutoffCofinal
+          #check A1PhysicalData.volumeCofinal
+          EOF
+          lake env lean /tmp/RequiredLinks.lean
+          echo "A1_HARDENING_V2_NEGATIVE_CONTROLS=PASS"
+
       - name: Upload G6b axiom evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -174,5 +242,8 @@ jobs:
             /tmp/g6b-footprint.txt
             /tmp/positive-control-axioms.log
             /tmp/g6b-positive-control-footprint.txt
+            /tmp/a1-hardening-v2-axioms.log
+            /tmp/g6b-a1-hardening-v2-footprint.txt
+            /tmp/bad-b3.log
           if-no-files-found: warn
 
