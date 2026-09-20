@@ -33,13 +33,16 @@ structure A1PhysicalData (C : RegulatedYM4Construction) where
       (C.fiber a L).State → (C.fiber a L).State → ℂ
   cutoffCofinal :
     ∀ ε : ℝ, 0 < ε →
-      ∃ a L, C.admissible a L ∧
+      ∃ (a : C.Signature.Regulator) (L : C.Signature.Volume),
+        C.admissible a L ∧
         0 < cutoffValue a ∧ cutoffValue a < ε
   volumeCofinal :
     ∀ R : ℝ,
-      ∃ a L, C.admissible a L ∧ R < volumeValue L
+      ∃ (a : C.Signature.Regulator) (L : C.Signature.Volume),
+        C.admissible a L ∧ R < volumeValue L
   observableNontrivial :
-    ∃ a L (O : C.Signature.Observable) (x : (C.fiber a L).State),
+    ∃ (a : C.Signature.Regulator) (L : C.Signature.Volume)
+      (O : C.Signature.Observable) (x : (C.fiber a L).State),
       observableToReal (C.observable a L O x) ≠ 0
 
 /-- The transfer kernel used by B4 is definitionally the kernel built from the
@@ -80,17 +83,17 @@ structure RegulatedL2Vector
   squareIntegrable :
     Integrable (fun x => ‖toFun x‖ ^ 2) (C.fiber a L).measure
 
-def regulatedNormSq
+noncomputable def regulatedNormSq
     {C : RegulatedYM4Construction}
     {a : C.Signature.Regulator} {L : C.Signature.Volume}
     (ψ : RegulatedL2Vector C a L) : ℝ :=
   ∫ x, ‖ψ.toFun x‖ ^ 2 ∂(C.fiber a L).measure
 
-def regulatedInner
+noncomputable def regulatedInner
     {C : RegulatedYM4Construction}
     {a : C.Signature.Regulator} {L : C.Signature.Volume}
     (ψ φ : RegulatedL2Vector C a L) : ℂ :=
-  ∫ x, Complex.conj (ψ.toFun x) * φ.toFun x ∂(C.fiber a L).measure
+  ∫ x, star (ψ.toFun x) * φ.toFun x ∂(C.fiber a L).measure
 
 /-- B4 v2: the transfer operator acts on the same measure-bound state space,
 and its pointwise action is required to equal the integral operator built from
@@ -212,21 +215,25 @@ structure A1ScientificWitnessV2 (C : RegulatedYM4Construction) where
 def A1ScientificOpenBridgeV2 (C : RegulatedYM4Construction) : Prop :=
   Nonempty (A1ScientificWitnessV2 C)
 
-/-- The v2 endpoint exposes all five obligations by projection.  Unlike the
-legacy endpoint, the B3/B4/B5 terms cannot be manufactured by the previous
-phantom/zero constructors because their types contain C's measure, observable
-and action-derived transfer data and B5 contains a strictly positive uniform
-mass. -/
-theorem a1_v2_exposes_B1_B2_B3_B4_B5
+/-- B3--B5 are dependent witness data, so their logically correct
+packaging is existential rather than a conjunction of Types. -/
+def HardenedB3B4B5Package (C : RegulatedYM4Construction) : Prop :=
+  ∃ P : A1PhysicalData C,
+    ∃ B3 : ReflectionPositivityDataV2 C P,
+      ∃ B4 : PositiveTransferDataV2 C P,
+        Nonempty (UniformRegulatorControlV2 C P B3 B4)
+
+/-- The hardened open bridge exposes B1 and B2 together with actual dependent
+B3/B4/B5 witness data. -/
+theorem a1_v2_open_bridge_exposes_B1_B2_B3_B4_B5
     {C : RegulatedYM4Construction}
-    (W : A1ScientificWitnessV2 C) :
+    (h : A1ScientificOpenBridgeV2 C) :
     MeasureInvariance C ∧
     ObservableInvariance C ∧
-    ReflectionPositivityDataV2 C W.physicalData ∧
-    PositiveTransferDataV2 C W.physicalData ∧
-    UniformRegulatorControlV2
-      C W.physicalData W.reflectionPositivity W.positiveTransfer :=
-  ⟨W.measureInvariance, W.observableInvariance,
-    W.reflectionPositivity, W.positiveTransfer, W.uniformMass⟩
+    HardenedB3B4B5Package C := by
+  rcases h with ⟨W⟩
+  refine ⟨W.measureInvariance, W.observableInvariance, ?_⟩
+  exact ⟨W.physicalData, W.reflectionPositivity,
+    W.positiveTransfer, ⟨W.uniformMass⟩⟩
 
 end MCore.YangMills.A1
