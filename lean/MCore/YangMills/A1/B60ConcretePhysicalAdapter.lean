@@ -32,7 +32,7 @@ structure B60ConcretePhysicalAdapter
   /-- Gauge-invariant observables have an associated physical state. -/
   observableState :
     ∀ (a : C.Signature.Regulator) (V : C.Signature.Volume),
-      (C.fiber a V).Observable → D.State
+      C.Signature.Observable → D.State
 
   /-- Admissible regulated states used by the reconstruction land in the
       physical sector. -/
@@ -44,7 +44,7 @@ structure B60ConcretePhysicalAdapter
   /-- Observable-generated states used downstream are physical. -/
   observableStatesPhysical :
     ∀ (a : C.Signature.Regulator) (V : C.Signature.Volume)
-      (A : (C.fiber a V).Observable),
+      (A : C.Signature.Observable),
       C.admissible a V → D.physical (observableState a V A)
 
   /-- The abstract K20 construction block must be realized by this concrete A1
