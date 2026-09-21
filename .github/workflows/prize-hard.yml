@@ -1,0 +1,51 @@
+name: PRIZE HARD
+on:
+  push:
+    branches: ['prize-only/ym-hard']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frozen-hard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: T00 BUILD
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/lake" update
+          lake build MCore
+      - name: T01 HYGIENE AXIOM
+        run: |
+          set -euo pipefail
+          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
+          if grep -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
+      - name: T09 CIRCULARITY
+        run: |
+          set -euo pipefail
+          if grep -n -E '(:=[[:space:]]*True|:[[:space:]]*True|Nonempty[[:space:]]*\(|OPEN_BRIDGE)' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
+      - name: T10 SEMANTIC
+        run: lake env lean lean/MCore/PRIZE_HARD.lean
+      - name: T12 CLEAN REBUILD
+        run: |
+          lake clean
+          lake build MCore
+          lake env lean lean/MCore/PRIZE_HARD.lean
+      - name: T11 FINAL ADV
+        run: |
+          set -euo pipefail
+          test -s 'lean/MCore/PRIZE_HARD.lean'
+          if grep -n -E '(sorry|admit|axiom|constant|by[[:space:]]+trivial|by[[:space:]]+simp[[:space:]]*$)' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
+      - name: Emit FROZEN_HARD payload
+        run: |
+          mkdir -p certificate
+          git rev-parse HEAD > certificate/SOURCE_SHA
+          sha256sum 'lean/MCore/PRIZE_HARD.lean' > certificate/SHA256SUMS
+          printf '%s\n' 'T00=GREEN' 'T01=GREEN' 'T09=GREEN' 'T10=GREEN' 'T12=GREEN' 'T11=GREEN' > certificate/GATE_LEDGER
+          printf '%s\n' 'lake env lean lean/MCore/PRIZE_HARD.lean' > certificate/REPRO_COMMAND
+          printf '%s\n' 'AXIOM_FOOTPRINT=TARGET_SCANNED_NO_CUSTOM_AXIOM' > certificate/AXIOM_FOOTPRINT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frozen-hard-certificate
+          path: certificate/
