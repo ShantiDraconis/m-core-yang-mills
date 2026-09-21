@@ -1,0 +1,32 @@
+name: ATK atomic HARD matrix
+on:
+  push:
+    branches: ['attack/semantic-gate-v1-20260921']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with: {build: false, test: false, lint: false}
+      - name: T00 build
+        run: lake build MCore
+      - name: T10 theorem kernel
+        run: |
+          set -euo pipefail
+          printf 'import MCore\n#check hard_YM_4D_IR_clustering_gap\n#print axioms hard_YM_4D_IR_clustering_gap\n' > /tmp/ATK.lean
+          lake env lean /tmp/ATK.lean 2>&1 | tee /tmp/ATK.log
+          if grep -F 'sorryAx' /tmp/ATK.log; then exit 1; fi
+      - name: T12 clean rebuild
+        run: |
+          lake clean
+          lake build MCore
+          lake env lean /tmp/ATK.lean > /tmp/ATK.clean.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: frozen-hard-candidate-Y01
+          path: /tmp/ATK.log
