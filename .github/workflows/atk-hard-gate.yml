@@ -15,5 +15,7 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Resolve dependencies
         run: lake update
+      - name: Build frozen dependency graph
+        run: lake build MCore
       - name: Kernel-check current HARD gate
         run: lake env lean lean/MCore/ATK_HARD_YM_4D_GAP.lean
