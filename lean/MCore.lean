@@ -48,3 +48,5 @@ import MCore.YangMills.A1.PhantomBridgeTriviality
 import MCore.YangMills.A1.FrontierDecompositionV2
 
 import MCore.YangMills.A1.B60ConcretePhysicalAdapter
+
+import MCore.YangMills.A1.HardeningV2
