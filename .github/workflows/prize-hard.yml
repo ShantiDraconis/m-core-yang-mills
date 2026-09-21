@@ -25,26 +25,75 @@ jobs:
         run: |
           set -euo pipefail
           if grep -n -E '(:=[[:space:]]*True|:[[:space:]]*True|Nonempty[[:space:]]*\(|OPEN_BRIDGE)' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
-      - name: T10 SEMANTIC
-        run: lake env lean lean/MCore/PRIZE_HARD.lean
+      - name: T10 SEMANTIC KERNEL AXIOMS
+        run: |
+          set -euo pipefail
+          lake env lean lean/MCore/PRIZE_HARD.lean 2>&1 | tee PRIZE_HARD_AXIOMS.log
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          source = Path("lean/MCore/PRIZE_HARD.lean").read_text()
+          log = Path("PRIZE_HARD_AXIOMS.log").read_text()
+          expected = sum(
+              1 for line in source.splitlines()
+              if line.strip().startswith("#print axioms ")
+          )
+          if expected == 0:
+              raise SystemExit("PRIZE HARD contains no #print axioms probes")
+
+          allowed = {"propext", "Quot.sound", "Classical.choice"}
+          footprints = []
+
+          for block in re.findall(
+              r"'[^']+' depends on axioms:\s*\[([^\]]*)\]",
+              log,
+              flags=re.S,
+          ):
+              deps = {x.strip() for x in block.replace("\n", " ").split(",") if x.strip()}
+              footprints.append(deps)
+
+          no_axiom_count = len(re.findall(
+              r"'[^']+' does not depend on any axioms",
+              log,
+          ))
+          observed = len(footprints) + no_axiom_count
+          if observed != expected:
+              raise SystemExit(
+                  f"axiom footprint count mismatch: expected={expected} observed={observed}"
+              )
+
+          bad = set().union(*footprints) - allowed if footprints else set()
+          if bad:
+              raise SystemExit(f"unexpected theorem axioms: {sorted(bad)}")
+
+          print(f"AXIOM_FOOTPRINT=GREEN expected={expected} allowed={sorted(allowed)}")
+          PY
       - name: T12 CLEAN REBUILD
         run: |
+          set -euo pipefail
           lake clean
           lake build MCore
-          lake env lean lean/MCore/PRIZE_HARD.lean
+          lake env lean lean/MCore/PRIZE_HARD.lean > PRIZE_HARD_CLEAN.log 2>&1
+          if grep -F 'sorryAx' PRIZE_HARD_CLEAN.log; then exit 1; fi
       - name: T11 FINAL ADV
         run: |
           set -euo pipefail
           test -s 'lean/MCore/PRIZE_HARD.lean'
-          if grep -n -E '(sorry|admit|axiom|constant|by[[:space:]]+trivial|by[[:space:]]+simp[[:space:]]*$)' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
+          test -s PRIZE_HARD_AXIOMS.log
+          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
+          if grep -n -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
+          if grep -n -E 'by[[:space:]]+trivial|by[[:space:]]+simp[[:space:]]*$' 'lean/MCore/PRIZE_HARD.lean'; then exit 1; fi
       - name: Emit FROZEN_HARD payload
         run: |
+          set -euo pipefail
           mkdir -p certificate
           git rev-parse HEAD > certificate/SOURCE_SHA
-          sha256sum 'lean/MCore/PRIZE_HARD.lean' > certificate/SHA256SUMS
+          sha256sum 'lean/MCore/PRIZE_HARD.lean' PRIZE_HARD_AXIOMS.log > certificate/SHA256SUMS
           printf '%s\n' 'T00=GREEN' 'T01=GREEN' 'T09=GREEN' 'T10=GREEN' 'T12=GREEN' 'T11=GREEN' > certificate/GATE_LEDGER
           printf '%s\n' 'lake env lean lean/MCore/PRIZE_HARD.lean' > certificate/REPRO_COMMAND
-          printf '%s\n' 'AXIOM_FOOTPRINT=TARGET_SCANNED_NO_CUSTOM_AXIOM' > certificate/AXIOM_FOOTPRINT
+          cp PRIZE_HARD_AXIOMS.log certificate/AXIOM_FOOTPRINT
+          printf '%s\n' 'ALLOWED=propext,Quot.sound,Classical.choice' > certificate/AXIOM_POLICY
       - uses: actions/upload-artifact@v4
         with:
           name: frozen-hard-certificate
