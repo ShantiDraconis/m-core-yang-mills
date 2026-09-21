@@ -1,0 +1,42 @@
+{
+  "certificate_scope": "TERMINAL_FRONTIER_B6",
+  "certifies": [
+    "The frozen frontier invalidates legacy B3/B4/B5 interfaces as scientifically insufficient/trivially inhabitable.",
+    "Exactly one blocking node remains in the audited A1 decomposition: B6, the concrete K20/K30 physical realization lane.",
+    "K30 keeps the mass-gap closure conditional on explicit physical/spectral witnesses."
+  ],
+  "certifying_runs": [
+    {
+      "conclusion": "success",
+      "id": 35632222934,
+      "workflow": "certificate"
+    },
+    {
+      "conclusion": "success",
+      "id": 35624033137,
+      "workflow": "certificate"
+    }
+  ],
+  "does_not_certify": [
+    "A genuine 4D Yang-Mills construction.",
+    "A K30SpectralTransferWitness.",
+    "A positive Yang-Mills mass gap."
+  ],
+  "fail_closed_rules": {
+    "admit_allowed": false,
+    "hidden_axiom_promotion_allowed": false,
+    "proxy_to_endpoint_promotion_allowed": false,
+    "sorry_allowed": false,
+    "vacuous_witness_promotion_allowed": false
+  },
+  "final_proof_global": "0/7",
+  "generated_date": "2026-09-21",
+  "mathematical_endpoint_status": "OPEN",
+  "next_open_delta": "Construct B6: genuine 4D physical realization, IR/limit control and K30 spectral-transfer witness.",
+  "problem": "Yang-Mills Mass Gap",
+  "repository": "ShantiDraconis/m-core-yang-mills",
+  "schema": "atk.terminal.frozen-certificate.v1",
+  "source_frozen_branch": "frozen/terminal-frontier-green-dc5b45c4",
+  "source_frozen_commit": "dc5b45c4b1ec9e435b76f22e156878634dfdb59c",
+  "source_status": "GREEN_FROZEN"
+}
