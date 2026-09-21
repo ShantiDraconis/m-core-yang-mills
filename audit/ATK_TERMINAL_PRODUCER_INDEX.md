@@ -80,3 +80,20 @@ Terminal independent gaps: G1 signed nonlinear control; G2 critical high-frequen
 
 ## Fail-closed rule
 No path above is evidence of a final proof merely because it exists or compiles. OPEN_MATH is promoted only by a kernel-checked proof of the exact producer statement with zero `sorry`, zero `admit`, no hidden oracle/axiom, no circular import, no trivial witness, and no semantic weakening. GREEN downstream consumers are reused and never counted as producer closure.
+
+
+## Frozen/certified reuse overlay — 2026-09-21
+
+ATK rule: frozen/certified artifacts below are incorporated by provenance reference and must be reused before any recomputation. A GREEN/frozen downstream or interface artifact does not promote the terminal OPEN_MATH producer. Reuse requires exact statement/hypothesis/dependency compatibility; conflicts are fail-closed.
+
+- **m-core-beal** — `frozen/t60-odd-local-arithmetic-green-cdac34c` — T60 odd-local arithmetic GREEN; FRONTIER still leaves CommonPrime endpoint OPEN.
+- **m-core-hodge** — `frozen/hdg-final-attack-green-4419293f` — Final-attack GREEN snapshot; algebraicity-surjectivity remains OPEN_BRIDGE.
+- **m-core-yang-mills** — `frozen/typed-final-endpoint-green-2b401f28` — Typed final endpoint GREEN snapshot; semantic/physical frontier remains open.
+- **m-core-riemann** — `frozen/nb-zero-limit-density-reduction-green-4cf864e3` — Most advanced located NB zero-limit density reduction GREEN snapshot; RH semantic frontier remains open.
+- **m-core-p-vs-np** — `frozen/p01-operational-prefix-green-50859a9f` — P01 operational prefix GREEN; asymptotic/orientation lower-bound frontier remains open.
+- **m-core-bsd** — `frozen/total-green-d2447234` — TOTAL GREEN audit snapshot; rank and leading-coefficient boundaries remain OPEN_BRIDGE.
+- **navier-stokes-critical-barrier-audit** — `frozen/n01-hardened-geometry-green-04aa4c04` — N01 hardened geometry GREEN; ActualNS→signed depletion remains OPEN_BRIDGE.
+
+Additional certified/frozen families discovered and retained for reuse include: Beal K6–K9 and T3–T60 families; Hodge K0–K26, three-residue fail-proof, R3/R3a specialization/relative-cycle audits, and journal reduction; Yang–Mills K12–K30, SpectralCore/SpectralConcrete/SpectralExclusion/SpectralMathlib, A1 hardening and B60 adapter; Riemann NB0–NB16, NB-total, zero-limit density reduction, R0 normalization/carrier/domain/chi/rho chain, and R2 backward/dual frontier; P-vs-NP C1–C12, K6–K10, canonical SAT parser/frame/machine/semantics, P01 component/verified-relation/operational prefix, and final-proof-fail attack; BSD K7–K14, D01 universal firewalls, plectic construction/firewalls, KR2 program/evidence/decomposition/derivative/state chain, witness kernel and total-green; Navier–Stokes N01 hardening plus XiEps typed/radial/strain/tangential certified snapshots.
+
+These are now part of the canonical ATK reuse set. They are not to be rerun unless a compatibility audit proves the current producer depends on a changed hypothesis or implementation.
