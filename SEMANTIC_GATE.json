@@ -2,21 +2,31 @@
   "schema": "ATK_SEMANTIC_GATE_V1",
   "date": "2026-09-21",
   "gate": "Y01",
-  "audited_head": "645b299959f02902c7e6245855d3b5da9a951139",
-  "kernel_gate": "RED",
-  "semantic_status": "RED_SPECIFICATION_AND_OPEN_MATH",
+  "audited_head": "be8e2f6e6ca3100084a2908a4ebf8de3acfd9eb7",
+  "kernel_gate": "INTERFACE_HARDENING_GREEN; Y01_HARD_OPEN",
+  "semantic_status": "SPECIFICATION_REPAIRED_AT_B3_B4_B5; OPEN_MATH",
   "promotion_allowed": false,
   "promotion_scope": "Y01_ONLY",
   "endpoint": "4D quantum Yang-Mills existence and positive mass gap",
-  "first_specification_blocker": "ReflectionPositivityData and PositiveTransferData use the construction parameter only phantom-wise and admit trivial inhabitants",
-  "proved_failproof": "A1ScientificOpenBridge C is equivalent in the current interface to only MeasureInvariance C and ObservableInvariance C",
-  "first_scientific_open_bridges": [
-    "Nontrivial 4D construction/continuum limit satisfying the required axioms",
-    "Semantically bound reflection positivity and positive transfer structure",
-    "Uniform infrared/clustering control",
-    "Positive spectral gap for the resulting theory"
+  "repaired_specification": [
+    "Reflection positivity is bound to an actual admissible regulated fiber and excludes zero pairing",
+    "Positive transfer is bound to an actual regulated fiber and excludes the zero operator",
+    "Uniform regulator control excludes estimate := 0"
   ],
-  "nontriviality": "RED at A1 interface",
-  "semantic_equivalence": "NOT_YET_ESTABLISHED",
-  "freeze_rule": "No Y01 freeze until phantom interfaces are hardened and the official existence+mass-gap semantics are represented"
+  "frozen_nonhard_artifacts": [
+    "frozen/y01-interface-hardening-green-be8e2f6e"
+  ],
+  "validation_runs": {
+    "hardened_interface": 35585926037,
+    "certificate": 35585925944
+  },
+  "first_scientific_open_bridges": [
+    "Construct a nontrivial four-dimensional regulated Yang-Mills family with the required physical semantics",
+    "Establish continuum/thermodynamic limit and uniform infrared control",
+    "Supply semantically valid reflection positivity/transfer realization for that construction",
+    "Prove uniform clustering/spectral transfer and a strictly positive mass gap"
+  ],
+  "nontriviality": "GREEN_FOR_INTERFACE; PHYSICAL_WITNESS_ABSENT",
+  "semantic_equivalence": "Official existence+mass-gap endpoint is not established by interface hardening",
+  "freeze_rule": "Y01 HARD may freeze only when a concrete physical construction inhabits the hardened interfaces and closes the K20/K30 spectral-transfer obligations"
 }
