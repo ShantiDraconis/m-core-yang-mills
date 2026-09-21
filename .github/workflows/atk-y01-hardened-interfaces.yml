@@ -1,0 +1,38 @@
+name: atk-y01-hardened-interfaces
+
+on:
+  push:
+    branches:
+      - 'attack/y01-harden-physical-interfaces-20260921'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hardened-a1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: |
+          lake update
+          lake exe cache get || true
+      - name: Source firewall
+        run: |
+          FILE=lean/MCore/YangMills/A1/HardenedPhysicalInterfaces.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+      - name: Compile hardened interfaces
+        run: lake env lean lean/MCore/YangMills/A1/HardenedPhysicalInterfaces.lean
+      - name: Axiom audit
+        run: |
+          cat > Y01Axioms.lean <<'EOF'
+          import MCore.YangMills.A1.HardenedPhysicalInterfaces
+          #print axioms MCore.YangMills.A1.hardened_a1_nontriviality_packet
+          EOF
+          lake env lean Y01Axioms.lean | tee y01-axioms.txt
