@@ -49,3 +49,17 @@ Audit requirements:
 - every freeze must be reproducible from the repository's own dependency graph.
 
 Parallelism is allowed and expected: repositories advance independently and simultaneously, but their proof chains remain separate, clean, and auditable.
+
+
+## Universal continuation rule
+
+No ATK state is terminal.
+
+- `GREEN`: certify, freeze, and advance immediately.
+- `RED`: diagnose, correct, reformulate, or isolate the real failing obligation, then rerun the same gate until GREEN or the failure is reclassified precisely.
+- `OPEN_MATH`: search all available ATK repositories and prior certified material for a theorem, formula, lemma, construction, estimate, or proof fragment that can discharge the obligation. Record provenance: source repository, exact SHA, commit date, source path, and the exact mathematical content reused. Re-derive or port it locally; do not create a cross-repository proof dependency.
+- `EXTERNAL_EVIDENCE_REQUIRED`: search the available repositories, artifacts, logs, certificates, and connected sources for the required evidence. If no real evidence is available after search, report exactly what external artifact is missing.
+
+Repository proof chains remain independent. Cross-repository material may be used only as a provenance-tagged research source and must be copied/reproved locally before promotion.
+
+ATK continues until the current gate has either been repaired and advanced or the exact missing mathematical/external object has been identified after exhaustive available search.
