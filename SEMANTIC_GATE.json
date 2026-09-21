@@ -1,0 +1,22 @@
+{
+  "schema": "ATK_SEMANTIC_GATE_V1",
+  "date": "2026-09-21",
+  "gate": "Y01",
+  "audited_head": "645b299959f02902c7e6245855d3b5da9a951139",
+  "kernel_gate": "RED",
+  "semantic_status": "RED_SPECIFICATION_AND_OPEN_MATH",
+  "promotion_allowed": false,
+  "promotion_scope": "Y01_ONLY",
+  "endpoint": "4D quantum Yang-Mills existence and positive mass gap",
+  "first_specification_blocker": "ReflectionPositivityData and PositiveTransferData use the construction parameter only phantom-wise and admit trivial inhabitants",
+  "proved_failproof": "A1ScientificOpenBridge C is equivalent in the current interface to only MeasureInvariance C and ObservableInvariance C",
+  "first_scientific_open_bridges": [
+    "Nontrivial 4D construction/continuum limit satisfying the required axioms",
+    "Semantically bound reflection positivity and positive transfer structure",
+    "Uniform infrared/clustering control",
+    "Positive spectral gap for the resulting theory"
+  ],
+  "nontriviality": "RED at A1 interface",
+  "semantic_equivalence": "NOT_YET_ESTABLISHED",
+  "freeze_rule": "No Y01 freeze until phantom interfaces are hardened and the official existence+mass-gap semantics are represented"
+}
