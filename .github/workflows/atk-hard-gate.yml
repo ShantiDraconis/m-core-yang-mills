@@ -1,0 +1,19 @@
+name: ATK hard gate
+on:
+  push:
+    branches:
+      - 'attack/hard-ym-4d-gap-theoremkernel'
+  workflow_dispatch:
+jobs:
+  hard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Kernel-check current HARD gate
+        run: lake env lean lean/MCore/ATK_HARD_YM_4D_GAP.lean
