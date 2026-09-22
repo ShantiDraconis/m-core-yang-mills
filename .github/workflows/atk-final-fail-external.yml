@@ -1,0 +1,40 @@
+name: ATK FINAL_FAIL external closure
+
+on:
+  push:
+    branches:
+      - final/fail-external-close-20260922
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  final-fail-external:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate terminal external record
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          p="CERTIFICATES/FINAL_FAIL_EXTERNAL.json"
+          x=json.load(open(p))
+          assert x["schema"] == "atk.final-fail-external.v1"
+          assert x["problem"] == "YANG_MILLS"
+          assert x["process_closed"] is True
+          assert x["proof_claimed"] is False
+          assert x["mathematical_endpoint_proved"] is False
+          assert x["active_validated_head"]["sha"] == "d8a5e95ef2eadd1524c5c6a33af4a2a7d5e57bc1"
+          assert x["active_validated_head"]["run"] == 35658494504
+          assert x["active_validated_head"]["status"] == "SUCCESS"
+          assert x["certified_terminal_anchor"]["source_sha"] == "dc5b45c4b1ec9e435b76f22e156878634dfdb59c"
+          assert x["certified_terminal_anchor"]["state"] == "GREEN_FROZEN_TERMINAL_FRONTIER"
+          assert "FINAL_FAIL" in x["terminal_endpoint"]["disposition"]
+          PY
+      - name: Boundary
+        run: |
+          echo "YANG_MILLS_FINAL_FAIL_EXTERNAL=GREEN_IF_JOB_SUCCEEDS"
+          echo "PROCESS_CLOSED=true"
+          echo "PROOF_CLAIMED=false"
