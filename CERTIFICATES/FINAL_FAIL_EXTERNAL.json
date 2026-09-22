@@ -1,0 +1,28 @@
+{
+  "schema": "atk.final-fail-external.v1",
+  "problem": "YANG_MILLS",
+  "repository": "ShantiDraconis/m-core-yang-mills",
+  "process_state": "FINAL_FAIL_EXTERNAL_CANDIDATE",
+  "process_closed": true,
+  "proof_claimed": false,
+  "mathematical_endpoint_proved": false,
+  "active_validated_head": {
+    "sha": "d8a5e95ef2eadd1524c5c6a33af4a2a7d5e57bc1",
+    "run": 35658494504,
+    "status": "SUCCESS"
+  },
+  "certified_terminal_anchor": {
+    "source_sha": "dc5b45c4b1ec9e435b76f22e156878634dfdb59c",
+    "certificate_package_sha": "075c2aee62cc829fe2a5ed10579e8e8475e4d4db",
+    "certifying_runs": [
+      35632222934,
+      35624033137
+    ],
+    "state": "GREEN_FROZEN_TERMINAL_FRONTIER"
+  },
+  "terminal_endpoint": {
+    "name": "Y01_4D_IR_CLUSTERING_GAP / PHYSICAL_MASS_LOWER_BOUND",
+    "disposition": "OPEN_RECORDED_IN_FINAL_FAIL"
+  },
+  "policy": "Close and externalize the audit/process lane using certified evidence. Do not manufacture a theorem endpoint, hidden axiom, oracle, sorry, or admit."
+}
