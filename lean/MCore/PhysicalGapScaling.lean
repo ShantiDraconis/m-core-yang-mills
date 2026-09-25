@@ -99,8 +99,11 @@ structure UniformGapLimitBridge
   cutoffWindow : ℝ
   uniformTransferBound : UniformPhysicalMassLowerBound R mass cutoffWindow
   continuumLimitControl : Prop
+  continuumLimitControl_proved : continuumLimitControl
   thermodynamicLimitControl : Prop
+  thermodynamicLimitControl_proved : thermodynamicLimitControl
   gapPreservedUnderLimits : Prop
+  gapPreservedUnderLimits_proved : gapPreservedUnderLimits
 
 /-- Fail-closed endpoint of the scaling analysis.  This is deliberately a
 proposition requiring a genuine bridge inhabitant; no witness is fabricated. -/
