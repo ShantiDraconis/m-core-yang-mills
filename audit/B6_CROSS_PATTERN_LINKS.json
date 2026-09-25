@@ -1,0 +1,86 @@
+{
+  "schema": "ym.b6-cross-pattern-links.v1",
+  "source": {
+    "repository": "ShantiDraconis/axiomatic-millenium",
+    "sha": "b344e367e5ac43331c4a838f359838bd9771d804",
+    "ledger": "cross-problem-evidence/ledger_evidence_math.json"
+  },
+  "policy": "REFERENCE_ONLY_UNLESS_EXACT_SEMANTIC_IMPLICATION_IS_PROVED",
+  "ym_record": "YM-MASS-GAP-PHYSICAL-BRIDGE",
+  "ym_signature": [
+    "U",
+    "B",
+    "R",
+    "C"
+  ],
+  "links": [
+    {
+      "b6": "construction",
+      "atoms": [
+        "constructiveYM4",
+        "reflectionPositiveReconstruction",
+        "physicalHilbertRealization"
+      ],
+      "patterns": [
+        "R",
+        "B"
+      ],
+      "role": "realization/reconstruction bridge",
+      "status": "PATTERN_SUPPORT_ONLY"
+    },
+    {
+      "b6": "infrared",
+      "atoms": [
+        "uniformExponentialClustering",
+        "observableCyclicity",
+        "semigroupSpectralTransfer"
+      ],
+      "patterns": [
+        "C",
+        "B"
+      ],
+      "role": "local/regulated control to long-distance/spectral bridge",
+      "status": "PATTERN_SUPPORT_ONLY"
+    },
+    {
+      "b6": "limits",
+      "atoms": [
+        "uniformRegulatedGap",
+        "continuumLimitControl",
+        "thermodynamicLimitControl",
+        "gapPreservedUnderLimits"
+      ],
+      "patterns": [
+        "C",
+        "B"
+      ],
+      "role": "finite/local to global/infinite closure",
+      "status": "PATTERN_SUPPORT_ONLY"
+    },
+    {
+      "b6": "spectralTransfer",
+      "atoms": [
+        "physicalSectorControlled",
+        "observableStatesDense",
+        "clusteringTransfersToSemigroup",
+        "semigroupExcludesLowSpectrum"
+      ],
+      "patterns": [
+        "B",
+        "R"
+      ],
+      "role": "physical realization and endpoint transfer",
+      "status": "PATTERN_SUPPORT_ONLY"
+    }
+  ],
+  "reusable_framework": [
+    "AxiomaticMillenium/Pattern.lean",
+    "AxiomaticMillenium/Closure.lean",
+    "AxiomaticMillenium/ClosureBasis.lean",
+    "AxiomaticMillenium/Transfer.lean",
+    "AxiomaticMillenium/DomainChecklist.lean",
+    "AxiomaticMillenium/RNCBChain.lean",
+    "AxiomaticMillenium/TaxonomyBoundary.lean"
+  ],
+  "firewall": "No cross-problem pattern, frequency, analogy, or certificate is a Yang-Mills B6 witness without a theorem proving the exact domain-preserving implication."
+}
