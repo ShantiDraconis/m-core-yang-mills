@@ -5,7 +5,8 @@ on:
     paths:
       - 'lean/MCore/YangMills/QCore.lean'
       - 'lean/MCore/YangMills/QDynamics.lean'
-      - 'lean/MCore/YangMills/QInvariants.lean'
+      - 'lean/MCore/YangMills/QInvariants.lean lean/MCore/YangMills/QClaimTests.lean'
+      - 'lean/MCore/YangMills/QClaimTests.lean'
       - 'audit/YM_MULTISTATE_CLAIM_PROTOCOL.md'
       - '.github/workflows/q-core.yml'
   pull_request:
@@ -13,6 +14,7 @@ on:
       - 'lean/MCore/YangMills/QCore.lean'
       - 'lean/MCore/YangMills/QDynamics.lean'
       - 'lean/MCore/YangMills/QInvariants.lean'
+      - 'lean/MCore/YangMills/QClaimTests.lean'
       - '.github/workflows/q-core.yml'
 
 jobs:
@@ -35,10 +37,12 @@ jobs:
         run: lake env lean lean/MCore/YangMills/QDynamics.lean
       - name: Compile Q invariants
         run: lake env lean lean/MCore/YangMills/QInvariants.lean
+      - name: Compile claim-readiness tests
+        run: lake env lean lean/MCore/YangMills/QClaimTests.lean
       - name: Q-core axiom audit
         run: |
           cat > QCoreAxiomAudit.lean <<'EOF'
-          import MCore.YangMills.QInvariants
+          import MCore.YangMills.QClaimTests
           #print axioms MCore.YangMills.QCore.I00_fixed
           #print axioms MCore.YangMills.QCore.contraction_fixed
           #print axioms MCore.YangMills.QCore.proof_returns_to_I00
@@ -52,6 +56,9 @@ jobs:
           #print axioms MCore.YangMills.QInvariants.balanced_iff_critical
           #print axioms MCore.YangMills.QInvariants.critical_state_is_I00
           #print axioms MCore.YangMills.QInvariants.critical_iff_zero_magnitude
+          #print axioms MCore.YangMills.QClaimTests.current_readiness_abstract
+          #print axioms MCore.YangMills.QClaimTests.balancedExample_stops_at_Q
+          #print axioms MCore.YangMills.QClaimTests.balancedExample_resolves_I00
           EOF
           lake env lean QCoreAxiomAudit.lean 2>&1 | tee QCoreAxiomAudit.log
           if grep -E 'sorryAx' QCoreAxiomAudit.log; then exit 1; fi
