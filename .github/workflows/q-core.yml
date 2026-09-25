@@ -49,6 +49,7 @@ jobs:
           lake env lean lean/MCore/YangMills/QClaimEnvelope.lean
           lake env lean lean/MCore/YangMills/FinalStatement.lean
           lake env lean lean/MCore/YangMills/MinimalExternalRoute.lean
+          lake env lean lean/MCore/YangMills/ATKExternalFastPath.lean
           lake env lean lean/MCore/YangMills/ReuseAggregation.lean
           lake env lean lean/MCore/YangMills/A1/B6TerminalWitness.lean
           lake env lean lean/MCore/YangMills/A1/B6MinimalScientificPayload.lean
