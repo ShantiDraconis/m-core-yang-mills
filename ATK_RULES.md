@@ -63,3 +63,19 @@ No ATK state is terminal.
 Repository proof chains remain independent. Cross-repository material may be used only as a provenance-tagged research source and must be copied/reproved locally before promotion.
 
 ATK continues until the current gate has either been repaired and advanced or the exact missing mathematical/external object has been identified after exhaustive available search.
+
+
+## Reuse-first / no duplicated work
+Before creating or reproving any artifact, search the active repository, frozen/certified refs, and recorded provenance for an existing semantics-equivalent result.
+
+If an existing result already closes the required obligation:
+- reference/import/re-export it;
+- record its source path, SHA/ref, and certification evidence;
+- do not duplicate its proof or implementation.
+
+Create new material only for an obligation that is genuinely absent or whose existing artifact is semantically insufficient.
+
+Fast path:
+`SEARCH_EXISTING -> REFERENCE_CERTIFIED -> REUSE/ADAPT_MINIMALLY -> BUILD_ONCE -> GREEN -> FROZEN -> CERTIFIED -> NEXT_GATE`
+
+No-rework is subordinate to fail-closed semantics: a structurally similar artifact cannot be reused as proof when its statement, hypotheses, physical domain, or observable differ.
