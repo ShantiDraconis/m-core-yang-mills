@@ -4,11 +4,13 @@ on:
     branches: [atk/ym-q-core]
     paths:
       - 'lean/MCore/YangMills/QCore.lean'
+      - 'lean/MCore/YangMills/QDynamics.lean'
       - 'audit/YM_MULTISTATE_CLAIM_PROTOCOL.md'
       - '.github/workflows/q-core.yml'
   pull_request:
     paths:
       - 'lean/MCore/YangMills/QCore.lean'
+      - 'lean/MCore/YangMills/QDynamics.lean'
       - '.github/workflows/q-core.yml'
 
 jobs:
@@ -22,21 +24,27 @@ jobs:
       - name: Fail-closed source hygiene
         run: |
           set -euo pipefail
-          f=lean/MCore/YangMills/QCore.lean
-          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' "$f"; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-          if grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$f"; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          f='lean/MCore/YangMills/QCore.lean lean/MCore/YangMills/QDynamics.lean'
+          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' $f; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' $f; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
       - name: Compile Q core
         run: lake env lean lean/MCore/YangMills/QCore.lean
+      - name: Compile Q dynamics
+        run: lake env lean lean/MCore/YangMills/QDynamics.lean
       - name: Q-core axiom audit
         run: |
           cat > QCoreAxiomAudit.lean <<'EOF'
-          import MCore.YangMills.QCore
+          import MCore.YangMills.QDynamics
           #print axioms MCore.YangMills.QCore.I00_fixed
           #print axioms MCore.YangMills.QCore.contraction_fixed
           #print axioms MCore.YangMills.QCore.proof_returns_to_I00
           #print axioms MCore.YangMills.QCore.refutation_returns_to_I00
           #print axioms MCore.YangMills.QCore.I00_ne_proof
           #print axioms MCore.YangMills.QCore.I00_ne_refutation
+          #print axioms MCore.YangMills.QDynamics.criticalBalance_fixed
+          #print axioms MCore.YangMills.QDynamics.contraction_returns_proof
+          #print axioms MCore.YangMills.QDynamics.contraction_returns_refutation
+          #print axioms MCore.YangMills.QDynamics.criticalBalance_stops
           EOF
           lake env lean QCoreAxiomAudit.lean 2>&1 | tee QCoreAxiomAudit.log
           if grep -E 'sorryAx' QCoreAxiomAudit.log; then exit 1; fi
