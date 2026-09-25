@@ -3,6 +3,7 @@ on:
   push:
     branches: [atk/ym-q-core]
     paths:
+      - 'lean/MCore/**'
       - 'lean/MCore/YangMills/QCore.lean'
       - 'lean/MCore/YangMills/QDynamics.lean'
       - 'lean/MCore/YangMills/QClaimTests.lean'
