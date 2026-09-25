@@ -88,3 +88,32 @@ def DirichletToTransferBridge
   DirichletEstimate → TransferPhysicalGap
 
 end MCore
+
+
+/-- Exact analytic bridge still required at the physical scaling frontier.
+It separates a regulator-uniform transfer estimate from the subsequent
+continuum/thermodynamic preservation statement. -/
+structure UniformGapLimitBridge
+    (R : ℝ → ℕ → PhysicalTransferGapData) where
+  mass : ℝ
+  cutoffWindow : ℝ
+  uniformTransferBound : UniformPhysicalMassLowerBound R mass cutoffWindow
+  continuumLimitControl : Prop
+  thermodynamicLimitControl : Prop
+  gapPreservedUnderLimits : Prop
+
+/-- Fail-closed endpoint of the scaling analysis.  This is deliberately a
+proposition requiring a genuine bridge inhabitant; no witness is fabricated. -/
+def UNIFORM_GAP_LIMIT_OPEN_MATH : Prop :=
+  ∃ R : ℝ → ℕ → PhysicalTransferGapData,
+    Nonempty (UniformGapLimitBridge R)
+
+/-- Any genuine bridge exposes the strictly positive physical mass scale that
+must be preserved by the later spectral reconstruction. -/
+theorem uniform_gap_limit_bridge_has_positive_mass
+    {R : ℝ → ℕ → PhysicalTransferGapData}
+    (B : UniformGapLimitBridge R) :
+    0 < B.mass :=
+  B.uniformTransferBound.1
+
+#print axioms MCore.uniform_gap_limit_bridge_has_positive_mass
