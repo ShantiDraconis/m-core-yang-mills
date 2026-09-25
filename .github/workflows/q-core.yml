@@ -7,6 +7,8 @@ on:
       - 'lean/MCore/YangMills/QDynamics.lean'
       - 'lean/MCore/YangMills/QInvariants.lean lean/MCore/YangMills/QClaimTests.lean'
       - 'lean/MCore/YangMills/QClaimTests.lean'
+      - 'lean/MCore/YangMills/QClaimEnvelope.lean'
+      - 'lean/MCore/YangMills/FinalStatement.lean'
       - 'audit/YM_MULTISTATE_CLAIM_PROTOCOL.md'
       - '.github/workflows/q-core.yml'
   pull_request:
@@ -39,10 +41,12 @@ jobs:
         run: lake env lean lean/MCore/YangMills/QInvariants.lean
       - name: Compile claim-readiness tests
         run: lake env lean lean/MCore/YangMills/QClaimTests.lean
+          lake env lean lean/MCore/YangMills/QClaimEnvelope.lean
+          lake env lean lean/MCore/YangMills/FinalStatement.lean
       - name: Q-core axiom audit
         run: |
           cat > QCoreAxiomAudit.lean <<'EOF'
-          import MCore.YangMills.QClaimTests
+          import MCore.YangMills.FinalStatement
           #print axioms MCore.YangMills.QCore.I00_fixed
           #print axioms MCore.YangMills.QCore.contraction_fixed
           #print axioms MCore.YangMills.QCore.proof_returns_to_I00
@@ -59,6 +63,9 @@ jobs:
           #print axioms MCore.YangMills.QClaimTests.current_readiness_abstract
           #print axioms MCore.YangMills.QClaimTests.balancedExample_stops_at_Q
           #print axioms MCore.YangMills.QClaimTests.balancedExample_resolves_I00
+          #print axioms MCore.YangMills.QClaimEnvelope.structural_envelope_closed
+          #print axioms MCore.YangMills.FinalStatement.endpoint_envelope
+          #print axioms MCore.YangMills.FinalStatement.proof_refutation_exclusive
           EOF
           lake env lean QCoreAxiomAudit.lean 2>&1 | tee QCoreAxiomAudit.log
           if grep -E 'sorryAx' QCoreAxiomAudit.log; then exit 1; fi
