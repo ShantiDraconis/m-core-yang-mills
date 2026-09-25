@@ -1,0 +1,117 @@
+{
+  "schema": "ym.atk-autonomous-proof-discovery.v1",
+  "goal": "Discover, formalize, kernel-check, certify and freeze all material needed for the exact Yang-Mills endpoint without semantic weakening.",
+  "source_pattern_library": {
+    "repository": "ShantiDraconis/axiomatic-millenium",
+    "sha": "b344e367e5ac43331c4a838f359838bd9771d804",
+    "ledger": "cross-problem-evidence/ledger_evidence_math.json",
+    "reuse_policy": "SEARCH -> REUSE -> REFERENCE -> COMPOSE -> CREATE_ONLY_IF_MISSING"
+  },
+  "domains": [
+    {
+      "id": "CONSTRUCTION",
+      "patterns": [
+        "R",
+        "B"
+      ],
+      "inputs": [
+        "regulated YM4 data"
+      ],
+      "outputs": [
+        "constructiveYM4",
+        "reflectionPositiveReconstruction",
+        "physicalHilbertRealization"
+      ],
+      "boundary": "K22ConstructionBlock"
+    },
+    {
+      "id": "INFRARED",
+      "patterns": [
+        "C",
+        "B"
+      ],
+      "inputs": [
+        "same YM4 realization"
+      ],
+      "outputs": [
+        "uniformExponentialClustering",
+        "observableCyclicity",
+        "semigroupSpectralTransfer"
+      ],
+      "boundary": "K22InfraredBlock"
+    },
+    {
+      "id": "LIMITS",
+      "patterns": [
+        "C",
+        "B"
+      ],
+      "inputs": [
+        "same regulated family and uniform estimates"
+      ],
+      "outputs": [
+        "uniformRegulatedGap",
+        "continuumLimitControl",
+        "thermodynamicLimitControl",
+        "gapPreservedUnderLimits"
+      ],
+      "boundary": "K22LimitBlock"
+    },
+    {
+      "id": "SPECTRAL_TRANSFER",
+      "patterns": [
+        "B",
+        "R"
+      ],
+      "inputs": [
+        "same physical Hilbert space, Hamiltonian, gap scale and frontier"
+      ],
+      "outputs": [
+        "physicalSectorControlled",
+        "observableStatesDense",
+        "clusteringTransfersToSemigroup",
+        "semigroupExcludesLowSpectrum"
+      ],
+      "boundary": "K30SpectralTransferWitness"
+    }
+  ],
+  "composition": [
+    "14 exact atoms",
+    "K22 construction+infrared+limits",
+    "K30 spectral witness",
+    "B6MinimalScientificPayload",
+    "B6RealOpenMath",
+    "K14MassGap",
+    "hardened exact final statement",
+    "FINAL_PROOF",
+    "FINAL_ROOT",
+    "EXTERNAL_CERTIFICATE"
+  ],
+  "discovery_loop": [
+    "search active repository",
+    "search frozen/certified refs",
+    "search cross-problem pattern ledger for candidate mechanisms",
+    "search external rigorous literature when needed",
+    "compare exact statements/hypotheses/domain/observable",
+    "port or rederive locally",
+    "kernel build",
+    "axiom audit",
+    "certify",
+    "freeze",
+    "advance"
+  ],
+  "promotion_firewall": [
+    "pattern similarity is not proof",
+    "numerical evidence is not proof",
+    "finite/cutoff gap is not a uniform continuum gap",
+    "cross-repository theorem is research provenance only until locally rederived",
+    "same physical realization/domain/observable required across boundaries",
+    "no sorry/admit/custom theorem axiom/vacuous True/placeholder/semantic weakening"
+  ],
+  "current": {
+    "atoms_total": 14,
+    "atoms_promoted": 0,
+    "scientific_state": "OPEN_MATH",
+    "final_root": null
+  }
+}
