@@ -37,6 +37,67 @@ structure YangMillsHabitant where
   delta : physicalData.Scale
   massGap : K14MassGap physicalData hamiltonian gapScale delta
 
+
+/-- F4 realization target for the exact same physical Yang--Mills Hamiltonian
+used by the terminal F2 gap.  This freezes the attack order without weakening
+the final PACK requirement. -/
+structure YMPhysicalRealizationF4 where
+  start : YMClosedStart
+  physicalData : K14PhysicalHilbertData
+  hamiltonian : K14HamiltonianOperator physicalData
+  gapScale : K14GapScale physicalData
+  obligations :
+    K30SpectralTransferObligations
+      start.frontier physicalData hamiltonian gapScale
+  physicalRealization :
+    B60ConcretePhysicalAdapter
+      start.regulated start.frontier physicalData
+      hamiltonian gapScale obligations
+  vacuumAxiom : K14VacuumAxiom physicalData hamiltonian
+
+/-- F2 is allowed only on the Hamiltonian fixed by F4. -/
+def YMPhysicalRealizationF4.F2Gap
+    (R : YMPhysicalRealizationF4) : Prop :=
+  ∃ delta : R.physicalData.Scale,
+    K14MassGap R.physicalData R.hamiltonian R.gapScale delta
+
+/-- Pack one F4 realization and an F2 witness on that exact same Hamiltonian
+into the unique terminal inhabitant. -/
+def YMPhysicalRealizationF4.packHabitant
+    (R : YMPhysicalRealizationF4)
+    (delta : R.physicalData.Scale)
+    (hgap : K14MassGap R.physicalData R.hamiltonian R.gapScale delta) :
+    YangMillsHabitant where
+  start := R.start
+  physicalData := R.physicalData
+  hamiltonian := R.hamiltonian
+  gapScale := R.gapScale
+  obligations := R.obligations
+  physicalRealization := R.physicalRealization
+  vacuumAxiom := R.vacuumAxiom
+  delta := delta
+  massGap := hgap
+
+/-- Exact attack theorem: constructing the terminal inhabitant is equivalent
+to constructing F4 and then proving F2 for the same H. -/
+theorem yangMillsHabitant_iff_F4_and_F2 :
+    Nonempty YangMillsHabitant ↔
+      ∃ R : YMPhysicalRealizationF4, R.F2Gap := by
+  constructor
+  · rintro ⟨Y⟩
+    let R : YMPhysicalRealizationF4 := {
+      start := Y.start
+      physicalData := Y.physicalData
+      hamiltonian := Y.hamiltonian
+      gapScale := Y.gapScale
+      obligations := Y.obligations
+      physicalRealization := Y.physicalRealization
+      vacuumAxiom := Y.vacuumAxiom
+    }
+    exact ⟨R, Y.delta, Y.massGap⟩
+  · rintro ⟨R, delta, hgap⟩
+    exact ⟨R.packHabitant delta hgap⟩
+
 /-- Exact F2 material target. No inhabitant is supplied in this file. -/
 def YANG_MILLS_HABITANT_OPEN_MATH : Prop :=
   Nonempty YangMillsHabitant
@@ -93,6 +154,7 @@ theorem ym_habitant_material_producer_gap_count_exact :
 def ymHabitantStatus : String :=
   "OPEN_MATH: construct one concrete YangMillsHabitant"
 
+#print axioms MCore.YangMills.A1.yangMillsHabitant_iff_F4_and_F2
 #print axioms MCore.YangMills.A1.YangMillsHabitant.has_mass_gap
 #print axioms MCore.YangMills.A1.yang_mills_habitant_closes_open_math
 #print axioms MCore.YangMills.A1.yang_mills_mass_gap
