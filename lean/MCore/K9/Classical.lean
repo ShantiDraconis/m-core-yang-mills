@@ -1,27 +1,27 @@
-import MCore.K8
-
-/-!
-Typed structural payload for the K9 classical layer.
-
-This module intentionally carries only the classical obligation label.  It does
-not assert existence of a four-dimensional quantum Yang--Mills theory, a
-physical Hilbert-space reconstruction, a continuum limit, or a positive mass
-gap.
--/
-
 namespace MCore.K9
 
-/-- Minimal data carried by the classical interface.  The proof only fixes the
-audit label already certified at K8; it introduces no scientific existence
-claim. -/
+/-- Minimal algebraic interface for the classical Yang--Mills layer.
+    K9 deliberately avoids pretending that differential geometry or
+    quantization has already been constructed. -/
 structure ClassicalGaugeData where
-  obligation : MCore.YMObligation
-  obligation_is_classical :
-    obligation = MCore.YMObligation.classicalGaugeTheory
+  GaugeGroup : Type
+  BaseSpace : Type
+  Connection : Type
+  Curvature : Connection → Type
 
-/-- Canonical label-only inhabitant used for structural wiring tests. -/
-def classicalLabelData : ClassicalGaugeData where
-  obligation := MCore.YMObligation.classicalGaugeTheory
-  obligation_is_classical := rfl
+/-- A typed gauge action. Its laws are data to be certified separately. -/
+structure GaugeAction (D : ClassicalGaugeData) where
+  GaugeTransformation : Type
+  act : GaugeTransformation → D.Connection → D.Connection
+
+/-- Covariant derivative interface on curvature-valued objects. -/
+structure CovariantDerivative (D : ClassicalGaugeData) where
+  derivative : (A : D.Connection) → D.Curvature A → Type
+
+/-- Bianchi is represented as an explicit proposition supplied by a concrete
+    geometric realization; it is not postulated globally as an axiom. -/
+def BianchiProperty (D : ClassicalGaugeData) (CD : CovariantDerivative D)
+    (A : D.Connection) (F : D.Curvature A) : Prop :=
+  Nonempty (CD.derivative A F)
 
 end MCore.K9
