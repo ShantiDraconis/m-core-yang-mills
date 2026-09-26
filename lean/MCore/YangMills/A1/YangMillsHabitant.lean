@@ -21,7 +21,8 @@ structure YM4ContinuumPhysicalAxioms
     (S : YMClosedStart)
     (D : K14PhysicalHilbertData)
     (H : K14HamiltonianOperator D) where
-  su3GaugeTheory : S.regulated.Signature.GaugeGroup = S.regulated.Signature.GaugeGroup
+  pureSU3YangMills : Prop
+  spacetimeDimensionFour : Prop
   fourDimensionalContinuum : Prop
   continuumLimitExists : Prop
   euclideanInvariant : Prop
@@ -118,69 +119,3 @@ theorem yangMillsHabitant_iff_F4_and_F2 :
       continuumQFT := Y.continuumQFT
     }
     exact ⟨R, Y.delta, Y.massGap⟩
-  · rintro ⟨R, delta, hgap⟩
-    exact ⟨R.packHabitant delta hgap⟩
-
-/-- Exact F2 material target. No inhabitant is supplied in this file. -/
-def YANG_MILLS_HABITANT_OPEN_MATH : Prop :=
-  Nonempty YangMillsHabitant
-
-/-- Projection of the explicit positive mass-gap certificate. -/
-theorem YangMillsHabitant.has_mass_gap
-    (Y : YangMillsHabitant) :
-    ∃ delta : Y.physicalData.Scale,
-      K14MassGap Y.physicalData Y.hamiltonian Y.gapScale delta :=
-  ⟨Y.delta, Y.massGap⟩
-
-/-- The same physical realization recovers the frozen F2+F4+F7 route. -/
-def YangMillsHabitant.toOpenIRResidual
-    (Y : YangMillsHabitant) : YMOpenIRResidual where
-  start := Y.start
-  physicalData := Y.physicalData
-  hamiltonian := Y.hamiltonian
-  gapScale := Y.gapScale
-  obligations := Y.obligations
-  realization := Y.physicalRealization
-
-/-- A genuine YangMillsHabitant closes the current material open-math target. -/
-theorem yang_mills_habitant_closes_open_math
-    (h : YANG_MILLS_HABITANT_OPEN_MATH) :
-    YM_F2_F4_F7_OPEN_MATH := by
-  rcases h with ⟨Y⟩
-  exact ⟨Y.toOpenIRResidual⟩
-
-/-- Terminal theorem: the habitant itself directly exposes a positive gap. -/
-theorem yang_mills_mass_gap
-    (Y : YangMillsHabitant) :
-    ∃ delta : Y.physicalData.Scale,
-      K14MassGap Y.physicalData Y.hamiltonian Y.gapScale delta :=
-  Y.has_mass_gap
-
-/-- Full theorem-enabling route to the repository-level endpoint. -/
-theorem yang_mills_habitant_enables_final
-    (h : YANG_MILLS_HABITANT_OPEN_MATH) :
-    ∃ (D : K14PhysicalHilbertData)
-      (H : K14HamiltonianOperator D)
-      (G : K14GapScale D)
-      (delta : D.Scale),
-        K14MassGap D H G delta :=
-  yang_mills_F2_F4_F7_final
-    (yang_mills_habitant_closes_open_math h)
-
-/-- Fail-closed ledger: one material producer remains until a concrete term
-of YangMillsHabitant exists. -/
-def ymHabitantMaterialProducerGapCount : Nat := 1
-
-theorem ym_habitant_material_producer_gap_count_exact :
-    ymHabitantMaterialProducerGapCount = 1 := rfl
-
-def ymHabitantStatus : String :=
-  "OPEN_MATH: construct one concrete YangMillsHabitant"
-
-#print axioms MCore.YangMills.A1.yangMillsHabitant_iff_F4_and_F2
-#print axioms MCore.YangMills.A1.YangMillsHabitant.has_mass_gap
-#print axioms MCore.YangMills.A1.yang_mills_habitant_closes_open_math
-#print axioms MCore.YangMills.A1.yang_mills_mass_gap
-#print axioms MCore.YangMills.A1.yang_mills_habitant_enables_final
-
-end MCore.YangMills.A1
