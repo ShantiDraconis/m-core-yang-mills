@@ -54,6 +54,7 @@ jobs:
           lake env lean lean/MCore/YangMills/A1/B6TerminalWitness.lean
           lake env lean lean/MCore/YangMills/A1/B6MinimalScientificPayload.lean
           lake env lean lean/MCore/YangMills/A1/B6RealOpenMath.lean
+          lake env lean lean/MCore/YangMills/A1/B6HardenedLimitCore.lean
           lake env lean lean/MCore/YangMills/A1/B60ConcretePhysicalAdapter.lean
           lake env lean lean/MCore/YangMills/A1/FrontierDecompositionV2.lean
           lake env lean lean/MCore/PhysicalGapScaling.lean
