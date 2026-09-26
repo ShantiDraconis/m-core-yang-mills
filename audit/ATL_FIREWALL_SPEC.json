@@ -1,0 +1,38 @@
+{
+  "schema": "atl.firewall.v1",
+  "modules": [
+    {
+      "id": "AXIOM",
+      "fail": "RED",
+      "check": "kernel theorem axioms subset declared logical base; reject sorryAx and scientific custom axioms"
+    },
+    {
+      "id": "CIRCULARITY",
+      "fail": "RED",
+      "check": "dependency DAG acyclic by frozen statement identity"
+    },
+    {
+      "id": "SEMANTIC",
+      "fail": "RED",
+      "check": "formal statement hash and semantic contract unchanged or explicitly versioned"
+    },
+    {
+      "id": "INTERFACE",
+      "fail": "RED",
+      "check": "required scientific data is not replaced by Prop, Nonempty, True, or placeholder carrier"
+    },
+    {
+      "id": "VACUITY",
+      "fail": "RED",
+      "check": "reject empty-domain, False-hypothesis, trivial-conclusion shortcuts using obligation-specific non-vacuity evidence"
+    }
+  ],
+  "gate_errors": [
+    "TYPE",
+    "BUILD",
+    "AXIOM",
+    "SEMANTIC",
+    "OPEN_MATH"
+  ],
+  "canonical_error": "all minimal-upstream independent failures; retain ties"
+}
