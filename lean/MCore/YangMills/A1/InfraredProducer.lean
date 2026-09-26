@@ -36,6 +36,14 @@ This is intentionally weaker than directly postulating
 precise place where an analytic producer must convert vanishing cutoff error
 into a uniform positive lower bound on a sufficiently small cutoff window.
 -/
+/-- Build a physical cutoff from an explicit nested cutoff window. -/
+def cutoffOfNestedWindow
+    (R : YM4RegulatedGapFamily)
+    {a a0 : ℝ}
+    (ha : 0 < a) (haa0 : a < a0) (ha0R : a0 ≤ R.cutoffWindow) :
+    YM4PhysicalCutoff R.cutoffWindow :=
+  ⟨a, ha, lt_of_lt_of_le haa0 ha0R⟩
+
 structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
   mass : ℝ
   mass_pos : 0 < mass
@@ -51,9 +59,7 @@ structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
       ∀ L : YM4PhysicalVolume,
         mass - eps a ≤
           R.physicalGap
-            ⟨a, by
-              refine ⟨‹0 < a›, ?_⟩
-              exact lt_of_lt_of_le ‹a < a0› a0_le_cutoffWindow⟩ L
+            (cutoffOfNestedWindow R ‹0 < a› ‹a < a0› a0_le_cutoffWindow) L
   /-- Exact nontrivial analytic closure condition.  It is not derived here. -/
   eventualUniform :
     ∃ a1 : ℝ, 0 < a1 ∧ a1 ≤ a0 ∧
@@ -61,10 +67,9 @@ structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
         ∀ L : YM4PhysicalVolume,
           mass / 2 ≤
             R.physicalGap
-              ⟨a, by
-                refine ⟨‹0 < a›, ?_⟩
-                exact lt_of_lt_of_le (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ a0›)
-                  a0_le_cutoffWindow⟩ L
+              (cutoffOfNestedWindow R ‹0 < a›
+                (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ a0›)
+                a0_le_cutoffWindow) L
 
 /-- The certificate exposes a concrete positive uniform mass on a smaller
 physical cutoff window.  This is pure projection of the explicitly supplied
@@ -77,10 +82,9 @@ theorem massGapControl_has_positive_uniform_window
         ∀ L : YM4PhysicalVolume,
           C.mass / 2 ≤
             R.physicalGap
-              ⟨a, by
-                refine ⟨‹0 < a›, ?_⟩
-                exact lt_of_lt_of_le (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ C.a0›)
-                  C.a0_le_cutoffWindow⟩ L := by
+              (cutoffOfNestedWindow R ‹0 < a›
+                (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ C.a0›)
+                C.a0_le_cutoffWindow) L := by
   rcases C.eventualUniform with ⟨a1, ha1, ha10, hU⟩
   refine ⟨a1, ha1, ha10, ?_, hU⟩
   linarith [C.mass_pos]
