@@ -165,5 +165,26 @@
         "cost_events": []
       }
     }
+  ],
+  "edge_schema": {
+    "primitive": [
+      "from",
+      "to",
+      "kind",
+      "evidence"
+    ],
+    "kinds": [
+      "depends_on",
+      "reuses",
+      "replacement_step"
+    ]
+  },
+  "edges": [
+    {
+      "from": "YM_B6_SPECTRAL_EXCLUSION_REUSE",
+      "to": "YM_B6_UNIFORM_LOWER_BOUND",
+      "kind": "reuses",
+      "evidence": "Downstream spectral exclusion is reusable after a genuine same-model uniform-gap/spectral bridge; this edge does not prove the producer."
+    }
   ]
 }
