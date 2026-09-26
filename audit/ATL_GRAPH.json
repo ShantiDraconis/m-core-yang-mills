@@ -181,10 +181,12 @@
   },
   "edges": [
     {
-      "from": "YM_B6_SPECTRAL_EXCLUSION_REUSE",
-      "to": "YM_B6_UNIFORM_LOWER_BOUND",
-      "kind": "reuses",
-      "evidence": "Downstream spectral exclusion is reusable after a genuine same-model uniform-gap/spectral bridge; this edge does not prove the producer."
+      "from": "YM_B6_UNIFORM_LOWER_BOUND",
+      "to": "YM_B6_SPECTRAL_EXCLUSION_REUSE",
+      "kind": "enables_reuse_after_semantic_bridge",
+      "proof_status": "CONDITIONAL",
+      "note": "Uniform lower bound alone does not prove spectral exclusion; exact same-H spectral/decay bridge remains required."
     }
-  ]
+  ],
+  "replacement_routes": []
 }
