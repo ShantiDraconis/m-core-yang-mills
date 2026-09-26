@@ -15,6 +15,11 @@ on:
       - 'lean/MCore/PhysicalGapScaling.lean'
       - 'audit/YM_MULTISTATE_CLAIM_PROTOCOL.md'
       - '.github/workflows/q-core.yml'
+      - 'audit/ATL_GRAPH.json'
+      - 'audit/ATL_COST_HISTORY.json'
+      - 'audit/ATL_FIREWALL_SPEC.json'
+      - 'schemas/egc-mined.schema.json'
+      - 'scripts/atl_v3.py'
   pull_request:
     paths:
       - 'lean/MCore/YangMills/QCore.lean'
