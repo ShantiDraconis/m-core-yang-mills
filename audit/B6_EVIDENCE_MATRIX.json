@@ -1,0 +1,114 @@
+{
+  "schema": "ym.b6-evidence-matrix.v1",
+  "generated": "2026-09-26",
+  "state": "OPEN_MATH",
+  "rule": "Only exact semantics-preserving kernel-checked local theorems can promote an atom.",
+  "atoms": [
+    {
+      "atom": "constructiveYM4",
+      "block": "CONSTRUCTION",
+      "status": "OPEN"
+    },
+    {
+      "atom": "reflectionPositiveReconstruction",
+      "block": "CONSTRUCTION",
+      "status": "OPEN"
+    },
+    {
+      "atom": "physicalHilbertRealization",
+      "block": "CONSTRUCTION",
+      "status": "OPEN"
+    },
+    {
+      "atom": "uniformExponentialClustering",
+      "block": "INFRARED",
+      "status": "OPEN"
+    },
+    {
+      "atom": "observableCyclicity",
+      "block": "INFRARED",
+      "status": "OPEN"
+    },
+    {
+      "atom": "semigroupSpectralTransfer",
+      "block": "INFRARED",
+      "status": "OPEN"
+    },
+    {
+      "atom": "uniformRegulatedGap",
+      "block": "LIMITS",
+      "status": "OPEN"
+    },
+    {
+      "atom": "continuumLimitControl",
+      "block": "LIMITS",
+      "status": "OPEN"
+    },
+    {
+      "atom": "thermodynamicLimitControl",
+      "block": "LIMITS",
+      "status": "OPEN"
+    },
+    {
+      "atom": "gapPreservedUnderLimits",
+      "block": "LIMITS",
+      "status": "OPEN"
+    },
+    {
+      "atom": "physicalSectorControlled",
+      "block": "SPECTRAL_TRANSFER",
+      "status": "OPEN"
+    },
+    {
+      "atom": "observableStatesDense",
+      "block": "SPECTRAL_TRANSFER",
+      "status": "OPEN"
+    },
+    {
+      "atom": "clusteringTransfersToSemigroup",
+      "block": "SPECTRAL_TRANSFER",
+      "status": "OPEN"
+    },
+    {
+      "atom": "semigroupExcludesLowSpectrum",
+      "block": "SPECTRAL_TRANSFER",
+      "status": "OPEN"
+    }
+  ],
+  "reusable_certified": [
+    "A1-B3-B5-hardening-v2 c7ff632d",
+    "A1-frontier-v2 547929e",
+    "B60 a6950ed",
+    "K14 eca85b67",
+    "K30 9aecfca6",
+    "SpectralCore 4a501490",
+    "SpectralConcrete 2db15914",
+    "SpectralMathlib 98f2b6a7",
+    "SpectralExclusion eedcf794",
+    "FinalCore 0fefa9a9",
+    "typed-final-endpoint 2b401f28"
+  ],
+  "candidate_external": [
+    {
+      "source": "consensusframework/yang-mills-mass-gap",
+      "classification": "FINITE_VOLUME_LATTICE_ONLY",
+      "promotion": "NO"
+    },
+    {
+      "source": "lluiseriksson/THE-ERIKSSON-PROGRAMME",
+      "classification": "LATTICE_STRONG_COUPLING; CONTINUUM_OS_GAP_EXPLICITLY_OPEN",
+      "promotion": "NO"
+    },
+    {
+      "source": "Shariq81/yang-mills-mass-gap",
+      "classification": "CONDITIONAL; BALABAN_POINTWISE_CONVERGENCE_OPEN_FOR_YM4",
+      "promotion": "NO"
+    },
+    {
+      "source": "submission-fmcad-2026/submission-fmcad-2026",
+      "classification": "AUDIT_CANDIDATE; INTERFACE_CONTRACTS_REQUIRE_REVIEW",
+      "promotion": "NO_UNTIL_EXACT_AUDIT"
+    }
+  ],
+  "next_attack": "Audit exact theorem statements from certified spectral branches and external candidates against the 14 atom types; port only exact implications; otherwise retain OPEN."
+}
