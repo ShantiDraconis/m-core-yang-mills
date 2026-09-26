@@ -24,7 +24,7 @@ predicate fixes the gauge rank to 3. -/
 def IsSU3R4 (R : YM4RegulatedGapFamily) : Prop :=
   R.regime.gaugeRank = 3 ∧ R.regime.spacetimeDimension = 4
 
-/-- Canonical cutoff-error certificate for a positive physical mass scale.
+/- Canonical cutoff-error certificate for a positive physical mass scale.
 
 The substantive content is:
 * one fixed `mass > 0`;
@@ -55,20 +55,20 @@ structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
   eps_tendsto_zero :
     Tendsto eps (nhdsWithin 0 (Set.Ioi 0)) (nhds 0)
   regulated_bound :
-    ∀ (a : ℝ), 0 < a → a < a0 →
+    ∀ (a : ℝ) (ha : 0 < a) (haa0 : a < a0),
       ∀ L : YM4PhysicalVolume,
         mass - eps a ≤
           R.physicalGap
-            (cutoffOfNestedWindow R ‹0 < a› ‹a < a0› a0_le_cutoffWindow) L
+            (cutoffOfNestedWindow R ha haa0 a0_le_cutoffWindow) L
   /-- Exact nontrivial analytic closure condition.  It is not derived here. -/
   eventualUniform :
     ∃ a1 : ℝ, 0 < a1 ∧ a1 ≤ a0 ∧
-      ∀ (a : ℝ), 0 < a → a < a1 →
+      ∀ (a : ℝ) (ha : 0 < a) (haa1 : a < a1),
         ∀ L : YM4PhysicalVolume,
           mass / 2 ≤
             R.physicalGap
-              (cutoffOfNestedWindow R ‹0 < a›
-                (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ a0›)
+              (cutoffOfNestedWindow R ha
+                (lt_of_lt_of_le haa1 ‹a1 ≤ a0›)
                 a0_le_cutoffWindow) L
 
 /-- The certificate exposes a concrete positive uniform mass on a smaller
@@ -78,16 +78,18 @@ theorem massGapControl_has_positive_uniform_window
     {R : YM4RegulatedGapFamily}
     (C : MassGapControlCertificate R) :
     ∃ a1 : ℝ, 0 < a1 ∧ a1 ≤ C.a0 ∧ 0 < C.mass / 2 ∧
-      ∀ (a : ℝ), 0 < a → a < a1 →
+      ∀ (a : ℝ) (ha : 0 < a) (haa1 : a < a1),
         ∀ L : YM4PhysicalVolume,
           C.mass / 2 ≤
             R.physicalGap
-              (cutoffOfNestedWindow R ‹0 < a›
-                (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ C.a0›)
+              (cutoffOfNestedWindow R ha
+                (lt_of_lt_of_le haa1 (by assumption))
                 C.a0_le_cutoffWindow) L := by
   rcases C.eventualUniform with ⟨a1, ha1, ha10, hU⟩
-  refine ⟨a1, ha1, ha10, ?_, hU⟩
-  linarith [C.mass_pos]
+  refine ⟨a1, ha1, ha10, ?_, ?_⟩
+  · linarith [C.mass_pos]
+  · intro a ha haa1 L
+    exact hU a ha haa1 L
 
 /-- Wilson-area-law producer.  `areaLawToCertificate` is deliberately an
 explicit field: proving area law plus the required spectral/clustering bridge
