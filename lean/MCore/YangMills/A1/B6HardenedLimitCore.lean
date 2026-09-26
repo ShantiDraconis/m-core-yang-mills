@@ -62,9 +62,9 @@ structure B6GapLimitStability (R : B6RegulatedGapFamily) where
   limitGapBound : R.Scale → LimitSpectrum → Prop
   limitSpectrum : LimitSpectrum
   preserves :
-    B6UniformLowerBound R →
-    convergesInSpectralTopology →
-    limitGapBound ·.delta limitSpectrum
+    ∀ U : B6UniformLowerBound R,
+      convergesInSpectralTopology →
+      limitGapBound U.delta limitSpectrum
 
 /-- Exact fast-gate bundle.  Merely constructing pointwise gaps is insufficient;
 the uniform lower bound remains an explicit mandatory field. -/
