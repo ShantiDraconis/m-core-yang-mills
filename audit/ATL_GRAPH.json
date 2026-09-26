@@ -1,0 +1,169 @@
+{
+  "schema": "atl.graph.v3",
+  "schema_version": 3,
+  "policy": {
+    "persisted": [
+      "primitive",
+      "log"
+    ],
+    "derived": "MUST_NOT_BE_PERSISTED_AS_NODE_STATE",
+    "open_math": "classification_not_promotion_state",
+    "roles": [
+      "PLANNER",
+      "RECOVERY",
+      "PROVER",
+      "AUDITOR",
+      "CERTIFIER"
+    ],
+    "retry": {
+      "prover_attempts": 3,
+      "on_exhausted": [
+        "OPEN_MATH_ATTACKABLE",
+        "OPEN_MATH_RESEARCH",
+        "OPEN_MATH_EXTERNAL"
+      ]
+    },
+    "reuse_order": [
+      "exact_hash",
+      "alpha_equiv",
+      "normal_form_equiv",
+      "bounded_unfold:k=5",
+      "equiv_set_registered",
+      "stronger_local_only",
+      "composition",
+      "cross_area_research_only"
+    ],
+    "cut": {
+      "primary": "sum(cost/downstream_unlock) over attackable cut",
+      "tie_breaker": "critical_path_time",
+      "research_excluded": true
+    }
+  },
+  "node_schema": {
+    "primitive": [
+      "id",
+      "version",
+      "superseded_by",
+      "area",
+      "kind",
+      "formal_statement",
+      "semantic_statement",
+      "source_files",
+      "theorem_names",
+      "repo",
+      "branch",
+      "commit",
+      "policy",
+      "attackability"
+    ],
+    "log": [
+      "evidence",
+      "open_math_reason",
+      "provenance_events",
+      "cost_events"
+    ],
+    "derived": [
+      "proof_state",
+      "build_state",
+      "kernel_state",
+      "axiom_state",
+      "semantic_state",
+      "certificate_state",
+      "dependencies",
+      "consumers",
+      "replacement_route",
+      "cut_value"
+    ]
+  },
+  "promotion": [
+    "SOURCE_GREEN requires source/build parse success",
+    "BUILD_GREEN requires dependency/link build success",
+    "KERNEL_GREEN requires kernel acceptance and axiom firewall",
+    "SEMANTIC_GREEN requires frozen statement identity and semantic/interface/vacuity firewalls",
+    "SCIENTIFIC_GREEN requires fail-closed EGC with explicit conditionalOn"
+  ],
+  "forbidden": [
+    "skip_promotion_layer",
+    "persist_derived_node_state",
+    "semantic_equiv_unbounded",
+    "stronger_external_semantic_promotion",
+    "sorryAx",
+    "admit",
+    "scientific_custom_axiom",
+    "vacuous_True_as_science",
+    "phantom_interface"
+  ],
+  "nodes": [
+    {
+      "primitive": {
+        "id": "YM_B6_UNIFORM_LOWER_BOUND",
+        "version": 1,
+        "superseded_by": null,
+        "area": "YM",
+        "kind": "scientific_producer",
+        "formal_statement": "B6UniformLowerBound R",
+        "semantic_statement": "one strictly positive lower gap scale uniformly bounds every regulator/volume gap in the same YM4 family",
+        "source_files": [
+          "lean/MCore/YangMills/A1/B6HardenedLimitCore.lean"
+        ],
+        "theorem_names": [
+          "B6UniformLowerBound",
+          "B6_FIRST_OPEN_TYPE"
+        ],
+        "repo": "ShantiDraconis/m-core-yang-mills",
+        "branch": "atk/ym-q-core",
+        "commit": "b741580c984bf88844d3f03c50429ae02a231e04",
+        "policy": "classical_ok",
+        "attackability": "OPEN_MATH_RESEARCH"
+      },
+      "log": {
+        "evidence": [],
+        "open_math_reason": [
+          "No exact local producer found; pointwise regulated gaps do not imply a regulator-independent positive lower bound."
+        ],
+        "provenance_events": [
+          {
+            "source": "GATE_LEDGER.json",
+            "sha": "d5cf501d4ad7d8959f58ed105afcc2b29b112858"
+          },
+          {
+            "source": "audit/ATK_TERMINAL_PRODUCER_INDEX.md",
+            "sha": "4263430dd2a4a6ccc05d6e3506e7adf0709c80b3"
+          }
+        ],
+        "cost_events": []
+      }
+    },
+    {
+      "primitive": {
+        "id": "YM_B6_SPECTRAL_EXCLUSION_REUSE",
+        "version": 1,
+        "superseded_by": null,
+        "area": "YM",
+        "kind": "certified_reuse",
+        "formal_statement": "spectral_exclusion_at_subrate / realized_exclusion",
+        "semantic_statement": "positive spectral Laplace lower bound plus exponential decay excludes spectral mass below every subrate",
+        "source_files": [
+          "lean/MCore/SpectralExclusion.lean"
+        ],
+        "theorem_names": [
+          "spectral_exclusion_at_subrate",
+          "realized_exclusion"
+        ],
+        "repo": "ShantiDraconis/m-core-yang-mills",
+        "branch": "frozen-SpectralExclusion-green-eedcf794",
+        "commit": "eedcf794",
+        "policy": "classical_ok",
+        "attackability": "CLOSED_REUSE"
+      },
+      "log": {
+        "evidence": [
+          "certified/frozen SpectralExclusion family"
+        ],
+        "open_math_reason": [],
+        "provenance_events": [],
+        "cost_events": []
+      }
+    }
+  ]
+}
