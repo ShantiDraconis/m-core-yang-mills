@@ -15,24 +15,30 @@ the F2 mass-gap endpoint.
 namespace MCore.YangMills.A1
 
 /-- Explicit continuum/QFT realization obligations for the same YM4 model and
-the same Hamiltonian used by the mass-gap proof.  This is intentionally
-fail-closed: every field is material evidence, not a marker. -/
+the same Hamiltonian used by the mass-gap proof.
+
+Unlike the older frontier records, these fields are *proofs of fixed
+propositions attached to S/D/H*.  A constructor therefore cannot close F4 by
+choosing unrelated propositions such as True. -/
 structure YM4ContinuumPhysicalAxioms
     (S : YMClosedStart)
     (D : K14PhysicalHilbertData)
     (H : K14HamiltonianOperator D) where
-  pureSU3YangMills : Prop
-  spacetimeDimensionFour : Prop
-  fourDimensionalContinuum : Prop
-  continuumLimitExists : Prop
-  euclideanInvariant : Prop
-  reflectionPositive : Prop
-  osReconstruction : Prop
-  wightmanCovariance : Prop
-  locality : Prop
-  spectralCondition : Prop
-  vacuumCyclic : Prop
-  reconstructedHamiltonianIsH : Prop
+  constructiveYM4 : S.frontier.constructiveYM4
+  regulatedGaugeInvariantMeasure : S.regulated.gaugeInvariantMeasure
+  regulatedGaugeInvariantObservables : S.regulated.gaugeInvariantObservables
+  regulatedReflectionPositive : S.regulated.reflectionPositive
+  regulatedPositiveTransfer : S.regulated.positiveTransferOperator
+  reflectionPositiveReconstruction :
+    S.frontier.reflectionPositiveReconstruction
+  physicalHilbertRealization : S.frontier.physicalHilbertRealization
+  continuumLimitControl : S.frontier.continuumLimitControl
+  thermodynamicLimitControl : S.frontier.thermodynamicLimitControl
+  observableCyclicity : S.frontier.observableCyclicity
+  semigroupSpectralTransfer : S.frontier.semigroupSpectralTransfer
+  hamiltonianDenselyDefined : H.denselyDefined
+  hamiltonianSymmetric : H.symmetric
+  hamiltonianSelfAdjoint : H.selfAdjoint
 
 /-- The unique terminal F2 inhabitant in the repository's existing K14 model.
 
