@@ -87,8 +87,6 @@ def DirichletToTransferBridge
     (TransferPhysicalGap : Prop) : Prop :=
   DirichletEstimate → TransferPhysicalGap
 
-end MCore
-
 
 /-- Exact analytic bridge still required at the physical scaling frontier.
 It separates a regulator-uniform transfer estimate from the subsequent
@@ -120,3 +118,5 @@ theorem uniform_gap_limit_bridge_has_positive_mass
   B.uniformTransferBound.1
 
 #print axioms MCore.uniform_gap_limit_bridge_has_positive_mass
+
+end MCore
