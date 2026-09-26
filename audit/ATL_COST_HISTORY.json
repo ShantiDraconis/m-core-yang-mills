@@ -1,0 +1,9 @@
+{
+  "schema": "atl.cost-history.v1",
+  "events": [],
+  "bootstrap": {
+    "mode": "heuristic_until_samples",
+    "minimum_samples": 20,
+    "warning": "cost estimates are heuristic before calibration"
+  }
+}
