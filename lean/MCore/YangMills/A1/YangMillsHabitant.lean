@@ -83,6 +83,69 @@ structure YMPhysicalRealizationF4 where
   vacuumAxiom : K14VacuumAxiom physicalData hamiltonian
   continuumQFT : YM4ContinuumPhysicalAxioms start physicalData hamiltonian
 
+
+/-- Construct the strict F4 target from one genuine B6.0 realization plus the
+remaining concrete proofs that B6.0 does not itself certify.
+
+Everything imported from B6.0 is tied to the same C/F/D/H.  The additional
+arguments are exactly the non-phantom regulated and operator facts required to
+turn that interface into a physical continuum realization. -/
+def YMPhysicalRealizationF4.ofB60
+    {C : RegulatedYM4Construction}
+    {F : K20ScientificFrontier}
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    {O : K30SpectralTransferObligations F D H G}
+    (A : B60ConcretePhysicalAdapter C F D H G O)
+    (hGaugeMeasure : C.gaugeInvariantMeasure)
+    (hGaugeObservables : C.gaugeInvariantObservables)
+    (hReflection : C.reflectionPositive)
+    (hPositiveTransfer : C.positiveTransferOperator)
+    (hDense : H.denselyDefined)
+    (hSymm : H.symmetric)
+    (hSelfAdjoint : H.selfAdjoint)
+    (V : K14VacuumAxiom D H)
+    (hVacuumIsolated : V.vacuum_isolated_in_physical_kernel) :
+    YMPhysicalRealizationF4 where
+  start := { regulated := C, frontier := F }
+  physicalData := D
+  hamiltonian := H
+  gapScale := G
+  obligations := O
+  physicalRealization := A
+  vacuumAxiom := V
+  continuumQFT := {
+    constructiveYM4 := A.constructionBlock.constructiveYM4
+    regulatedGaugeInvariantMeasure := hGaugeMeasure
+    regulatedGaugeInvariantObservables := hGaugeObservables
+    regulatedReflectionPositive := hReflection
+    regulatedPositiveTransfer := hPositiveTransfer
+    reflectionPositiveReconstruction :=
+      A.constructionBlock.reflectionPositiveReconstruction
+    physicalHilbertRealization :=
+      A.constructionBlock.physicalHilbertRealization
+    continuumLimitControl := A.limitBlock.continuumLimitControl
+    thermodynamicLimitControl := A.limitBlock.thermodynamicLimitControl
+    observableCyclicity := A.infraredBlock.observableCyclicity
+    semigroupSpectralTransfer := A.infraredBlock.semigroupSpectralTransfer
+    hamiltonianDenselyDefined := hDense
+    hamiltonianSymmetric := hSymm
+    hamiltonianSelfAdjoint := hSelfAdjoint
+  }
+
+/-- Exact residual F4 material obligations after reusing the certified B60
+bridge.  This theorem is transport only; it supplies no scientific proof. -/
+def YMPhysicalRealizationF4Residual
+    {C : RegulatedYM4Construction}
+    {D : K14PhysicalHilbertData}
+    (H : K14HamiltonianOperator D) : Prop :=
+  C.gaugeInvariantMeasure ∧
+  C.gaugeInvariantObservables ∧
+  C.reflectionPositive ∧
+  C.positiveTransferOperator ∧
+  H.denselyDefined ∧ H.symmetric ∧ H.selfAdjoint
+
 /-- F2 is allowed only on the Hamiltonian fixed by F4. -/
 def YMPhysicalRealizationF4.F2Gap
     (R : YMPhysicalRealizationF4) : Prop :=
