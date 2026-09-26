@@ -1,0 +1,124 @@
+{
+  "schema": "ym.b6-hardening-audit.v1",
+  "date": "2026-09-26",
+  "policy": {
+    "mathematical_validity": {
+      "allowed_foundation": [
+        "Classical.choice",
+        "propext",
+        "Quot.sound"
+      ],
+      "forbidden": [
+        "sorryAx",
+        "repository scientific axioms introduced to inhabit B6",
+        "unsafe proof escape"
+      ],
+      "note": "Ordinary opaque theorem constants are not rejected merely for being opaque; theorem opacity is normal Lean behavior."
+    },
+    "promotion": "DERIVED requires a local exact theorem producing the hardened obligation from already-certified hypotheses; interface packaging is insufficient."
+  },
+  "current_source": {
+    "K20ScientificFrontier": "10 scientific fields are Prop placeholders/inventory entries",
+    "B6AtomicObligations": "14 projections/packaging obligations; proves no scientific atom",
+    "B6RealOpenMath": "fail-closed material bundle; no inhabitant"
+  },
+  "classification": [
+    {
+      "id": 1,
+      "atom": "constructiveYM4",
+      "status": "OPEN_MATH",
+      "reason": "no exact local producer"
+    },
+    {
+      "id": 2,
+      "atom": "reflectionPositiveReconstruction",
+      "status": "OPEN_MATH",
+      "reason": "no exact local YM4 producer; general reconstruction theorem alone would be conditional on verified YM hypotheses"
+    },
+    {
+      "id": 3,
+      "atom": "physicalHilbertRealization",
+      "status": "OPEN_MATH",
+      "reason": "no exact local YM4 realization producer"
+    },
+    {
+      "id": 4,
+      "atom": "uniformExponentialClustering",
+      "status": "OPEN_MATH",
+      "reason": "uniform YM4 clustering producer absent"
+    },
+    {
+      "id": 5,
+      "atom": "observableCyclicity",
+      "status": "CONDITIONAL",
+      "reason": "expected downstream of an exact reconstruction/cyclicity theorem, but no exact local producer audited yet"
+    },
+    {
+      "id": 6,
+      "atom": "semigroupSpectralTransfer",
+      "status": "CONDITIONAL",
+      "reason": "typed bridge exists; YM-specific same-H realization absent"
+    },
+    {
+      "id": 7,
+      "atom": "uniformRegulatedGap",
+      "status": "OPEN_MATH",
+      "reason": "positive regulator-independent gap producer absent"
+    },
+    {
+      "id": 8,
+      "atom": "continuumLimitControl",
+      "status": "OPEN_MATH",
+      "reason": "exact nonabelian YM4 continuum control producer absent"
+    },
+    {
+      "id": 9,
+      "atom": "thermodynamicLimitControl",
+      "status": "OPEN_MATH",
+      "reason": "exact uniform infinite-volume producer absent"
+    },
+    {
+      "id": 10,
+      "atom": "gapPreservedUnderLimits",
+      "status": "CONDITIONAL",
+      "reason": "requires explicit convergence topology/resolvent or equivalent spectral-stability hypotheses; current K20 field is untyped Prop"
+    },
+    {
+      "id": 11,
+      "atom": "physicalSectorControlled",
+      "status": "CONDITIONAL",
+      "reason": "K30 exposes obligation; physical realization must discharge it"
+    },
+    {
+      "id": 12,
+      "atom": "observableStatesDense",
+      "status": "CONDITIONAL",
+      "reason": "ConcreteHilbertAdapter coverage/density is explicit remaining hypothesis"
+    },
+    {
+      "id": 13,
+      "atom": "clusteringTransfersToSemigroup",
+      "status": "CONDITIONAL",
+      "reason": "same-H clustering/semigroup identification missing"
+    },
+    {
+      "id": 14,
+      "atom": "semigroupExcludesLowSpectrum",
+      "status": "CONDITIONAL",
+      "reason": "SpectralExclusion eedcf794 derives abstract exclusion once spectral Laplace realization, decay and semantic map are supplied"
+    }
+  ],
+  "counts": {
+    "DERIVED": 0,
+    "CONDITIONAL": 7,
+    "OPEN_MATH": 7,
+    "FABRICATED": 0
+  },
+  "first_open_candidate": "uniformRegulatedGap is a central candidate, but dependency order must not assert that constructiveYM4 logically depends on it until the hardened DAG proves that implication.",
+  "certified_reductions": [
+    "SpectralExclusion eedcf794",
+    "SpectralConcrete 2db15914",
+    "K30 9aecfca6"
+  ],
+  "next": "Create a parallel hardened Lean layer with explicit data-bearing types and adapters to existing K14/K30 interfaces; do not overwrite certified K20/B6 files until it compiles and passes axiom/dependency audit."
+}
