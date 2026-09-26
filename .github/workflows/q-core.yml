@@ -61,6 +61,8 @@ jobs:
           lake env lean lean/MCore/YangMills/A1/B6RealOpenMath.lean
           lake env lean lean/MCore/YangMills/A1/B6HardenedLimitCore.lean
           python3 scripts/atl_v3.py > /tmp/atl-derived.json
+          python3 scripts/atl_firewall.py > /tmp/atl-firewall.json
+          python3 -m json.tool /tmp/atl-firewall.json >/dev/null
           python3 -m json.tool /tmp/atl-derived.json >/dev/null
           python3 -m json.tool audit/ATL_GRAPH.json >/dev/null
           python3 -m json.tool audit/ATL_COST_HISTORY.json >/dev/null
