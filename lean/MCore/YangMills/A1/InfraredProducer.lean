@@ -41,6 +41,7 @@ structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
   mass_pos : 0 < mass
   a0 : ℝ
   a0_pos : 0 < a0
+  a0_le_cutoffWindow : a0 ≤ R.cutoffWindow
   eps : ℝ → ℝ
   eps_nonneg : ∀ a, 0 ≤ eps a
   eps_tendsto_zero :
@@ -50,7 +51,9 @@ structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
       ∀ L : YM4PhysicalVolume,
         mass - eps a ≤
           R.physicalGap
-            ⟨a, by exact ⟨‹0 < a›, ‹a < a0›⟩⟩ L
+            ⟨a, by
+              refine ⟨‹0 < a›, ?_⟩
+              exact lt_of_lt_of_le ‹a < a0› a0_le_cutoffWindow⟩ L
   /-- Exact nontrivial analytic closure condition.  It is not derived here. -/
   eventualUniform :
     ∃ a1 : ℝ, 0 < a1 ∧ a1 ≤ a0 ∧
@@ -60,7 +63,8 @@ structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
             R.physicalGap
               ⟨a, by
                 refine ⟨‹0 < a›, ?_⟩
-                exact lt_of_lt_of_le ‹a < a1› ‹a1 ≤ a0›⟩ L
+                exact lt_of_lt_of_le (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ a0›)
+                  a0_le_cutoffWindow⟩ L
 
 /-- The certificate exposes a concrete positive uniform mass on a smaller
 physical cutoff window.  This is pure projection of the explicitly supplied
@@ -75,7 +79,8 @@ theorem massGapControl_has_positive_uniform_window
             R.physicalGap
               ⟨a, by
                 refine ⟨‹0 < a›, ?_⟩
-                exact lt_of_lt_of_le ‹a < a1› ‹a1 ≤ C.a0›⟩ L := by
+                exact lt_of_lt_of_le (lt_of_lt_of_le ‹a < a1› ‹a1 ≤ C.a0›)
+                  C.a0_le_cutoffWindow⟩ L := by
   rcases C.eventualUniform with ⟨a1, ha1, ha10, hU⟩
   refine ⟨a1, ha1, ha10, ?_, hU⟩
   linarith [C.mass_pos]
