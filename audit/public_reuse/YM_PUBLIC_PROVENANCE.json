@@ -1,131 +1,35 @@
 {
-  "schema": "mcore.yang-mills.public-reuse.v1",
-  "generated_date": "2026-09-26",
-  "target_repo": "ShantiDraconis/m-core-yang-mills",
-  "target_branch": "atk/b6-ym4-physical-harden",
-  "policy": {
-    "fail_closed": true,
-    "source_pin_is_not_proof_credit": true,
-    "promotion_requires": [
-      "exact semantic compatibility",
-      "local theorem or adapter",
-      "kernel build",
-      "axiom audit",
-      "certificate",
-      "freeze"
-    ]
-  },
+  "purpose": "SOURCE_REFERENCE_ONLY - NO_ENDPOINT_PROOF_CREDIT",
+  "frozen_immutable": true,
+  "ym_claims": 0,
   "sources": [
     {
-      "id": "PUBLIC-YM-CONSENSUS-KP",
-      "repository": "consensusframework/yang-mills-mass-gap",
-      "commit": "ead481456bc8637b2b7c22e867cc49f99f4ab375",
-      "scope": [
-        "finite_lattice",
-        "kotecky_preiss",
-        "polymer_gas",
-        "wilson_observables"
-      ],
-      "candidate_local_targets": [
-        "B6InfraredAtoms.uniformExponentialClustering",
-        "YM4D_uniform_IR_mass_gap_producer"
-      ],
-      "status": "SOURCE_PINNED_REUSE_HIGH",
-      "limitations": [
-        "does_not_close_continuum_YM4",
-        "does_not_by_itself_produce_uniform_physical_mass_under_cutoff_removal"
-      ]
+      "repo": "consensusframework/yang-mills-mass-gap",
+      "sha": "ead481456bc8637b2b7c22e867cc49f99f4ab375",
+      "license": "Apache-2.0",
+      "policy": "external_with_attribution - may be dependency",
+      "scope": "research / adapter candidate"
     },
     {
-      "id": "PUBLIC-YM-ERIKSSON-IR-RG",
-      "repository": "lluiseriksson/THE-ERIKSSON-PROGRAMME",
-      "commit": "990d228e11707e7244c70843f48968721ab3e3f7",
-      "scope": [
-        "lattice_IR_clustering",
-        "volume_uniform_area_law",
-        "strong_coupling",
-        "Balaban_RG_decomposition"
-      ],
-      "candidate_local_targets": [
-        "B6InfraredAtoms.uniformExponentialClustering",
-        "B6IRControl",
-        "YM4D_uniform_IR_mass_gap_producer"
-      ],
-      "status": "SOURCE_PINNED_REUSE_HIGH",
-      "limitations": [
-        "hRpoly_remains_hypothesis_in_source_frontier",
-        "continuum_OS_Wightman_mass_gap_remains_open"
-      ]
+      "repo": "lluiseriksson/THE-ERIKSSON-PROGRAMME",
+      "sha": "990d228e11707e7244c70843f48968721ab3e3f7",
+      "license": "AGPL-3.0",
+      "policy": "isolated_reference_only - DO NOT COPY INTO CORE - reimplement from ideas with provenance",
+      "scope": "research only - copyleft obligations risk"
     },
     {
-      "id": "PUBLIC-YM-FMCAD-2026",
-      "repository": "submission-fmcad-2026/submission-fmcad-2026",
-      "commit": "b637ab9a3d92c259b6561982ba57475f9908da9b",
-      "scope": [
-        "thermodynamic_formalism",
-        "kotecky_preiss",
-        "correlator_decay",
-        "continuum_contracts"
-      ],
-      "candidate_local_targets": [
-        "B6IRControl",
-        "B6UVControl",
-        "B6GapLimitStability"
-      ],
-      "status": "SOURCE_PINNED_AUDIT_REQUIRED",
-      "limitations": [
-        "contract_realization_must_be_audited",
-        "no_promotion_from_named_continuum_theorem_without_exact_YM4_realization"
-      ]
+      "repo": "submission-fmcad-2026/submission-fmcad-2026",
+      "sha": "b637ab9a3d92c259b6561982ba57475f9908da9b",
+      "license": "NO LICENSE DETECTED",
+      "policy": "SOURCE_REFERENCE / AUDIT_CANDIDATE ONLY - DO NOT COPY CODE",
+      "scope": "audit"
     },
     {
-      "id": "PUBLIC-YM-DAVIDFOX",
-      "repository": "DavidFox998/yang-mills-gap",
-      "commit": "9872ddba9cf0072eb9cb6ce1ca0c20027aff29ad",
-      "scope": [
-        "auxiliary_lattice_lemmas",
-        "kotecky_preiss",
-        "transfer_algebra",
-        "reflection_positivity_sublemmas"
-      ],
-      "candidate_local_targets": [
-        "B6InfraredAtoms",
-        "K30SpectralTransferObligations"
-      ],
-      "status": "SOURCE_PINNED_PARTIAL_REUSE",
-      "limitations": [
-        "multiple_STAND_IN_or_OPEN_surfaces",
-        "continuum_operator_is_not_physical_YM_Hamiltonian",
-        "endpoint_claims_not_reused"
-      ]
+      "repo": "DavidFox998/yang-mills-gap",
+      "sha": "9872ddba9cf0072eb9cb6ce1ca0c20027aff29ad",
+      "license": "MIT",
+      "policy": "external_with_attribution - may be dependency",
+      "scope": "research / adapter candidate"
     }
-  ],
-  "local_certified_anchors": [
-    {
-      "id": "Y01-UNIFORM-INTEGER-CLUSTERING",
-      "commit": "37acd57778dd91d7dcc6f2650cd204f43c01a3a7",
-      "status": "GREEN_FROZEN_CERTIFIED"
-    },
-    {
-      "id": "K30",
-      "commit": "9aecfca6a10024585b4dbf20f849e1e75265a9e6",
-      "status": "GREEN_FROZEN_CERTIFIED"
-    },
-    {
-      "id": "SPECTRAL-EXCLUSION",
-      "commit": "eedcf7948632715fa62aee120ceecacfa449924d",
-      "status": "GREEN_FROZEN_CERTIFIED"
-    },
-    {
-      "id": "SPECTRAL-CONCRETE",
-      "commit": "2db1591442141941e09f6cd01dd5af8799376eb1",
-      "status": "GREEN_FROZEN_CERTIFIED"
-    },
-    {
-      "id": "B60-ADAPTER",
-      "commit": "a6950ed66403034fdd0cba903f7b71460666c8d4",
-      "status": "GREEN_FROZEN_CERTIFIED"
-    }
-  ],
-  "promotion_state": "SOURCE_ONLY_UNTIL_LOCAL_ADAPTERS_GREEN"
+  ]
 }
