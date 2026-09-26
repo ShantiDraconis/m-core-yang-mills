@@ -1,0 +1,185 @@
+{
+  "schema": "ym-green-freeze-ledger-v1",
+  "generated_on": "2026-09-26",
+  "policy": {
+    "freeze_only_green": true,
+    "open_math_not_promoted": true,
+    "ym_claims": 0,
+    "material_producer_gaps": 1,
+    "active_open": [
+      "YMPhysicalRealizationF4",
+      "F2SameHGap",
+      "YangMillsHabitant"
+    ]
+  },
+  "green_frozen_certified": [
+    {
+      "name": "K14",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "eca85b67f4238194ed36f146a0c6d349275c802f",
+      "run_id": "35125569839",
+      "frozen_ref": "frozen-K14-green-eca85b67"
+    },
+    {
+      "name": "K15",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "7a3c5e3f40d7cf767c0cd5414d18e76f6614f87f",
+      "run_id": "35145518857",
+      "frozen_ref": "frozen-K15-green-7a3c5e3f"
+    },
+    {
+      "name": "K16",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "c8cdc017a2e32ab4404a751bdc9f129a0451f2dc",
+      "run_id": "35154972449",
+      "frozen_ref": "frozen-K16-green-c8cdc017"
+    },
+    {
+      "name": "K17",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "1f7dd037770ea85cdded27da465dbad9f62506a4",
+      "run_id": "35158736997",
+      "frozen_ref": "frozen-K17-green-1f7dd037"
+    },
+    {
+      "name": "K18",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "998ebb4746b8ee6d278c5fe857f2e98adbb23141",
+      "run_id": "35161343848",
+      "frozen_ref": "frozen-K18-green-998ebb47"
+    },
+    {
+      "name": "K19",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "3d89dc38f64d2f5a243141c54f91ecd2d7479ce7",
+      "run_id": "35166880177",
+      "frozen_ref": "frozen-K19-green-3d89dc38"
+    },
+    {
+      "name": "K20",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "69e4aa39adabe61d07e161395a7cf8247b9aff40",
+      "run_id": "35167717571",
+      "frozen_ref": "frozen-K20-green-69e4aa39"
+    },
+    {
+      "name": "K21",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "0352c6afb7e9255bf0fc777269984a2def047080",
+      "run_id": "35170322803",
+      "frozen_ref": "frozen-K21-green-0352c6af"
+    },
+    {
+      "name": "K22",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "153d1be9d94bfa3c345da1b41a6306f066c8030b",
+      "run_id": "35170532273",
+      "frozen_ref": "frozen-K22-green-153d1be9"
+    },
+    {
+      "name": "K23",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "5f8fc05372f3bb728ff9a8070dcf0e831726aade",
+      "run_id": "35172554565",
+      "frozen_ref": "frozen-K23-green-5f8fc053"
+    },
+    {
+      "name": "K24",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "11029a31bcf1696f55dfeefd2e30806f654582ae",
+      "run_id": "35173163800",
+      "frozen_ref": "frozen-K24-green-11029a31"
+    },
+    {
+      "name": "K25",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "bfb080e0f6ca567d35eb2b3245c45bd09722d818",
+      "run_id": "35174392047",
+      "frozen_ref": "frozen-K25-green-bfb080e0"
+    },
+    {
+      "name": "K26",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "7b5e2501344e8f9c09db120ab7ce2f15f4567be5",
+      "run_id": "35175415226",
+      "frozen_ref": "frozen-K26-green-7b5e2501"
+    },
+    {
+      "name": "K27",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "3ed19597cad9e32df303f775fe630dfb1cfbd1ea",
+      "run_id": "35177516765",
+      "frozen_ref": "frozen-K27-green-3ed19597"
+    },
+    {
+      "name": "K28",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "f7021b456f737815e0a51522b64a213be9030816",
+      "run_id": "35194475788",
+      "frozen_ref": "frozen-K28-green-f7021b45"
+    },
+    {
+      "name": "K29",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "cf4272aba660622bb4c1274f552d8e794e2efc2b",
+      "run_id": "35195042284",
+      "frozen_ref": "frozen-K29-green-cf4272ab"
+    },
+    {
+      "name": "K30",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "9aecfca6a10024585b4dbf20f849e1e75265a9e6",
+      "run_id": "35201786839",
+      "frozen_ref": "frozen-K30-green-9aecfca6"
+    },
+    {
+      "name": "SpectralCore",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "4a50149056d382b602a2cbba05c86b93d66b55d8",
+      "run_id": "35217595357",
+      "frozen_ref": "frozen-SpectralCore-green-4a501490"
+    },
+    {
+      "name": "SpectralMathlib",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "98f2b6a72a181b5ffebe097036f644f28a89c3d4",
+      "run_id": "35230393945",
+      "frozen_ref": "frozen-SpectralMathlib-green-98f2b6a7"
+    },
+    {
+      "name": "SpectralConcrete",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "2db1591442141941e09f6cd01dd5af8799376eb1",
+      "run_id": "35232303840",
+      "frozen_ref": "frozen-SpectralConcrete-green-2db15914"
+    },
+    {
+      "name": "SpectralExclusion",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "eedcf7948632715fa62aee120ceecacfa449924d",
+      "run_id": "35263369376",
+      "frozen_ref": "frozen-SpectralExclusion-green-eedcf794"
+    },
+    {
+      "name": "B60AdapterBoundary",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "a6950ed66403034fdd0cba903f7b71460666c8d4",
+      "run_id": "35539580530",
+      "frozen_ref": "frozen/B60-adapter-boundary-green-a6950ed"
+    },
+    {
+      "name": "Y01UniformClustering",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "37acd57778dd91d7dcc6f2650cd204f43c01a3a7",
+      "run_id": "CERT",
+      "frozen_ref": "frozen/y01-uniform-integer-clustering-green-37acd577"
+    },
+    {
+      "name": "TypedFinalEndpoint",
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "sha": "2b401f28942221beb36256b9d8ce9c44cc2b9c6d",
+      "run_id": "35432825975",
+      "frozen_ref": "frozen/typed-final-endpoint-green-2b401f28"
+    }
+  ]
+}
