@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ATL EGC_MINED",
+  "type": "object",
+  "required": [
+    "schema",
+    "problem",
+    "source_theorem",
+    "source_statement_hash",
+    "logical_shape",
+    "miner",
+    "extraction",
+    "axiom_audit",
+    "scope",
+    "does_not_claim"
+  ],
+  "properties": {
+    "schema": {
+      "const": "atl.egc-mined.v1"
+    },
+    "problem": {
+      "type": "string"
+    },
+    "source_theorem": {
+      "type": "string"
+    },
+    "source_statement_hash": {
+      "type": "string"
+    },
+    "logical_shape": {
+      "enum": [
+        "FORALL_EXISTS",
+        "FORALL_EPS_EXISTS_DELTA",
+        "FORALL_NAT_EXISTS_NAT",
+        "EXISTS_FORALL",
+        "NUMERIC_BOUND",
+        "STRUCTURAL",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "miner": {
+      "enum": [
+        "MINER_DIALECTICA",
+        "MINER_MODULUS",
+        "MINER_RATE",
+        "MINER_NUMERIC",
+        "MINER_STRUCTURAL",
+        "MINING_NOT_APPLICABLE"
+      ]
+    },
+    "extraction": {
+      "type": "object",
+      "required": [
+        "artifact",
+        "verified"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "witness_or_bound": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "axiom_audit": {
+      "type": "object",
+      "required": [
+        "sorryAx",
+        "custom_scientific_axioms"
+      ],
+      "properties": {
+        "sorryAx": {
+          "const": false
+        },
+        "custom_scientific_axioms": {
+          "const": false
+        }
+      }
+    },
+    "scope": {
+      "type": "string"
+    },
+    "conditionalOn": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "does_not_claim": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
