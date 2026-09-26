@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ATL EGC_MINED",
+  "type": "object",
+  "required": [
+    "schema",
+    "problem",
+    "source_statement",
+    "source_statement_hash",
+    "mining_kind",
+    "applicability",
+    "witness_artifact",
+    "axiom_audit",
+    "semantic_scope",
+    "does_not_prove"
+  ],
+  "properties": {
+    "schema": {
+      "const": "atl.egc-mined.v1"
+    },
+    "problem": {
+      "type": "string"
+    },
+    "source_statement": {
+      "type": "string"
+    },
+    "source_statement_hash": {
+      "type": "string"
+    },
+    "mining_kind": {
+      "enum": [
+        "DIALECTICA",
+        "MODULUS",
+        "RATE",
+        "NUMERIC",
+        "STRUCTURAL"
+      ]
+    },
+    "applicability": {
+      "enum": [
+        "APPLICABLE",
+        "MINING_NOT_APPLICABLE",
+        "CONDITIONAL"
+      ]
+    },
+    "witness_artifact": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "axiom_audit": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "semantic_scope": {
+      "type": "string"
+    },
+    "does_not_prove": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
