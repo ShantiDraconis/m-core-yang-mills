@@ -55,6 +55,12 @@ jobs:
           lake env lean lean/MCore/YangMills/A1/B6MinimalScientificPayload.lean
           lake env lean lean/MCore/YangMills/A1/B6RealOpenMath.lean
           lake env lean lean/MCore/YangMills/A1/B6HardenedLimitCore.lean
+          python3 scripts/atl_v3.py > /tmp/atl-derived.json
+          python3 -m json.tool /tmp/atl-derived.json >/dev/null
+          python3 -m json.tool audit/ATL_GRAPH.json >/dev/null
+          python3 -m json.tool audit/ATL_COST_HISTORY.json >/dev/null
+          python3 -m json.tool audit/ATL_FIREWALL_SPEC.json >/dev/null
+          python3 -m json.tool schemas/egc-mined.schema.json >/dev/null
           lake env lean lean/MCore/YangMills/A1/B60ConcretePhysicalAdapter.lean
           lake env lean lean/MCore/YangMills/A1/FrontierDecompositionV2.lean
           lake env lean lean/MCore/PhysicalGapScaling.lean
