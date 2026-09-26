@@ -62,13 +62,13 @@ structure MassGapControlCertificate (R : YM4RegulatedGapFamily) where
             (cutoffOfNestedWindow R ha haa0 a0_le_cutoffWindow) L
   /-- Exact nontrivial analytic closure condition.  It is not derived here. -/
   eventualUniform :
-    ∃ a1 : ℝ, 0 < a1 ∧ a1 ≤ a0 ∧
+    ∃ a1 : ℝ, ∃ ha1 : 0 < a1, ∃ ha10 : a1 ≤ a0,
       ∀ (a : ℝ) (ha : 0 < a) (haa1 : a < a1),
         ∀ L : YM4PhysicalVolume,
           mass / 2 ≤
             R.physicalGap
               (cutoffOfNestedWindow R ha
-                (lt_of_lt_of_le haa1 ‹a1 ≤ a0›)
+                (lt_of_lt_of_le haa1 ha10)
                 a0_le_cutoffWindow) L
 
 /-- The certificate exposes a concrete positive uniform mass on a smaller
@@ -77,19 +77,18 @@ physical cutoff window.  This is pure projection of the explicitly supplied
 theorem massGapControl_has_positive_uniform_window
     {R : YM4RegulatedGapFamily}
     (C : MassGapControlCertificate R) :
-    ∃ a1 : ℝ, 0 < a1 ∧ a1 ≤ C.a0 ∧ 0 < C.mass / 2 ∧
+    ∃ a1 : ℝ, ∃ ha1 : 0 < a1, ∃ ha10 : a1 ≤ C.a0,
+      0 < C.mass / 2 ∧
       ∀ (a : ℝ) (ha : 0 < a) (haa1 : a < a1),
         ∀ L : YM4PhysicalVolume,
           C.mass / 2 ≤
             R.physicalGap
               (cutoffOfNestedWindow R ha
-                (lt_of_lt_of_le haa1 (by assumption))
+                (lt_of_lt_of_le haa1 ha10)
                 C.a0_le_cutoffWindow) L := by
   rcases C.eventualUniform with ⟨a1, ha1, ha10, hU⟩
-  refine ⟨a1, ha1, ha10, ?_, ?_⟩
-  · linarith [C.mass_pos]
-  · intro a ha haa1 L
-    exact hU a ha haa1 L
+  refine ⟨a1, ha1, ha10, ?_, hU⟩
+  linarith [C.mass_pos]
 
 /-- Wilson-area-law producer.  `areaLawToCertificate` is deliberately an
 explicit field: proving area law plus the required spectral/clustering bridge
