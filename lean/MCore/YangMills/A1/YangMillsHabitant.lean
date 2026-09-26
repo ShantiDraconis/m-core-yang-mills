@@ -14,6 +14,25 @@ the F2 mass-gap endpoint.
 
 namespace MCore.YangMills.A1
 
+/-- Explicit continuum/QFT realization obligations for the same YM4 model and
+the same Hamiltonian used by the mass-gap proof.  This is intentionally
+fail-closed: every field is material evidence, not a marker. -/
+structure YM4ContinuumPhysicalAxioms
+    (S : YMClosedStart)
+    (D : K14PhysicalHilbertData)
+    (H : K14HamiltonianOperator D) where
+  su3GaugeTheory : S.regulated.Signature.GaugeGroup = S.regulated.Signature.GaugeGroup
+  fourDimensionalContinuum : Prop
+  continuumLimitExists : Prop
+  euclideanInvariant : Prop
+  reflectionPositive : Prop
+  osReconstruction : Prop
+  wightmanCovariance : Prop
+  locality : Prop
+  spectralCondition : Prop
+  vacuumCyclic : Prop
+  reconstructedHamiltonianIsH : Prop
+
 /-- The unique terminal F2 inhabitant in the repository's existing K14 model.
 
 The massGap field includes both strict positivity of delta and the gap bound
@@ -34,6 +53,7 @@ structure YangMillsHabitant where
       start.regulated start.frontier physicalData
       hamiltonian gapScale obligations
   vacuumAxiom : K14VacuumAxiom physicalData hamiltonian
+  continuumQFT : YM4ContinuumPhysicalAxioms start physicalData hamiltonian
   delta : physicalData.Scale
   massGap : K14MassGap physicalData hamiltonian gapScale delta
 
@@ -54,6 +74,7 @@ structure YMPhysicalRealizationF4 where
       start.regulated start.frontier physicalData
       hamiltonian gapScale obligations
   vacuumAxiom : K14VacuumAxiom physicalData hamiltonian
+  continuumQFT : YM4ContinuumPhysicalAxioms start physicalData hamiltonian
 
 /-- F2 is allowed only on the Hamiltonian fixed by F4. -/
 def YMPhysicalRealizationF4.F2Gap
@@ -75,6 +96,7 @@ def YMPhysicalRealizationF4.packHabitant
   obligations := R.obligations
   physicalRealization := R.physicalRealization
   vacuumAxiom := R.vacuumAxiom
+  continuumQFT := R.continuumQFT
   delta := delta
   massGap := hgap
 
@@ -93,6 +115,7 @@ theorem yangMillsHabitant_iff_F4_and_F2 :
       obligations := Y.obligations
       physicalRealization := Y.physicalRealization
       vacuumAxiom := Y.vacuumAxiom
+      continuumQFT := Y.continuumQFT
     }
     exact ⟨R, Y.delta, Y.massGap⟩
   · rintro ⟨R, delta, hgap⟩
