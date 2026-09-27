@@ -1,0 +1,19 @@
+{
+  "schema": "ATK_FLOW_ROUTING_V1",
+  "repository": "ShantiDraconis/m-core-yang-mills",
+  "real_prefix": "FLOW/REAL",
+  "hypothetical_prefix": "FLOW/HYPOTHETICAL",
+  "mined_prefix": "FLOW/MINED",
+  "promotion_policy": {
+    "hypothetical_to_real": false,
+    "hypothetical_can_green": false,
+    "hypothetical_can_freeze": false,
+    "hypothetical_can_certify": false,
+    "real_requires_exact_terminal_type": true,
+    "real_requires_kernel_success": true,
+    "real_requires_sorryAx_zero": true,
+    "real_requires_no_custom_closure_axiom": true
+  },
+  "forward_only": true,
+  "reopen_frozen": false
+}
