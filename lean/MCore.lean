@@ -17,3 +17,5 @@ import MCore.YangMills.A1.YMUnconditionalClosure
 import MCore.YangMills.A1.YMUnconditionalAttack
 import MCore.YangMills.A1.YMGapShapeF2F4F7
 import MCore.YangMills.A1.YangMillsHabitant
+
+import MCore.YangMills.A1.YangMillsDeltaHabitant
