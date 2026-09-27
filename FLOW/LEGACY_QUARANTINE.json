@@ -1,0 +1,6 @@
+{
+  "schema": "ATK_LEGACY_QUARANTINE_V1",
+  "repository": "ShantiDraconis/m-core-yang-mills",
+  "note": "Legacy files remain at existing paths to preserve imports. Classification here prevents proof promotion.",
+  "entries": []
+}
