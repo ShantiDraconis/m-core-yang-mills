@@ -227,7 +227,7 @@ jobs:
         shell: bash
         env:
           G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
-          EXPECTED_THEOREM_COUNT: '2'
+          EXPECTED_THEOREM_COUNT: '5'
         run: |
           set -euo pipefail
           lake build MCore.YangMills.A1.B60ConcretePhysicalAdapter MCore.YangMills.A1.B60TrivialityAudit MCore.YangMills.A1.B60CanonicalPhysicalBinding
