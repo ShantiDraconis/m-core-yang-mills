@@ -169,6 +169,41 @@ structure UniformRegulatorControlV2
     ∀ a L (O : C.Signature.Observable),
       0 ≤ B3.pairing a L O O
 
+
+/-- The uniform V2 mass lower bound is a lower bound for the exact B4
+spectral-gap function at every admissible sufficiently small cutoff. -/
+theorem uniform_v2_spectral_gap_ge_m0
+    {C : RegulatedYM4Construction}
+    {P : A1PhysicalData C}
+    {B3 : ReflectionPositivityDataV2 C P}
+    {B4 : PositiveTransferDataV2 C P}
+    (U : UniformRegulatorControlV2 C P B3 B4)
+    {a : C.Signature.Regulator} {L : C.Signature.Volume}
+    (hadm : C.admissible a L)
+    (hcutPos : 0 < P.cutoffValue a)
+    (hcutLt : P.cutoffValue a < U.a0) :
+    U.m0 ≤ B4.spectralGap a L := by
+  rw [← U.h_gap_eq a L]
+  exact U.h_uniform a L hadm hcutPos hcutLt
+
+/-- Consequently the B4 exponential coefficient is bounded by the coefficient
+with the fixed physical mass U.m0. -/
+theorem uniform_v2_exp_gap_le_mass
+    {C : RegulatedYM4Construction}
+    {P : A1PhysicalData C}
+    {B3 : ReflectionPositivityDataV2 C P}
+    {B4 : PositiveTransferDataV2 C P}
+    (U : UniformRegulatorControlV2 C P B3 B4)
+    {a : C.Signature.Regulator} {L : C.Signature.Volume}
+    (hadm : C.admissible a L)
+    (hcutPos : 0 < P.cutoffValue a)
+    (hcutLt : P.cutoffValue a < U.a0) :
+    Real.exp (-P.cutoffValue a * B4.spectralGap a L) ≤
+      Real.exp (-P.cutoffValue a * U.m0) := by
+  apply Real.exp_le_exp.mpr
+  have hgap := uniform_v2_spectral_gap_ge_m0 U hadm hcutPos hcutLt
+  nlinarith
+
 theorem uniform_v2_mass_nonzero
     {C : RegulatedYM4Construction}
     {P : A1PhysicalData C}
