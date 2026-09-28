@@ -99,7 +99,7 @@ jobs:
           # Do not run the umbrella target or lake clean in normal certification.
           # Every scientific endpoint is compiled explicitly; Lake reuses the pinned cache.
           lake build MCore.K29 MCore.K30 MCore.FinalCore MCore.SpectralCore MCore.PhysicalGapScaling
-          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.UniformityTriviality MCore.YangMills.A1.Hardening MCore.YangMills.A1.PhantomBridgeTriviality MCore.YangMills.A1.FrontierDecompositionV2 MCore.YangMills.A1.B60ConcretePhysicalAdapter MCore.YangMills.A1.B60TrivialityAudit MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
+          lake build MCore.YangMills.A1.RegulatedConstruction MCore.YangMills.A1.UniformityFirewalls MCore.YangMills.A1.UniformityTriviality MCore.YangMills.A1.Hardening MCore.YangMills.A1.PhantomBridgeTriviality MCore.YangMills.A1.FrontierDecompositionV2 MCore.YangMills.A1.B60ConcretePhysicalAdapter MCore.YangMills.A1.B60TrivialityAudit MCore.YangMills.A1.B60CanonicalPhysicalBinding MCore.YangMills.A1.PositiveControl MCore.YangMills.A1.FrontierDecomposition
           echo "TARGETED_REPRODUCTION=PASS"
 
       - name: G6b axiom-gate negative controls
@@ -230,11 +230,14 @@ jobs:
           EXPECTED_THEOREM_COUNT: '2'
         run: |
           set -euo pipefail
-          lake build MCore.YangMills.A1.B60ConcretePhysicalAdapter
+          lake build MCore.YangMills.A1.B60ConcretePhysicalAdapter MCore.YangMills.A1.B60TrivialityAudit MCore.YangMills.A1.B60CanonicalPhysicalBinding
           cat >/tmp/B60Checks.lean <<'EOF'
-          import MCore.YangMills.A1.B60ConcretePhysicalAdapter
+          import MCore.YangMills.A1.B60CanonicalPhysicalBinding
           #print axioms MCore.YangMills.A1.b60_adapter_closes_conditional_chain
           #print axioms MCore.YangMills.A1.b60_legacy_endpoint_contains_only_B1_B2
+          #print axioms MCore.YangMills.A1.b60_inhabited_by_degenerate_model
+          #print axioms MCore.YangMills.A1.toy_b60_has_no_canonical_physical_binding
+          #print axioms MCore.YangMills.A1.canonical_binding_closes_conditional_chain
           EOF
           lake env lean /tmp/B60Checks.lean 2>&1 | tee /tmp/b60-axioms.log
           bash scripts/axiom-gate-G6b.sh /tmp/b60-axioms.log /tmp/g6b-b60-footprint.txt
