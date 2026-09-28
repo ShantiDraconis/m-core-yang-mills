@@ -3,7 +3,7 @@ name: ATK YM producer kernel
 on:
   push:
     branches:
-      - atk/producer-ym-20260928
+      - atk/next-ym-b60-k30-20260928
   workflow_dispatch:
 
 permissions:
