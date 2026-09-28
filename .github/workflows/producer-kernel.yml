@@ -1,0 +1,33 @@
+name: ATK YM producer kernel
+
+on:
+  push:
+    branches:
+      - atk/producer-ym-20260928
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  producer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Build exact producer frontier
+        run: lake build MCore.YangMills.A1.B60ConcretePhysicalAdapter MCore.K30
+      - name: Reject proof escapes in producer sources
+        run: |
+          set -euo pipefail
+          PAT='(:=[[:space:]]*sorry([^[:alnum:]_]|$)|by[[:space:]]+sorry([^[:alnum:]_]|$)|^[[:space:]]*sorry([^[:alnum:]_]|$)|(^|[^[:alnum:]_])admit([^[:alnum:]_]|$)|^[[:space:]]*(axiom|constant|constants)[[:space:]])'
+          if grep -nE "$PAT" "lean/MCore/YangMills/A1/B60ConcretePhysicalAdapter.lean" "lean/MCore/K30.lean"; then
+            echo "producer proof escape found"
+            exit 1
+          fi
