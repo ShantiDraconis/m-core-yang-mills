@@ -1,11 +1,11 @@
 {
   "schema": "ATK_MATERIAL_UNIFICATION_V2",
   "problem": "YANG_MILLS",
-  "canonical_type": "UNAVAILABLE_AT_CURRENT_REPO_LAYER",
-  "canonical_type_status": "TYPE_ENDPOINT_RESIDUE",
-  "standard_object_binding": "MISSING_CANONICAL_4D_GAUGE_THEORY_ENDPOINT",
-  "direct_probe": "blocked until canonical endpoint type is present",
-  "direct_probe_expected": "TYPE_ENDPOINT_RESIDUE",
+  "canonical_type": "MCore.YM.FinalEndpoint S",
+  "canonical_type_status": "TYPED_INTERFACE",
+  "standard_object_binding": "MISSING_CONCRETE_4D_YANG_MILLS_SEMANTICS",
+  "direct_probe": "construct MCore.YM.FinalEndpoint S only after S is bound to concrete standard 4D Yang-Mills semantics",
+  "direct_probe_expected": "BLOCKED_ON_STANDARD_OBJECT_BINDING",
   "adversarial_fences": [
     "FAKE_PHYSICALLOWERBOUND_TYPE",
     "YMWITNESS_BOUND_FIELD",
@@ -28,10 +28,10 @@
     "phantom/trivial witness firewalls"
   ],
   "next_material_producer": [
-    "type canonical standard 4D Yang-Mills physical objects",
-    "bind physical Hilbert space, Hamiltonian, vacuum, and spectrum",
-    "construct genuine physical realization with continuum and infrared control",
-    "derive an independent strictly positive uniform spectral gap"
+    "bind EndpointSemantics to concrete standard 4D Yang-Mills construction",
+    "construct quantum theory existence in that concrete semantics",
+    "construct a positive gap witness",
+    "prove the concrete mass-gap property"
   ],
   "red_incorporation_policy": {
     "RED_INFRA": "DISCARD_AFTER_FIX",
