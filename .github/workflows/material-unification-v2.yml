@@ -16,9 +16,11 @@ jobs:
           lint: false
       - run: lake update
       - run: lake exe cache get || true
+      - run: lake build MCore.YMFinalEndpoint
       - run: lake env lean lean/MCore/MinimalInhabitant.lean
       - run: lake env lean lean/MCore/YangMillsMaterialProducerGate.lean
-      - name: Enforce type-endpoint residue
+      - name: Enforce typed endpoint with missing standard binding
         run: |
-          grep -F '"canonical_type_status": "TYPE_ENDPOINT_RESIDUE"' audit/ATK_MATERIAL_UNIFICATION_V2.json
+          grep -F '"canonical_type_status": "TYPED_INTERFACE"' audit/ATK_MATERIAL_UNIFICATION_V2.json
+          grep -F '"standard_object_binding": "MISSING_CONCRETE_4D_YANG_MILLS_SEMANTICS"' audit/ATK_MATERIAL_UNIFICATION_V2.json
           grep -F '"material_status": "OPEN_MATH"' audit/ATK_MATERIAL_UNIFICATION_V2.json
