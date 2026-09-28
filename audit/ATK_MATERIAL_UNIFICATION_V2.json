@@ -14,5 +14,29 @@
   ],
   "dependency_closure": "REQUIRED",
   "provenance": "REQUIRED",
-  "material_status": "OPEN_MATH"
+  "material_status": "OPEN_MATH",
+  "reuse_proved": [
+    "K12-K30 downstream family",
+    "SpectralCore",
+    "SpectralConcrete",
+    "SpectralExclusion",
+    "SpectralMathlib",
+    "A1 hardening",
+    "B3-B5 physical-interface hardening",
+    "B60 adapter",
+    "uniform-gap-to-mass transport",
+    "phantom/trivial witness firewalls"
+  ],
+  "next_material_producer": [
+    "type canonical standard 4D Yang-Mills physical objects",
+    "bind physical Hilbert space, Hamiltonian, vacuum, and spectrum",
+    "construct genuine physical realization with continuum and infrared control",
+    "derive an independent strictly positive uniform spectral gap"
+  ],
+  "red_incorporation_policy": {
+    "RED_INFRA": "DISCARD_AFTER_FIX",
+    "RED_FALSIFIED_ROUTE": "PERMANENT_FENCE",
+    "RED_CONCRETE_LEMMA": "REUSE_PROVED",
+    "RED_STABLE_HOLE_REFINEMENT": "REPLACE_WITH_SMALLER_CANONICAL_TARGET"
+  }
 }
