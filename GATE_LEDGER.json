@@ -14,8 +14,19 @@
   },
   "state_ci": "GREEN_PREFIX_REUSED",
   "state_math": "OPEN_MATH",
-  "next": "construct B6 genuine 4D physical realization with continuum/IR control and spectral-transfer witness yielding a positive uniform gap",
+  "next": "construct one genuine B60ConcretePhysicalAdapter tying the regulated 4D construction to the same physical Hilbert/Hamiltonian/K30 data; do not count legacy B3-B5 phantom interfaces.",
   "progress_metric": "FROZEN_HARD/TOTAL_HARD",
   "tests_are_progress_metric": false,
-  "frozen_prefix_decrements_hard": false
+  "frozen_prefix_decrements_hard": false,
+  "direct_producer": {
+    "state": "GREEN_FROZEN_TYPED_OPEN_MATH",
+    "exactness": "SUFFICIENT_ROUTE_NOT_ENDPOINT_EQUIVALENCE",
+    "source_branch": "frozen/prefix-y01-b3b5-hardening-cd4bbfd",
+    "source_sha": "cd4bbfd348b607bd24ed0c6d605207b764286f58",
+    "target": "Nonempty (B60ConcretePhysicalAdapter C F D H G O)",
+    "downstream": "B60ConcretePhysicalAdapter -> ∃ gap, K14MassGap",
+    "theorem": "b60_adapter_closes_conditional_chain",
+    "note": "frozen source explicitly provides no B60 inhabitant",
+    "inhabitant_state": "OPEN_MATH"
+  }
 }
