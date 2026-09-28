@@ -1,12 +1,11 @@
-import MCore.K1
+import MCore.YMFinalEndpoint
 
-namespace MCore
+namespace MCore.YM
 
-/-- Authoritative material-status sentinel. We deliberately do not invent a
-    fake Yang--Mills endpoint type merely to make a producer probe typecheck. -/
-def YangMillsCanonicalEndpointTyped : Bool := false
+/-- Authoritative typed endpoint interface.
+    MATERIAL_GREEN additionally requires binding S to concrete standard
+    four-dimensional Yang--Mills objects and constructing this proposition. -/
+def MinimalYMInhabitant (S : EndpointSemantics) : Prop :=
+  FinalEndpoint S
 
-theorem yangMillsCanonicalEndpoint_type_residue :
-    YangMillsCanonicalEndpointTyped = false := rfl
-
-end MCore
+end MCore.YM
