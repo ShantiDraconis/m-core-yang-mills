@@ -1,0 +1,24 @@
+name: material-unification-v2
+on:
+  push:
+    branches: ['atk/material-unification-v2-20260928']
+  workflow_dispatch:
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+      - run: lake update
+      - run: lake exe cache get
+      - run: lake env lean lean/MCore/MinimalInhabitant.lean
+      - run: lake env lean lean/MCore/YangMillsMaterialProducerGate.lean
+      - name: Enforce type-endpoint residue
+        run: |
+          grep -F '"canonical_type_status": "TYPE_ENDPOINT_RESIDUE"' audit/ATK_MATERIAL_UNIFICATION_V2.json
+          grep -F '"material_status": "OPEN_MATH"' audit/ATK_MATERIAL_UNIFICATION_V2.json
