@@ -1,0 +1,26 @@
+{
+  "schema": "ATK_MATERIAL_RECLASSIFICATION_V1",
+  "problem": "YANG_MILLS",
+  "source_commit": "97a566dad680be3de5fbde11b1b71e4bebc88193",
+  "frontier_evidence": {
+    "gate_ledger": "GATE_LEDGER.json",
+    "state_math": "OPEN_MATH",
+    "next": "construct B6 genuine 4D physical realization with continuum/IR control and spectral-transfer witness yielding a positive uniform gap"
+  },
+  "current_structural_endpoint": {
+    "route": "massGap",
+    "status": "openBridge",
+    "classification": "GREEN_INTERFACE"
+  },
+  "stable_hole": "genuine 4D physical Yang-Mills realization with continuum/IR control and an independently derived positive uniform spectral gap",
+  "fences": [
+    "no lower bound supplied as a structure field counts as producer",
+    "no phantom/trivial physical interface counts as realization",
+    "no transport from B60/K30 counts as material unless the physical input itself is constructed",
+    "no new fake endpoint type may be introduced only to satisfy the gate",
+    "the material endpoint must bind to standard gauge-theory objects"
+  ],
+  "audit_status": "GREEN",
+  "material_status": "OPEN_MATH",
+  "material_green": false
+}
