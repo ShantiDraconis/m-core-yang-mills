@@ -1,0 +1,14 @@
+{
+  "schema": "ATK_CANONICAL_STABLE_HOLE_V1",
+  "problem": "YANG_MILLS",
+  "type": "TYPE_ENDPOINT_RESIDUE",
+  "standard_binding": "canonical standard 4D quantum Yang-Mills physical objects are not yet typed in the active repository layer",
+  "forbidden_shortcuts": [
+    "fake PhysicalLowerBound type",
+    "bound stored in witness field",
+    "phantom physical realization",
+    "B60/K30 transport counted as producer"
+  ],
+  "exact_producer": "type the canonical physical Hilbert space/Hamiltonian/vacuum/spectrum and genuine 4D realization, then derive an independent strictly positive uniform spectral gap",
+  "material_status": "OPEN_MATH"
+}
