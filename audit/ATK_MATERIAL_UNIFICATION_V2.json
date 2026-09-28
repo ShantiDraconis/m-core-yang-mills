@@ -1,0 +1,18 @@
+{
+  "schema": "ATK_MATERIAL_UNIFICATION_V2",
+  "problem": "YANG_MILLS",
+  "canonical_type": "UNAVAILABLE_AT_CURRENT_REPO_LAYER",
+  "canonical_type_status": "TYPE_ENDPOINT_RESIDUE",
+  "standard_object_binding": "MISSING_CANONICAL_4D_GAUGE_THEORY_ENDPOINT",
+  "direct_probe": "blocked until canonical endpoint type is present",
+  "direct_probe_expected": "TYPE_ENDPOINT_RESIDUE",
+  "adversarial_fences": [
+    "FAKE_PHYSICALLOWERBOUND_TYPE",
+    "YMWITNESS_BOUND_FIELD",
+    "PHANTOM_PHYSICAL_INTERFACE",
+    "B60_K30_TRANSPORT_AS_PRODUCER"
+  ],
+  "dependency_closure": "REQUIRED",
+  "provenance": "REQUIRED",
+  "material_status": "OPEN_MATH"
+}
