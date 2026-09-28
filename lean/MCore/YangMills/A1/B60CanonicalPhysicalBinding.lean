@@ -39,7 +39,8 @@ theorem toy_b60_has_no_canonical_physical_binding :
         toyK30Obligations) := by
   rintro ⟨B⟩
   apply B.excitation_ne_vacuum
-  exact Subsingleton.elim _ _
+  cases B.adapter.excitation
+  rfl
 
 /-- A canonical binding still closes only the already-conditional B60 chain.
 No canonical physical binding is constructed here. -/
