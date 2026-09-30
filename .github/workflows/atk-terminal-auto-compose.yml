@@ -1,0 +1,21 @@
+name: ATK terminal auto-compose
+on:
+  push:
+    branches: [atk/auto-compose-terminal-20260930]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+      - name: Minimal proof escape guard
+        run: |
+          set -euo pipefail
+          ! grep -nE '^[[:space:]]*(sorry|admit|axiom)[[:space:]]' lean/MCore/AutoCompose.lean
+      - name: Build composition layer
+        run: lake build MCore.AutoCompose
+      - name: Build current terminal frontier only
+        run: lake build MCore.YangMills.A1.B60ConcretePhysicalAdapter
