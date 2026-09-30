@@ -1,9 +1,12 @@
 import MCore.YangMills.A1.FinalExternal
+import MCore.K23
+import MCore.K25
+import MCore.K27
 
 namespace MCore.YangMills.A1
 namespace Final
 
-def b60OfFields
+def finalExternal_of_exact_fields
     {C : RegulatedYM4Construction}
     {F : K20ScientificFrontier}
     {D : K14PhysicalHilbertData}
@@ -17,22 +20,26 @@ def b60OfFields
       ∀ (a : C.Signature.Regulator) (V : C.Signature.Volume),
         C.Signature.Observable → D.State)
     (mappedStatesPhysical :
-      ∀ (a : C.Signature.Regulator) (V : C.Signature.Volume)
-        (psi : (C.fiber a V).State),
-        C.admissible a V → D.physical (stateMap a V psi))
+      ∀ a V ψ, C.admissible a V → D.physical (stateMap a V ψ))
     (observableStatesPhysical :
-      ∀ (a : C.Signature.Regulator) (V : C.Signature.Volume)
-        (A : C.Signature.Observable),
-        C.admissible a V → D.physical (observableState a V A))
-    (constructionBlock : K22ConstructionBlock F)
+      ∀ a V A, C.admissible a V → D.physical (observableState a V A))
+    (C23 : K23ConstructiveYM4Data F)
+    (hC23 : K23ConstructionInputsHold C23)
     (constructionFromA1 :
-      MeasureInvariance C →
-      ObservableInvariance C →
-      F.constructiveYM4 ∧
+      MeasureInvariance C → ObservableInvariance C →
+        F.constructiveYM4 ∧
         F.reflectionPositiveReconstruction ∧
         F.physicalHilbertRealization)
-    (infraredBlock : K22InfraredBlock F)
-    (limitBlock : K22LimitBlock F)
+    {S25 : K25ClusteringSystem}
+    {U25 : K25UniformExponentialClustering S25}
+    (B25 : K25ClusteringToInfraredBridge F S25 U25)
+    (hc25 : B25.observableCyclicityStillRequired)
+    (hs25 : B25.semigroupTransferStillRequired)
+    {S27 : K27RegulatedGapSystem}
+    {U27 : K27UniformPositiveGap S27}
+    {L27 : K27LimitControl S27}
+    {W27 : K27LimitWitness S27 U27 L27}
+    (B27 : K27ToFrontierBridge F S27 U27 L27 W27)
     (excitation : D.State)
     (excitationInDomain : H.domain excitation)
     (excitationPhysical : D.physical excitation)
@@ -44,10 +51,10 @@ def b60OfFields
     observableState := observableState
     mappedStatesPhysical := mappedStatesPhysical
     observableStatesPhysical := observableStatesPhysical
-    constructionBlock := constructionBlock
+    constructionBlock := k23_inputs_build_construction_block C23 hC23
     constructionFromA1 := constructionFromA1
-    infraredBlock := infraredBlock
-    limitBlock := limitBlock
+    infraredBlock := k25_uniform_clustering_builds_infrared_block B25 hc25 hs25
+    limitBlock := k27_bridge_builds_limit_block B27
     excitation := excitation
     excitationInDomain := excitationInDomain
     excitationPhysical := excitationPhysical
@@ -55,7 +62,7 @@ def b60OfFields
     transferWitness := transferWitness
   }
 
-theorem FINAL_ROOT_of_b60_fields
+theorem FINAL_ROOT_of_exact_fields
     {C : RegulatedYM4Construction}
     {F : K20ScientificFrontier}
     {D : K14PhysicalHilbertData}
@@ -65,6 +72,9 @@ theorem FINAL_ROOT_of_b60_fields
     (E : FinalExternalCertificate C F D H G O) :
     FINAL_ROOT D H G :=
   finalExternal_to_FINAL_ROOT E
+
+#print axioms MCore.YangMills.A1.Final.finalExternal_of_exact_fields
+#print axioms MCore.YangMills.A1.Final.FINAL_ROOT_of_exact_fields
 
 end Final
 end MCore.YangMills.A1
