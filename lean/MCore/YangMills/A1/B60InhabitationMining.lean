@@ -21,10 +21,13 @@ private partial def instantiateForalls (e : Expr) : MetaM Expr := do
   | _ => pure e
 
 private def typeUnifies (target cand : Expr) : MetaM Bool := do
-  withoutModifyingState do
-    let t ← instantiateForalls target
-    let c ← instantiateForalls cand
-    isDefEq t c
+  try
+    withoutModifyingState do
+      let t ← instantiateForalls target
+      let c ← instantiateForalls cand
+      isDefEq t c
+  catch _ =>
+    pure false
 
 elab "#mine_structure " n:ident : command => do
   let env ← getEnv
