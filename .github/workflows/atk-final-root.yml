@@ -1,22 +1,23 @@
-name: ATK FINAL ROOT
+name: ATK FINAL_ROOT
 on:
   push:
     branches: [atk/auto-compose-terminal-20260930]
     paths:
+      - 'lean/**/FinalExternal.lean'
       - '.github/workflows/atk-final-root.yml'
-      - 'lean/**'
-      - 'research/**'
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   final-root:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Lean
-        run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Resolve dependencies
-        run: lake update
-      - name: Build FINAL_ROOT
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+      - name: Build FINAL_EXTERNAL -> FINAL_ROOT
         run: lake build MCore.YangMills.A1.FinalExternal
