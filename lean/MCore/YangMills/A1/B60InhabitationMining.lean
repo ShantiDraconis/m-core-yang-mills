@@ -3,10 +3,14 @@ import MCore.YangMills.A1.B60ConcretePhysicalAdapter
 
 open Lean Elab Command Meta
 
-private def resultHeadName (e : Expr) : MetaM (Option Name) := do
-  forallMetaTelescopeReducing e none MetavarKind.natural fun _ body => do
-    let body ← whnf body
-    return body.getAppFn.constName?
+private partial def resultHeadName (e : Expr) : MetaM (Option Name) := do
+  let e ← whnf e
+  match e with
+  | .forallE _ domain body _ =>
+      let x ← mkFreshExprMVar domain
+      resultHeadName (body.instantiate1 x)
+  | _ =>
+      return e.getAppFn.constName?
 
 private def headMatches (target cand : Expr) : MetaM Bool := do
   let ht ← resultHeadName target
