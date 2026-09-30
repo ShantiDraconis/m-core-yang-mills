@@ -1,0 +1,23 @@
+name: FALSIFIED terminal smoke
+on:
+  push:
+    branches: [atk/falsified-terminal-inhabitants-20260930]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  falsified:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Compile deliberately falsified terminal
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.FalsifiedTerminal 2>&1 | tee /tmp/falsified.log
+          grep -F 'falsified_b60ConcretePhysicalAdapter' /tmp/falsified.log
+          echo 'FALSIFIED_GREEN=1'
