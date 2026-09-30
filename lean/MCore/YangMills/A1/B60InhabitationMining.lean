@@ -12,10 +12,19 @@ private partial def resultHeadName (e : Expr) : MetaM (Option Name) := do
   | _ =>
       return e.getAppFn.constName?
 
-private def headMatches (target cand : Expr) : MetaM Bool := do
-  let ht ← resultHeadName target
-  let hc ← resultHeadName cand
-  return ht.isSome && ht == hc
+private partial def instantiateForalls (e : Expr) : MetaM Expr := do
+  let e ← whnf e
+  match e with
+  | .forallE _ domain body _ =>
+      let x ← mkFreshExprMVar domain
+      instantiateForalls (body.instantiate1 x)
+  | _ => pure e
+
+private def typeUnifies (target cand : Expr) : MetaM Bool := do
+  withoutModifyingState do
+    let t ← instantiateForalls target
+    let c ← instantiateForalls cand
+    isDefEq t c
 
 elab "#mine_structure " n:ident : command => do
   let env ← getEnv
@@ -38,9 +47,9 @@ elab "#mine_structure " n:ident : command => do
     logInfo m!"[FIELD] {field}"
     logInfo m!"  TYPE: {ftype}"
     if hits.isEmpty then
-      logInfo m!"  STATUS: NO_PRODUCER_HEAD"
+      logInfo m!"  STATUS: NO_PRODUCER_TYPE"
     else
-      logInfo m!"  STATUS: COMPOSABLE_HEAD_CANDIDATES ({hits.size})"
+      logInfo m!"  STATUS: COMPOSABLE_TYPE_CANDIDATES ({hits.size})"
       logInfo m!"  CANDIDATES: {preview}"
 
 #mine_structure MCore.YangMills.A1.B60ConcretePhysicalAdapter
