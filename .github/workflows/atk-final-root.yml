@@ -4,6 +4,7 @@ on:
     branches: [atk/auto-compose-terminal-20260930]
     paths:
       - 'lean/**/FinalExternal.lean'
+      - 'lean/**/ExactFinalProducer.lean'
       - '.github/workflows/atk-final-root.yml'
   workflow_dispatch:
 permissions:
@@ -19,5 +20,5 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Resolve dependencies
         run: lake update
-      - name: Build FINAL_EXTERNAL -> FINAL_ROOT
-        run: lake build MCore.YangMills.A1.FinalExternal
+      - name: Build exact FINAL_EXTERNAL -> FINAL_ROOT producer
+        run: lake build MCore.YangMills.A1.ExactFinalProducer
