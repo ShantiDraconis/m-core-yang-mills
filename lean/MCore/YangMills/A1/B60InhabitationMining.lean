@@ -24,11 +24,12 @@ elab "#mine_structure " n:ident : command => do
     | throwError "not a structure: {structName}"
   logInfo m!"[MINING STRUCTURE] {structName}"
   for field in info.fieldNames do
-    let finfo ← getConstInfo field
+    let projName := Name.str structName field.toString
+    let finfo ← getConstInfo projName
     let ftype := finfo.type
     let mut hits : Array Name := #[]
     for (declName, declInfo) in env.constants.toList do
-      if declName != field && !(declName.toString.startsWith "_") then
+      if declName != projName && !(declName.toString.startsWith "_") then
         let ok ← liftTermElabM do
           headMatches ftype declInfo.type
         if ok then
