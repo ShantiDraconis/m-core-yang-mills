@@ -1,0 +1,23 @@
+name: ATK B60 inhabitation mining
+on:
+  push:
+    branches: [atk/auto-compose-terminal-20260930]
+    paths:
+      - 'lean/MCore/YangMills/A1/B60InhabitationMining.lean'
+      - '.github/workflows/atk-b60-inhabitation-mining.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+      - name: Compile and mine B60 fields
+        run: lake env lean lean/MCore/YangMills/A1/B60InhabitationMining.lean
