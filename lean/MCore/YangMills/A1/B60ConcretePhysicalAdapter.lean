@@ -99,6 +99,23 @@ theorem b60_adapter_closes_conditional_chain
   }
   exact k30_witness_closes_conditional_chain blocks O A.transferWitness
 
+/-- Ledger-form projection: the exact OPEN_MATH target is Nonempty B6.0.
+Once inhabited, the already-certified K30 chain yields a positive mass-gap
+witness with no additional mathematical premise. -/
+theorem b60_open_bridge_closes_conditional_chain
+    {C : RegulatedYM4Construction}
+    {F : K20ScientificFrontier}
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    {O : K30SpectralTransferObligations F D H G}
+    (h : B60ConcretePhysicalOpenBridge C F D H G O) :
+    ∃ gap : D.Scale, K14MassGap D H G gap := by
+  rcases h with ⟨A⟩
+  exact b60_adapter_closes_conditional_chain A
+
+#print axioms MCore.YangMills.A1.b60_open_bridge_closes_conditional_chain
+
 /-- Fail-closed diagnostic: A1's legacy endpoint is not an inhabitant of B6.0.
 There is intentionally no constructor from `A1ScientificOpenBridge C` to this
 type. -/
