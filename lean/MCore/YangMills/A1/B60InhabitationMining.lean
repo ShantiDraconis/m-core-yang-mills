@@ -4,7 +4,7 @@ import MCore.YangMills.A1.B60ConcretePhysicalAdapter
 open Lean Elab Command Meta
 
 private def resultHeadName (e : Expr) : MetaM (Option Name) := do
-  forallMetaTelescopeReducing e fun _ body => do
+  forallMetaTelescopeReducing e none fun _ body => do
     let body ← whnf body
     return body.getAppFn.constName?
 
@@ -15,8 +15,7 @@ private def headMatches (target cand : Expr) : MetaM Bool := do
 
 elab "#mine_structure " n:ident : command => do
   let env ← getEnv
-  let names ← resolveGlobalConstNoOverload n
-  let structName := names[0]!
+  let structName ← resolveGlobalConstNoOverload n
   let some info := getStructureInfo? env structName
     | throwError "not a structure: {structName}"
   logInfo m!"[MINING STRUCTURE] {structName}"
