@@ -20,5 +20,5 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Resolve dependencies
         run: lake update
-      - name: Build exact FINAL_EXTERNAL -> FINAL_ROOT producer
+      - name: Build exact final producer
         run: lake build MCore.YangMills.A1.ExactFinalProducer
