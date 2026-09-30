@@ -60,7 +60,7 @@ elab "#mine_structure " n:ident : command => do
     for (declName, declInfo) in env.constants.toList do
       if declName != projName && !(declName.toString.startsWith "_") then
         let ok ← liftTermElabM do
-          headMatches ftype declInfo.type
+          typeUnifies ftype declInfo.type
         if ok then
           hits := hits.push declName
     let preview := hits.toList.take 24
