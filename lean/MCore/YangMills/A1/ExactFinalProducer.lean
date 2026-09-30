@@ -19,10 +19,10 @@ def finalExternal_of_fields
     {O : K30SpectralTransferObligations F D H G}
     {S : K25ClusteringSystem}
     {U : K25UniformExponentialClustering S}
-    {GS : K27RegulatedGapSystem}
-    {GU : K27UniformPositiveGap GS}
-    {GL : K27LimitControl GS}
-    {GW : K27LimitWitness GS GU GL}
+    {gapSys : K27RegulatedGapSystem}
+    {gapUniform : K27UniformPositiveGap gapSys}
+    {limitCtl : K27LimitControl gapSys}
+    {limitW : K27LimitWitness gapSys gapUniform limitCtl}
     (stateMap :
       ∀ (a : C.Signature.Regulator) (V : C.Signature.Volume),
         (C.fiber a V).State → D.State)
@@ -48,7 +48,7 @@ def finalExternal_of_fields
     (K25 : K25ClusteringToInfraredBridge F S U)
     (cyclicity : K25.observableCyclicityStillRequired)
     (semigroup : K25.semigroupTransferStillRequired)
-    (K27 : K27ToFrontierBridge F GS GU GL GW)
+    (K27 : K27ToFrontierBridge F gapSys gapUniform limitCtl limitW)
     (excitation : D.State)
     (excitationInDomain : H.domain excitation)
     (excitationPhysical : D.physical excitation)
@@ -90,10 +90,10 @@ theorem FINAL_ROOT_of_fields
     {O : K30SpectralTransferObligations F D H G}
     {S : K25ClusteringSystem}
     {U : K25UniformExponentialClustering S}
-    {GS : K27RegulatedGapSystem}
-    {GU : K27UniformPositiveGap GS}
-    {GL : K27LimitControl GS}
-    {GW : K27LimitWitness GS GU GL}
+    {gapSys : K27RegulatedGapSystem}
+    {gapUniform : K27UniformPositiveGap gapSys}
+    {limitCtl : K27LimitControl gapSys}
+    {limitW : K27LimitWitness gapSys gapUniform limitCtl}
     (stateMap :
       ∀ (a : C.Signature.Regulator) (V : C.Signature.Volume),
         (C.fiber a V).State → D.State)
@@ -119,7 +119,7 @@ theorem FINAL_ROOT_of_fields
     (K25 : K25ClusteringToInfraredBridge F S U)
     (cyclicity : K25.observableCyclicityStillRequired)
     (semigroup : K25.semigroupTransferStillRequired)
-    (K27 : K27ToFrontierBridge F GS GU GL GW)
+    (K27 : K27ToFrontierBridge F gapSys gapUniform limitCtl limitW)
     (excitation : D.State)
     (excitationInDomain : H.domain excitation)
     (excitationPhysical : D.physical excitation)
