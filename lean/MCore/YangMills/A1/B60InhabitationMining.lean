@@ -4,7 +4,7 @@ import MCore.YangMills.A1.B60ConcretePhysicalAdapter
 open Lean Elab Command Meta
 
 private def resultHeadName (e : Expr) : MetaM (Option Name) := do
-  forallMetaTelescopeReducing e none fun _ body => do
+  forallMetaTelescopeReducing e none MetavarKind.natural fun _ body => do
     let body ← whnf body
     return body.getAppFn.constName?
 
