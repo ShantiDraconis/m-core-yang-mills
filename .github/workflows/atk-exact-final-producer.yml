@@ -1,0 +1,23 @@
+name: ATK exact final producer
+on:
+  push:
+    branches: [atk/auto-compose-terminal-20260930]
+    paths:
+      - 'lean/**/ExactFinalProducer.lean'
+      - '.github/workflows/atk-exact-final-producer.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  exact-final:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Build exact final producer
+        run: lake build MCore.YangMills.A1.ExactFinalProducer
