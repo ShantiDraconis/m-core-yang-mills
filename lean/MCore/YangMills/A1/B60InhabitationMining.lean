@@ -29,6 +29,23 @@ private def typeUnifies (target cand : Expr) : MetaM Bool := do
   catch _ =>
     pure false
 
+elab "#mine_producers " n:ident : command => do
+  let env ← getEnv
+  let targetName ← resolveGlobalConstNoOverload n
+  let mut hits : Array (Name × Expr) := #[]
+  for (declName, declInfo) in env.constants.toList do
+    if declName != targetName && !(declName.toString.startsWith "_") then
+      let h? ← liftTermElabM do resultHeadName declInfo.type
+      if h? == some targetName then
+        hits := hits.push (declName, declInfo.type)
+  logInfo m!"[PRODUCER TARGET] {targetName}"
+  if hits.isEmpty then
+    logInfo m!"  PRODUCERS: NONE"
+  else
+    for (declName, ty) in hits.toList.take 40 do
+      logInfo m!"  PRODUCER: {declName}"
+      logInfo m!"    TYPE: {ty}"
+
 elab "#mine_structure " n:ident : command => do
   let env ← getEnv
   let structName ← resolveGlobalConstNoOverload n
@@ -56,3 +73,5 @@ elab "#mine_structure " n:ident : command => do
       logInfo m!"  CANDIDATES: {preview}"
 
 #mine_structure MCore.YangMills.A1.B60ConcretePhysicalAdapter
+
+#mine_producers MCore.YangMills.A1.B60ConcretePhysicalAdapter
