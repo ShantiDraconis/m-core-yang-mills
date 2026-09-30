@@ -19,3 +19,4 @@ theorem endpoint_proposition_still_untyped :
 #print axioms MCore.BackwardAudit.endpoint_proposition_still_untyped
 
 end MCore.BackwardAudit
+-- ATK DIRECT TERMINAL RUN 2026-09-30: no semantic change.
