@@ -51,6 +51,7 @@ import MCore.YangMills.A1.B60ConcretePhysicalAdapter
 
 import MCore.YangMills.A1.HardeningV2
 import MCore.YangMills.A1.MaterialHardeningV3
+import MCore.YangMills.A1.PhysicalExcitationReconstructionV4
 import MCore.YangMills.A1.B60TrivialityAudit
 import MCore.YangMills.A1.B60CanonicalPhysicalBinding
 import MCore.YangMills.A1.FinalExternal
