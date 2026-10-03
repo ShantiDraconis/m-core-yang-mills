@@ -11,7 +11,7 @@ theorem regulatedNormSq_nonneg
     (ψ : RegulatedL2Vector C a L) :
     0 ≤ regulatedNormSq ψ := by
   unfold regulatedNormSq
-  exact integral_nonneg (fun x => by positivity)
+  exact MeasureTheory.integral_nonneg (fun x => by positivity)
 
 /-- n-fold transfer evolution on one fixed regulator/volume fiber. -/
 def transferIterate
