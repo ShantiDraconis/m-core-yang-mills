@@ -107,6 +107,26 @@ theorem spectralWeight_sum
     EuclideanSpace.norm_sq_eq (C.eigenbasis.repr psi)
   simpa using h.symm
 
+
+/-- Finite spectral expectation identity. -/
+theorem spectralWeight_expectation
+    (psi : HSpace) :
+    ∑ i : Fin (Module.finrank ℂ HSpace),
+        C.eigenvalue i * C.spectralWeight psi i =
+      Complex.re (inner psi (C.linearHamiltonian psi)) := by
+  rw [← C.eigenbasis.repr.inner_map_map psi (C.linearHamiltonian psi)]
+  simp only [PiLp.inner_apply]
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hdiag :
+      C.eigenbasis.repr (C.linearHamiltonian psi) i =
+        (C.eigenvalue i : ℂ) * (C.eigenbasis.repr psi) i := by
+    simpa [eigenbasis, eigenvalue, linearHamiltonian] using
+      (C.linearHamiltonian_isSymmetric).eigenvectorBasis_apply_self_apply rfl psi i
+  rw [hdiag]
+  simp [spectralWeight, RCLike.inner_apply, Complex.mul_re]
+
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.linearHamiltonian_isSymmetric
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.apply_eigenbasis
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.spectralWeight_nonneg
