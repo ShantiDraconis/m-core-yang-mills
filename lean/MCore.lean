@@ -58,6 +58,7 @@ import MCore.YangMills.A1.DecayCalculusV7
 import MCore.YangMills.A1.Canonical4DGeometryV8
 import MCore.YangMills.A1.ConcreteSpectralK30V9
 import MCore.YangMills.A1.SpectralMeasureHilbertBindingV10
+import MCore.YangMills.A1.CanonicalIdentitySpectralBindingV11
 import MCore.YangMills.A1.B60TrivialityAudit
 import MCore.YangMills.A1.B60CanonicalPhysicalBinding
 import MCore.YangMills.A1.FinalExternal
