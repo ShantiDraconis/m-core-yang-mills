@@ -127,6 +127,54 @@ theorem spectralWeight_expectation
   rw [hdiag]
   simp [spectralWeight, RCLike.inner_apply, Complex.mul_re]
 
+
+/-- Vanishing of low spectral mass forces every strictly sub-gap weight to vanish. -/
+theorem spectralWeight_eq_zero_of_eigenvalue_lt
+    {m : ℝ}
+    (psi : HSpace)
+    (hvan : ∀ r : ℝ, r < m → C.massBelowFinite psi r = 0)
+    (i : Fin (Module.finrank ℂ HSpace))
+    (hi : C.eigenvalue i < m) :
+    C.spectralWeight psi i = 0 := by
+  have hsum := hvan (C.eigenvalue i) hi
+  unfold massBelowFinite at hsum
+  have hterms :
+      ∀ j ∈ (Finset.univ : Finset (Fin (Module.finrank ℂ HSpace))),
+        (if C.eigenvalue j ≤ C.eigenvalue i then C.spectralWeight psi j else 0) = 0 := by
+    apply (Finset.sum_eq_zero_iff_of_nonneg ?_).mp hsum
+    intro j hj
+    by_cases hji : C.eigenvalue j ≤ C.eigenvalue i
+    · simp [hji, C.spectralWeight_nonneg psi j]
+    · simp [hji]
+  have hi0 := hterms i (Finset.mem_univ i)
+  simpa using hi0
+
+/-- The regulated finite-dimensional mass gap follows from low-spectrum vanishing. -/
+theorem finite_mass_gap_of_vanishing_below
+    {m : ℝ}
+    (psi : HSpace)
+    (hvan : ∀ r : ℝ, r < m → C.massBelowFinite psi r = 0) :
+    m * ‖psi‖ ^ 2 ≤
+      Complex.re (inner psi (C.linearHamiltonian psi)) := by
+  calc
+    m * ‖psi‖ ^ 2 =
+        ∑ i : Fin (Module.finrank ℂ HSpace),
+          m * C.spectralWeight psi i := by
+      rw [← C.spectralWeight_sum psi, Finset.mul_sum]
+    _ ≤ ∑ i : Fin (Module.finrank ℂ HSpace),
+          C.eigenvalue i * C.spectralWeight psi i := by
+      apply Finset.sum_le_sum
+      intro i hi
+      by_cases hlt : C.eigenvalue i < m
+      · rw [C.spectralWeight_eq_zero_of_eigenvalue_lt psi hvan i hlt]
+        simp
+      · exact
+          mul_le_mul_of_nonneg_right
+            (le_of_not_gt hlt)
+            (C.spectralWeight_nonneg psi i)
+    _ = Complex.re (inner psi (C.linearHamiltonian psi)) :=
+      C.spectralWeight_expectation psi
+
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.linearHamiltonian_isSymmetric
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.apply_eigenbasis
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.spectralWeight_nonneg
