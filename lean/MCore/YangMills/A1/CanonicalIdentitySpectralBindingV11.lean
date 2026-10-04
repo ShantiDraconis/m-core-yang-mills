@@ -10,8 +10,9 @@ zeroState only to satisfy the total-function interface. -/
 def canonicalTotalHamiltonian
     (D : MCore.K14PhysicalHilbertData)
     (H : MCore.K14HamiltonianOperator D)
-    (psi : D.State) : D.State :=
-  if h : H.domain psi then H.act psi h else D.zeroState
+    (psi : D.State) : D.State := by
+  classical
+  exact if h : H.domain psi then H.act psi h else D.zeroState
 
 theorem canonicalTotalHamiltonian_on_domain
     {D : MCore.K14PhysicalHilbertData}
