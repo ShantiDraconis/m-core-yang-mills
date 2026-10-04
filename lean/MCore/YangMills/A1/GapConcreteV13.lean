@@ -41,23 +41,23 @@ Concrete V13 gap semantics:
 def YMGapConcreteV13
     (D : RealEnergyModelV13) :
     MCore.K14GapScale D.toK14 where
-  positive := fun m => 0 < m
+  positive := fun m => 0 < (show ℝ from m)
   gapBound := fun m psi Hpsi =>
-    m * D.normSq psi ≤ D.energyPairing psi Hpsi
+    (show ℝ from m) * D.normSq psi ≤ D.energyPairing psi Hpsi
 
 @[simp] theorem YMGapConcreteV13_positive_iff
     (D : RealEnergyModelV13)
     (m : ℝ) :
-    (YMGapConcreteV13 D).positive m ↔ 0 < m :=
-  Iff.rfl
+    (YMGapConcreteV13 D).positive m ↔ 0 < m := by
+  simp [YMGapConcreteV13, RealEnergyModelV13.toK14]
 
 @[simp] theorem YMGapConcreteV13_gapBound_iff
     (D : RealEnergyModelV13)
     (m : ℝ)
     (psi Hpsi : D.State) :
     (YMGapConcreteV13 D).gapBound m psi Hpsi ↔
-      m * D.normSq psi ≤ D.energyPairing psi Hpsi :=
-  Iff.rfl
+      m * D.normSq psi ≤ D.energyPairing psi Hpsi := by
+  simp [YMGapConcreteV13, RealEnergyModelV13.toK14]
 
 #print axioms MCore.YangMills.A1.YMGapConcreteV13_positive_iff
 #print axioms MCore.YangMills.A1.YMGapConcreteV13_gapBound_iff
