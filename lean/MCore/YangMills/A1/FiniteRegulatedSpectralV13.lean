@@ -149,6 +149,47 @@ theorem spectralWeight_eq_zero_of_eigenvalue_lt
   have hi0 := hterms i (Finset.mem_univ i)
   simpa using hi0
 
+/--
+If every eigenmode carrying nonzero spectral weight lies at or above m, then
+the finite low-energy spectral mass vanishes below m.
+-/
+theorem massBelowFinite_eq_zero_of_weight_support_ge
+    {m r : ℝ}
+    (psi : HSpace)
+    (hr : r < m)
+    (hsupport :
+      ∀ i : Fin (Module.finrank ℂ HSpace),
+        C.spectralWeight psi i ≠ 0 →
+        m ≤ C.eigenvalue i) :
+    C.massBelowFinite psi r = 0 := by
+  unfold massBelowFinite
+  apply Finset.sum_eq_zero
+  intro i hi
+  by_cases hir : C.eigenvalue i ≤ r
+  · have hlt : C.eigenvalue i < m := lt_of_le_of_lt hir hr
+    have hw : C.spectralWeight psi i = 0 := by
+      by_contra hnz
+      exact (not_lt_of_ge (hsupport i hnz)) hlt
+    simp [hir, hw]
+  · simp [hir]
+
+/--
+A statewise lower spectral-edge bound implies the exact vanishing premise used
+by the finite mass-gap theorem.
+-/
+theorem finite_mass_gap_of_weight_support_ge
+    {m : ℝ}
+    (psi : HSpace)
+    (hsupport :
+      ∀ i : Fin (Module.finrank ℂ HSpace),
+        C.spectralWeight psi i ≠ 0 →
+        m ≤ C.eigenvalue i) :
+    m * ‖psi‖ ^ 2 ≤
+      Complex.re (inner psi (C.linearHamiltonian psi)) := by
+  apply C.finite_mass_gap_of_vanishing_below psi
+  intro r hr
+  exact C.massBelowFinite_eq_zero_of_weight_support_ge psi hr hsupport
+
 /-- The regulated finite-dimensional mass gap follows from low-spectrum vanishing. -/
 theorem finite_mass_gap_of_vanishing_below
     {m : ℝ}
