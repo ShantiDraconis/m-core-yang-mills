@@ -96,6 +96,17 @@ theorem massBelowFinite_nonneg
     · simp [h, C.spectralWeight_nonneg psi i]
     · simp [h])
 
+
+/-- Finite Parseval identity for the spectral weights. -/
+theorem spectralWeight_sum
+    (psi : HSpace) :
+    ∑ i : Fin (Module.finrank ℂ HSpace), C.spectralWeight psi i =
+      ‖psi‖ ^ 2 := by
+  unfold spectralWeight
+  have h :=
+    EuclideanSpace.norm_sq_eq (C.eigenbasis.repr psi)
+  simpa using h.symm
+
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.linearHamiltonian_isSymmetric
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.apply_eigenbasis
 #print axioms MCore.YangMills.A1.FiniteRegulatedHamiltonianV13.spectralWeight_nonneg
