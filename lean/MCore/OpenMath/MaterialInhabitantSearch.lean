@@ -12,6 +12,7 @@ example
     (G : K14GapScale D)
     (O : K30SpectralTransferObligations F D H G) :
     FirstRealOpenMath C F D H G O := by
-  aesop
+  refine ⟨?_⟩
+  constructor
 
 end MCore.OpenMath.YM
