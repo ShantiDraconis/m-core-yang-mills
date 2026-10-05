@@ -1,0 +1,39 @@
+name: Material Inhabitant Search
+
+on:
+  push:
+    branches:
+      - work/ym-first-real-open-math-20261005
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+      - name: Force exact inhabitant search
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.OpenMath.MaterialInhabitantSearch
+      - name: Hygiene
+        if: always()
+        run: |
+          set -euo pipefail
+          if grep -nE '\b(sorry|admit|sorryAx|axiom)\b' lean/MCore/OpenMath/MaterialInhabitantSearch.lean; then
+            echo "MATERIAL_SEARCH_HYGIENE_RED"
+            exit 1
+          fi
+          echo "MATERIAL_SEARCH_HYGIENE_GREEN"
