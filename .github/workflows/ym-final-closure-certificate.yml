@@ -1,0 +1,42 @@
+name: ym-final-closure-certificate
+on:
+  push:
+    branches: [atk/ym-rejection-gauge-v13-20261006]
+  pull_request:
+    branches: [feat/ym-v13-gap-concrete]
+permissions:
+  contents: read
+jobs:
+  final-closure:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Build final closure certificate
+        run: lake build MCore.YangMills.A1.FinalClosureCertificateV13
+      - name: Placeholder audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)'             lean/MCore/YangMills/A1/FinalClosureCertificateV13.lean             lean/MCore/YangMills/A1/FinalExternal.lean             lean/MCore/YangMills/A1/ExactFinalProducer.lean
+      - name: Axiom footprint
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '3'
+        run: |
+          set -euo pipefail
+          cat >/tmp/YMFinalClosureChecks.lean <<'EOF'
+          import MCore.YangMills.A1.FinalClosureCertificateV13
+          #print axioms MCore.YangMills.A1.Final.FORMAL_CHAIN_CLOSED
+          #print axioms MCore.YangMills.A1.Final.SCIENTIFIC_TARGET_REMAINS_OPEN_BRIDGE
+          #print axioms MCore.YangMills.A1.Final.NO_UNCONDITIONAL_PROMOTION
+          EOF
+          lake env lean /tmp/YMFinalClosureChecks.lean 2>&1 | tee /tmp/ym-final-closure.log
+          bash scripts/axiom-gate-G6b.sh /tmp/ym-final-closure.log /tmp/ym-final-closure-footprint.txt
