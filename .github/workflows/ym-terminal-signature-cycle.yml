@@ -31,7 +31,7 @@ jobs:
         shell: bash
         env:
           G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
-          EXPECTED_THEOREM_COUNT: '4'
+          EXPECTED_THEOREM_COUNT: '6'
         run: |
           set -euo pipefail
           cat >/tmp/YMTerminalSignatureChecks.lean <<'EOF'
@@ -40,6 +40,8 @@ jobs:
           #print axioms MCore.YangMills.A1.Final.terminal_cycle
           #print axioms MCore.YangMills.A1.Final.terminal_signature_iff_FINAL_ROOT
           #print axioms MCore.YangMills.A1.Final.terminal_inhabited_iff_FINAL_ROOT
+          #print axioms MCore.YangMills.A1.Final.terminal_any_route_iff_FINAL_ROOT
+          #print axioms MCore.YangMills.A1.Final.three_way_collapse
           EOF
           lake env lean /tmp/YMTerminalSignatureChecks.lean 2>&1 | tee /tmp/ym-terminal-signature.log
           bash scripts/axiom-gate-G6b.sh /tmp/ym-terminal-signature.log /tmp/ym-terminal-signature-footprint.txt
