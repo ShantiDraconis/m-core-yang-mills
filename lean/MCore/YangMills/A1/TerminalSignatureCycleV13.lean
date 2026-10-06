@@ -68,7 +68,11 @@ theorem terminal_cycle
     {G : K14GapScale D} :
     Endpoint D H G ↔
       Gap D H G ∧ Habitant D H G ∧ Inhabitant D H G := by
-  rfl
+  constructor
+  · intro h
+    exact ⟨h, h, h⟩
+  · rintro ⟨h, _, _⟩
+    exact h
 
 theorem endpoint_iff_gap
     {D : K14PhysicalHilbertData}
@@ -95,7 +99,11 @@ theorem terminal_signature_iff_FINAL_ROOT
     {G : K14GapScale D} :
     (Endpoint D H G ∧ Gap D H G ∧ Habitant D H G ∧ Inhabitant D H G) ↔
       FINAL_ROOT D H G := by
-  rfl
+  constructor
+  · rintro ⟨h, _, _, _⟩
+    exact h
+  · intro h
+    exact ⟨h, h, h, h⟩
 
 /-- Inhabiting any terminal alias is exactly the same task as inhabiting FINAL_ROOT. -/
 theorem terminal_inhabited_iff_FINAL_ROOT
