@@ -1,7 +1,6 @@
 name: ym-gauge-probe-fast
 on:
-  push:
-    branches: [atk/ym-rejection-gauge-v13-20261006]
+  workflow_dispatch:
   pull_request:
     branches: [feat/ym-v13-gap-concrete]
 permissions:
