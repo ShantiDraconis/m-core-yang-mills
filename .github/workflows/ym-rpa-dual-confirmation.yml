@@ -34,6 +34,10 @@ jobs:
           set -euo pipefail
           cat >/tmp/RPADualChecks.lean <<'EOF'
           import MCore.YangMills.A1.RPADualConfirmationV13
+          #print axioms MCore.YangMills.A1.Final.openEndpoint_ne_closedEndpoint
+          #print axioms MCore.YangMills.A1.Final.openEndpoint_iff_closedEndpoint
+          #print axioms MCore.YangMills.A1.Final.dualEndpointState_iff_finalRoot
+          #print axioms MCore.YangMills.A1.Final.rpa_chain_from_dualEndpointState
           #print axioms MCore.YangMills.A1.Final.open_closed_math_identity
           #print axioms MCore.YangMills.A1.Final.dual_math_coexistence_iff_final_root
           #print axioms MCore.YangMills.A1.Final.dual_bridge_coexistence_iff_final_root
