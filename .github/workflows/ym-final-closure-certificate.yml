@@ -2,8 +2,6 @@ name: ym-final-closure-certificate
 on:
   push:
     branches: [atk/ym-rejection-gauge-v13-20261006]
-  pull_request:
-    branches: [feat/ym-v13-gap-concrete]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
