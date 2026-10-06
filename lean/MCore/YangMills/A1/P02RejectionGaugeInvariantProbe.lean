@@ -46,7 +46,7 @@ theorem gaugeInverseRestores (S : GaugeProbe G Point) (g : G) (x : Point) :
     S.act g⁻¹ (S.act g x) = S.act (g⁻¹ * g) x := by
       symm
       exact S.mul_act g⁻¹ g x
-    _ = S.act 1 x := by rw [inv_mul]
+    _ = S.act 1 x := by simp
     _ = x := S.one_act x
 
 /-- Q5/Q6: the observed gap is constant under gauge transformation. -/
@@ -106,7 +106,7 @@ def toyFreePhoton : GaugeProbe (Multiplicative ℤ) ℤ where
     simp
   mul_act := by
     intro g₁ g₂ x
-    simp [add_assoc]
+    simp [add_assoc, add_comm, add_left_comm]
   gap_invariant := by
     intro g x
     rfl
