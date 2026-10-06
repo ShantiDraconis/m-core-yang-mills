@@ -19,7 +19,7 @@ structure RegulatedContinuumRealizationV13
     {B3 : ReflectionPositivityDataV2 C P}
     {B4 : PositiveTransferDataV2 C P}
     (U : UniformRegulatorControlV2 C P B3 B4)
-    (HSpace : Type*)
+    (HSpace : Type)
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -60,7 +60,7 @@ variable
   {B3 : ReflectionPositivityDataV2 C P}
   {B4 : PositiveTransferDataV2 C P}
   (U : UniformRegulatorControlV2 C P B3 B4)
-  {HSpace : Type*}
+  {HSpace : Type}
   [NormedAddCommGroup HSpace]
   [InnerProductSpace ℂ HSpace]
   [CompleteSpace HSpace]
