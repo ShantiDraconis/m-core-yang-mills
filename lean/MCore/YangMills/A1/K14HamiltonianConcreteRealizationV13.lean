@@ -15,7 +15,7 @@ This carries actual Hilbert-space/operator data usable by Mathlib.  It does not
 contain a gap bound and it does not assume the final spectral inequality.
 -/
 structure K14HamiltonianConcreteRealizationV13
-    (HSpace : Type*)
+    (HSpace : Type)
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace] where
