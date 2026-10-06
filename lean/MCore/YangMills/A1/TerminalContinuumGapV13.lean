@@ -1,6 +1,5 @@
 import MCore.YangMills.A1.FiniteRegulatedSpectralV13
-import Mathlib.Topology.Order.OrderClosed
-import Mathlib.Topology.Instances.Real
+import Mathlib
 
 namespace MCore.YangMills.A1
 
