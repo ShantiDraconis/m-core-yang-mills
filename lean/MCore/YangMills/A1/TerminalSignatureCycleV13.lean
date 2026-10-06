@@ -117,9 +117,37 @@ theorem terminal_inhabited_iff_FINAL_ROOT
   · intro h
     exact ⟨⟨(), h⟩⟩
 
+
+/-- Any terminal route hits the same final proposition; there is no fifth target. -/
+theorem terminal_any_route_iff_FINAL_ROOT
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D} :
+    (Endpoint D H G ∨ Gap D H G ∨ Habitant D H G ∨ Inhabitant D H G) ↔
+      FINAL_ROOT D H G := by
+  constructor
+  · intro h
+    rcases h with h | h | h | h <;> exact h
+  · intro h
+    exact Or.inl h
+
+/-- The three named internal routes collapse to one terminal bit. -/
+theorem three_way_collapse
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D} :
+    (Gap D H G ∨ Habitant D H G ∨ Inhabitant D H G) ↔ Endpoint D H G := by
+  constructor
+  · intro h
+    rcases h with h | h | h <;> exact h
+  · intro h
+    exact Or.inl h
+
 #print axioms MCore.YangMills.A1.Final.endpoint_to_gap
 #print axioms MCore.YangMills.A1.Final.terminal_cycle
 #print axioms MCore.YangMills.A1.Final.terminal_signature_iff_FINAL_ROOT
 #print axioms MCore.YangMills.A1.Final.terminal_inhabited_iff_FINAL_ROOT
+#print axioms MCore.YangMills.A1.Final.terminal_any_route_iff_FINAL_ROOT
+#print axioms MCore.YangMills.A1.Final.three_way_collapse
 
 end MCore.YangMills.A1.Final
