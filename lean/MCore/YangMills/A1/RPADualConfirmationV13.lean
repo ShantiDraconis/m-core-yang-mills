@@ -78,34 +78,6 @@ theorem dualEndpointState_iff_finalRoot
   · intro h
     exact ⟨h, h, Iff.rfl⟩
 
-theorem dualEndpointState_to_dualMath
-    {D : K14PhysicalHilbertData}
-    {H : K14HamiltonianOperator D}
-    {G : K14GapScale D}
-    (S : DualEndpointState D H G) :
-    OPEN_MATH D H G ∧ CLOSED_MATH D H G := by
-  exact ⟨S.openEndpoint, S.closedEndpoint⟩
-
-theorem dualEndpointState_to_dualBridge
-    {D : K14PhysicalHilbertData}
-    {H : K14HamiltonianOperator D}
-    {G : K14GapScale D}
-    (S : DualEndpointState D H G) :
-    OPEN_BRIDGE D H G ∧ CLOSED_BRIDGE D H G := by
-  exact ⟨S.openEndpoint, S.closedEndpoint⟩
-
-theorem rpa_chain_from_dualEndpointState
-    {D : K14PhysicalHilbertData}
-    {H : K14HamiltonianOperator D}
-    {G : K14GapScale D}
-    (S : DualEndpointState D H G) :
-    (OPEN_MATH D H G ∧ CLOSED_MATH D H G) ∧
-      (OPEN_BRIDGE D H G ∧ CLOSED_BRIDGE D H G) ∧
-      MATH D H G ∧ FINAL_ROOT D H G := by
-  have hroot : FINAL_ROOT D H G := S.openEndpoint
-  exact ⟨⟨S.openEndpoint, S.closedEndpoint⟩,
-    ⟨S.openEndpoint, S.closedEndpoint⟩, hroot, hroot⟩
-
 abbrev OPEN_MATH
     (D : K14PhysicalHilbertData)
     (H : K14HamiltonianOperator D)
@@ -135,6 +107,34 @@ abbrev MATH
     (H : K14HamiltonianOperator D)
     (G : K14GapScale D) : Prop :=
   FINAL_ROOT D H G
+
+theorem dualEndpointState_to_dualMath
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    (S : DualEndpointState D H G) :
+    OPEN_MATH D H G ∧ CLOSED_MATH D H G := by
+  exact ⟨S.openEndpoint, S.closedEndpoint⟩
+
+theorem dualEndpointState_to_dualBridge
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    (S : DualEndpointState D H G) :
+    OPEN_BRIDGE D H G ∧ CLOSED_BRIDGE D H G := by
+  exact ⟨S.openEndpoint, S.closedEndpoint⟩
+
+theorem rpa_chain_from_dualEndpointState
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    (S : DualEndpointState D H G) :
+    (OPEN_MATH D H G ∧ CLOSED_MATH D H G) ∧
+      (OPEN_BRIDGE D H G ∧ CLOSED_BRIDGE D H G) ∧
+      MATH D H G ∧ FINAL_ROOT D H G := by
+  have hroot : FINAL_ROOT D H G := S.openEndpoint
+  exact ⟨⟨S.openEndpoint, S.closedEndpoint⟩,
+    ⟨S.openEndpoint, S.closedEndpoint⟩, hroot, hroot⟩
 
 theorem open_closed_math_identity
     {D : K14PhysicalHilbertData}
