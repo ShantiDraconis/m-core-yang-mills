@@ -1,5 +1,6 @@
 import MCore.YangMills.A1.K14HamiltonianConcreteRealizationV13
 import Mathlib.Analysis.InnerProductSpace.Spectrum
+import Mathlib.Analysis.InnerProductSpace.PiL2
 
 noncomputable section
 
@@ -123,9 +124,12 @@ theorem spectralWeight_expectation
     simpa [eigenbasis, eigenvalue, linearHamiltonian] using
       (C.linearHamiltonian_isSymmetric).eigenvectorBasis_apply_self_apply rfl psi i
   rw [hdiag]
+  change
+    C.eigenvalue i * ‖C.eigenbasis.repr psi i‖ ^ 2 =
+      C.eigenvalue i *
+        ((C.eigenbasis.repr psi i).re ^ 2 + (C.eigenbasis.repr psi i).im ^ 2)
   rw [Complex.sq_norm]
-  simp [spectralWeight, RCLike.inner_apply, Complex.mul_re, Complex.normSq_apply]
-  ring
+  simp [spectralWeight, Complex.normSq_apply]
 
 
 /-- Vanishing of low spectral mass forces every strictly sub-gap weight to vanish. -/
