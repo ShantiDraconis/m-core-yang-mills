@@ -1,0 +1,37 @@
+name: ym-terminal-v13-fast
+on:
+  push:
+    branches: [atk/ym-rejection-gauge-v13-20261006]
+  pull_request:
+    branches: [feat/ym-v13-gap-concrete]
+permissions:
+  contents: read
+jobs:
+  terminal-v13:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Compile terminal continuum compression
+        run: lake build MCore.YangMills.A1.TerminalContinuumGapV13
+      - name: Axiom audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '3'
+        run: |
+          set -euo pipefail
+          cat >/tmp/YMTerminalV13Checks.lean <<'EOF'
+          import MCore.YangMills.A1.TerminalContinuumGapV13
+          #print axioms MCore.YangMills.A1.ContinuumSpectralLimitV13.finite_lowSpectrumExclusion
+          #print axioms MCore.YangMills.A1.ContinuumSpectralLimitV13.eventual_lowSpectrumExclusion
+          #print axioms MCore.YangMills.A1.ContinuumSpectralLimitV13.continuum_gap_from_uniformFiniteEdge
+          EOF
+          lake env lean /tmp/YMTerminalV13Checks.lean 2>&1 | tee /tmp/ym-terminal-v13-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/ym-terminal-v13-axioms.log /tmp/ym-terminal-v13-footprint.txt
