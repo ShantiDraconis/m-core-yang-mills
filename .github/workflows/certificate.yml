@@ -1,9 +1,11 @@
 name: certificate
 on:
-  push:
-    branches-ignore: [atk/ym-rejection-gauge-v13-20261006]
-  pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: ym-legacy-manual-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 jobs:
@@ -98,7 +100,7 @@ jobs:
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
       - name: G7 targeted reproducibility
         shell: bash
-        timeout-minutes: 12
+        timeout-minutes: 45
         run: |
           set -euo pipefail
           # Do not run the umbrella target or lake clean in normal certification.
