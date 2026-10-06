@@ -104,7 +104,7 @@ theorem spectralWeight_sum
     ∑ i : Fin (Module.finrank ℂ HSpace), C.spectralWeight psi i =
       ‖psi‖ ^ 2 := by
   simpa [spectralWeight, OrthonormalBasis.repr_apply_apply] using
-    C.eigenbasis.sum_sq_norm_inner_right psi
+    (sum_sq_norm_inner_right C.eigenbasis psi)
 
 
 /-- Finite spectral expectation identity. -/
@@ -124,12 +124,9 @@ theorem spectralWeight_expectation
     simpa [eigenbasis, eigenvalue, linearHamiltonian] using
       (C.linearHamiltonian_isSymmetric).eigenvectorBasis_apply_self_apply rfl psi i
   rw [hdiag]
-  change
-    C.eigenvalue i * ‖C.eigenbasis.repr psi i‖ ^ 2 =
-      C.eigenvalue i *
-        ((C.eigenbasis.repr psi i).re ^ 2 + (C.eigenbasis.repr psi i).im ^ 2)
-  rw [Complex.sq_norm]
-  simp [spectralWeight, Complex.normSq_apply]
+  simp [spectralWeight, inner_smul_right, RCLike.inner_apply,
+    Complex.sq_norm, Complex.normSq_apply, pow_two]
+  ring
 
 
 /-- Vanishing of low spectral mass forces every strictly sub-gap weight to vanish. -/
