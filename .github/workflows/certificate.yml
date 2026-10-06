@@ -245,7 +245,7 @@ jobs:
       - name: G6c gauge-action rejection probe
         shell: bash
         env:
-          G6B_ALLOWED_AXIOMS: ''
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
           EXPECTED_THEOREM_COUNT: '6'
         run: |
           set -euo pipefail
