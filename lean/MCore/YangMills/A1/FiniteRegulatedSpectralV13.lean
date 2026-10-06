@@ -102,11 +102,9 @@ theorem spectralWeight_sum
     (psi : HSpace) :
     ∑ i : Fin (Module.finrank ℂ HSpace), C.spectralWeight psi i =
       ‖psi‖ ^ 2 := by
-  unfold spectralWeight
-  have hnorm : ‖C.eigenbasis.repr psi‖ = ‖psi‖ :=
-    C.eigenbasis.repr.norm_map psi
-  rw [← hnorm]
-  simp [PiLp.norm_eq_of_L2, Real.sq_sqrt]
+  have h := congrArg Complex.re (C.eigenbasis.repr.inner_map_map psi psi)
+  simpa [PiLp.inner_apply, spectralWeight, RCLike.inner_apply,
+    inner_self_eq_norm_sq_to_K] using h
 
 
 /-- Finite spectral expectation identity. -/
@@ -117,7 +115,6 @@ theorem spectralWeight_expectation
       Complex.re (inner psi (C.linearHamiltonian psi)) := by
   rw [← C.eigenbasis.repr.inner_map_map psi (C.linearHamiltonian psi)]
   simp only [PiLp.inner_apply]
-  rw [map_sum]
   apply Finset.sum_congr rfl
   intro i hi
   have hdiag :
