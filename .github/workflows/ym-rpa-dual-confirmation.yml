@@ -20,7 +20,7 @@ jobs:
           test: false
           lint: false
       - name: Build RPA dual confirmation
-        run: lake build MCore.YangMills.A1.RPADualConfirmationV13
+        run: lake build MCore.YangMills.A1.RPADualConfirmationV13 MCore.YangMills.A1.RPADualEndpointLatticeV13
       - name: Placeholder audit
         shell: bash
         run: |
@@ -34,6 +34,7 @@ jobs:
           set -euo pipefail
           cat >/tmp/RPADualChecks.lean <<'EOF'
           import MCore.YangMills.A1.RPADualConfirmationV13
+          import MCore.YangMills.A1.RPADualEndpointLatticeV13
           #print axioms MCore.YangMills.A1.Final.openEndpoint_ne_closedEndpoint
           #print axioms MCore.YangMills.A1.Final.openEndpoint_iff_closedEndpoint
           #print axioms MCore.YangMills.A1.Final.dualEndpointState_iff_finalRoot
@@ -45,5 +46,11 @@ jobs:
           #print axioms MCore.YangMills.A1.Final.global_external_certificate_closes_rpa
           #print axioms MCore.YangMills.A1.Final.rpa_confirmation_iff_final_root
           #print axioms MCore.YangMills.A1.Final.finalExternal_to_rpa_confirmation
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_idempotent
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_closed_full
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.normalize_dual
+          #print axioms MCore.YangMills.A1.Final.fullEndpointPayload_iff_dualEndpointState
+          #print axioms MCore.YangMills.A1.Final.fullEndpointPayload_iff_finalRoot
+          #print axioms MCore.YangMills.A1.Final.globalExternalCertificate_to_fullEndpointPayload
           EOF
           lake env lean /tmp/RPADualChecks.lean
