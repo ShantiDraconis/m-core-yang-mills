@@ -1,0 +1,45 @@
+name: ym-terminal-signature-cycle
+on:
+  push:
+    branches: [atk/ym-rejection-gauge-v13-20261006]
+  pull_request:
+    branches: [feat/ym-v13-gap-concrete]
+permissions:
+  contents: read
+jobs:
+  terminal-signature:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Build terminal signature cycle
+        run: lake build MCore.YangMills.A1.TerminalSignatureCycleV13
+      - name: Placeholder audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '\b(sorry|admit)\b' lean/MCore/YangMills/A1/TerminalSignatureCycleV13.lean; then
+            exit 1
+          fi
+      - name: Axiom audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '4'
+        run: |
+          set -euo pipefail
+          cat >/tmp/YMTerminalSignatureChecks.lean <<'EOF'
+          import MCore.YangMills.A1.TerminalSignatureCycleV13
+          #print axioms MCore.YangMills.A1.Final.endpoint_to_gap
+          #print axioms MCore.YangMills.A1.Final.terminal_cycle
+          #print axioms MCore.YangMills.A1.Final.terminal_signature_iff_FINAL_ROOT
+          #print axioms MCore.YangMills.A1.Final.terminal_inhabited_iff_FINAL_ROOT
+          EOF
+          lake env lean /tmp/YMTerminalSignatureChecks.lean 2>&1 | tee /tmp/ym-terminal-signature.log
+          bash scripts/axiom-gate-G6b.sh /tmp/ym-terminal-signature.log /tmp/ym-terminal-signature-footprint.txt
