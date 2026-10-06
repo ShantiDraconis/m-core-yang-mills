@@ -54,6 +54,41 @@ theorem one_open_two_closed :
 theorem two_open_two_closed :
     open + open + closed + closed = ⟨2, 2⟩ := rfl
 
+/-- Complete ordered words through length 3 in the free lattice. -/
+theorem closed_add_open :
+    closed + open = dual := rfl
+
+theorem open_open_open :
+    open + open + open = ⟨3, 0⟩ := rfl
+
+theorem closed_closed_closed :
+    closed + closed + closed = ⟨0, 3⟩ := rfl
+
+theorem open_open_closed :
+    open + open + closed = ⟨2, 1⟩ := rfl
+
+theorem open_closed_open :
+    open + closed + open = ⟨2, 1⟩ := rfl
+
+theorem closed_open_open :
+    closed + open + open = ⟨2, 1⟩ := rfl
+
+theorem open_closed_closed :
+    open + closed + closed = ⟨1, 2⟩ := rfl
+
+theorem closed_open_closed :
+    closed + open + closed = ⟨1, 2⟩ := rfl
+
+theorem closed_closed_open :
+    closed + closed + open = ⟨1, 2⟩ := rfl
+
+/-- Maximal four-term free word requested by the RPA audit. -/
+def fullFree : FreeEndpointState :=
+  open + open + closed + closed
+
+theorem fullFree_eq :
+    fullFree = ⟨2, 2⟩ := rfl
+
 end FreeEndpointState
 
 /-- Four canonical idempotent endpoint states. -/
@@ -127,6 +162,112 @@ theorem normalize_dual :
 theorem normalize_two_open_two_closed :
     normalize ⟨2, 2⟩ = full := rfl
 
+/-- Every ordered mixed word of length 2 or 3 normalizes to FULL. -/
+theorem closed_open_full :
+    closed + open = full := rfl
+
+theorem open_open_open_normalizes :
+    open + open + open = open := rfl
+
+theorem closed_closed_closed_normalizes :
+    closed + closed + closed = closed := rfl
+
+theorem open_open_closed_full :
+    open + open + closed = full := rfl
+
+theorem open_closed_open_full :
+    open + closed + open = full := rfl
+
+theorem closed_open_open_full :
+    closed + open + open = full := rfl
+
+theorem open_closed_closed_full :
+    open + closed + closed = full := rfl
+
+theorem closed_open_closed_full :
+    closed + open + closed = full := rfl
+
+theorem closed_closed_open_full :
+    closed + closed + open = full := rfl
+
+theorem open_open_closed_closed_full :
+    open + open + closed + closed = full := rfl
+
+theorem normalize_closed_open :
+    normalize (FreeEndpointState.closed + FreeEndpointState.open) = full := rfl
+
+theorem normalize_open_open_open :
+    normalize (FreeEndpointState.open + FreeEndpointState.open + FreeEndpointState.open) = open := rfl
+
+theorem normalize_closed_closed_closed :
+    normalize (FreeEndpointState.closed + FreeEndpointState.closed + FreeEndpointState.closed) = closed := rfl
+
+theorem normalize_open_open_closed :
+    normalize (FreeEndpointState.open + FreeEndpointState.open + FreeEndpointState.closed) = full := rfl
+
+theorem normalize_open_closed_open :
+    normalize (FreeEndpointState.open + FreeEndpointState.closed + FreeEndpointState.open) = full := rfl
+
+theorem normalize_closed_open_open :
+    normalize (FreeEndpointState.closed + FreeEndpointState.open + FreeEndpointState.open) = full := rfl
+
+theorem normalize_open_closed_closed :
+    normalize (FreeEndpointState.open + FreeEndpointState.closed + FreeEndpointState.closed) = full := rfl
+
+theorem normalize_closed_open_closed :
+    normalize (FreeEndpointState.closed + FreeEndpointState.open + FreeEndpointState.closed) = full := rfl
+
+theorem normalize_closed_closed_open :
+    normalize (FreeEndpointState.closed + FreeEndpointState.closed + FreeEndpointState.open) = full := rfl
+
+theorem normalize_fullFree :
+    normalize FreeEndpointState.fullFree = full := rfl
+
+/-- Kernel certificate that all 14 ordered words through length 3 are covered. -/
+structure CubeUpTo3Certificate : Prop where
+  open1 : normalize FreeEndpointState.open = open
+  closed1 : normalize FreeEndpointState.closed = closed
+  openClosed2 : normalize (FreeEndpointState.open + FreeEndpointState.closed) = full
+  closedOpen2 : normalize (FreeEndpointState.closed + FreeEndpointState.open) = full
+  openOpen2 : normalize (FreeEndpointState.open + FreeEndpointState.open) = open
+  closedClosed2 : normalize (FreeEndpointState.closed + FreeEndpointState.closed) = closed
+  openOpenOpen3 :
+    normalize (FreeEndpointState.open + FreeEndpointState.open + FreeEndpointState.open) = open
+  closedClosedClosed3 :
+    normalize (FreeEndpointState.closed + FreeEndpointState.closed + FreeEndpointState.closed) = closed
+  openOpenClosed3 :
+    normalize (FreeEndpointState.open + FreeEndpointState.open + FreeEndpointState.closed) = full
+  openClosedOpen3 :
+    normalize (FreeEndpointState.open + FreeEndpointState.closed + FreeEndpointState.open) = full
+  closedOpenOpen3 :
+    normalize (FreeEndpointState.closed + FreeEndpointState.open + FreeEndpointState.open) = full
+  openClosedClosed3 :
+    normalize (FreeEndpointState.open + FreeEndpointState.closed + FreeEndpointState.closed) = full
+  closedOpenClosed3 :
+    normalize (FreeEndpointState.closed + FreeEndpointState.open + FreeEndpointState.closed) = full
+  closedClosedOpen3 :
+    normalize (FreeEndpointState.closed + FreeEndpointState.closed + FreeEndpointState.open) = full
+
+def cubeUpTo3Certificate : CubeUpTo3Certificate where
+  open1 := rfl
+  closed1 := rfl
+  openClosed2 := rfl
+  closedOpen2 := rfl
+  openOpen2 := rfl
+  closedClosed2 := rfl
+  openOpenOpen3 := rfl
+  closedClosedClosed3 := rfl
+  openOpenClosed3 := rfl
+  openClosedOpen3 := rfl
+  closedOpenOpen3 := rfl
+  openClosedClosed3 := rfl
+  closedOpenClosed3 := rfl
+  closedClosedOpen3 := rfl
+
+theorem CUBE_UP_TO_3_CLOSED :
+    Nonempty CubeUpTo3Certificate :=
+  ⟨cubeUpTo3Certificate⟩
+
 end CanonicalEndpointState
 
 /-- FULL carries both endpoint positions simultaneously. -/
@@ -171,6 +312,11 @@ theorem globalExternalCertificate_to_fullEndpointPayload
   have hroot := finalExternal_to_FINAL_ROOT E
   exact ⟨hroot, hroot⟩
 
+#print axioms MCore.YangMills.A1.Final.FreeEndpointState.closed_add_open
+#print axioms MCore.YangMills.A1.Final.FreeEndpointState.open_open_open
+#print axioms MCore.YangMills.A1.Final.FreeEndpointState.closed_closed_closed
+#print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.CUBE_UP_TO_3_CLOSED
+#print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.normalize_fullFree
 #print axioms MCore.YangMills.A1.Final.FreeEndpointState.open_add_open
 #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_idempotent
 #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_closed_full
