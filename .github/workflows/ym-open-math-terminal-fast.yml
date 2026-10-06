@@ -19,7 +19,7 @@ jobs:
           test: false
           lint: false
       - name: Compile terminal open-math frontier
-        run: lake env lean open_math/P02_YM_V13_ContinuumGap.lean
+        run: lake env lean -R lean open_math/P02_YM_V13_ContinuumGap.lean
       - name: Fail closed on placeholders
         shell: bash
         run: |
@@ -32,5 +32,5 @@ jobs:
           EXPECTED_THEOREM_COUNT: '2'
         run: |
           set -euo pipefail
-          lake env lean open_math/P02_YM_V13_ContinuumGap.lean 2>&1 | tee /tmp/ym-open-math-terminal.log
+          lake env lean -R lean open_math/P02_YM_V13_ContinuumGap.lean 2>&1 | tee /tmp/ym-open-math-terminal.log
           bash scripts/axiom-gate-G6b.sh /tmp/ym-open-math-terminal.log /tmp/ym-open-math-terminal-footprint.txt
