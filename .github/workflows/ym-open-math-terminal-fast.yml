@@ -1,0 +1,36 @@
+name: ym-open-math-terminal-fast
+on:
+  push:
+    branches: [atk/ym-rejection-gauge-v13-20261006]
+  pull_request:
+    branches: [feat/ym-v13-gap-concrete]
+permissions:
+  contents: read
+jobs:
+  terminal-open-math:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Compile terminal open-math frontier
+        run: lake env lean open_math/P02_YM_V13_ContinuumGap.lean
+      - name: Fail closed on placeholders
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' open_math/P02_YM_V13_ContinuumGap.lean
+      - name: Axiom audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '2'
+        run: |
+          set -euo pipefail
+          lake env lean open_math/P02_YM_V13_ContinuumGap.lean 2>&1 | tee /tmp/ym-open-math-terminal.log
+          bash scripts/axiom-gate-G6b.sh /tmp/ym-open-math-terminal.log /tmp/ym-open-math-terminal-footprint.txt
