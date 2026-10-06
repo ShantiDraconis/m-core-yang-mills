@@ -14,6 +14,98 @@ The actual external certificate remains a material input.  The theorem below
 proves that such a certificate closes every internal view simultaneously.
 -/
 
+
+/-!
+Distinct endpoint positions with preserved logical identity.
+
+The positions are data and therefore genuinely distinct. Their logical payload
+is the same FINAL_ROOT proposition. This is the correct formal interpretation
+of "OPEN_ENDPOINT ≠ CLOSED_ENDPOINT" together with
+"OPEN_ENDPOINT ↔ CLOSED_ENDPOINT".
+-/
+
+inductive EndpointPosition where
+  | openEndpoint
+  | closedEndpoint
+deriving DecidableEq, Repr
+
+theorem openEndpoint_ne_closedEndpoint :
+    EndpointPosition.openEndpoint ≠ EndpointPosition.closedEndpoint := by
+  decide
+
+def EndpointPayload
+    (_ : EndpointPosition)
+    (D : K14PhysicalHilbertData)
+    (H : K14HamiltonianOperator D)
+    (G : K14GapScale D) : Prop :=
+  FINAL_ROOT D H G
+
+abbrev OPEN_ENDPOINT
+    (D : K14PhysicalHilbertData)
+    (H : K14HamiltonianOperator D)
+    (G : K14GapScale D) : Prop :=
+  EndpointPayload .openEndpoint D H G
+
+abbrev CLOSED_ENDPOINT
+    (D : K14PhysicalHilbertData)
+    (H : K14HamiltonianOperator D)
+    (G : K14GapScale D) : Prop :=
+  EndpointPayload .closedEndpoint D H G
+
+theorem openEndpoint_iff_closedEndpoint
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D} :
+    OPEN_ENDPOINT D H G ↔ CLOSED_ENDPOINT D H G :=
+  Iff.rfl
+
+structure DualEndpointState
+    (D : K14PhysicalHilbertData)
+    (H : K14HamiltonianOperator D)
+    (G : K14GapScale D) : Prop where
+  openEndpoint : OPEN_ENDPOINT D H G
+  closedEndpoint : CLOSED_ENDPOINT D H G
+  identityPreserved : OPEN_ENDPOINT D H G ↔ CLOSED_ENDPOINT D H G
+
+theorem dualEndpointState_iff_finalRoot
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D} :
+    DualEndpointState D H G ↔ FINAL_ROOT D H G := by
+  constructor
+  · intro S
+    exact S.openEndpoint
+  · intro h
+    exact ⟨h, h, Iff.rfl⟩
+
+theorem dualEndpointState_to_dualMath
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    (S : DualEndpointState D H G) :
+    OPEN_MATH D H G ∧ CLOSED_MATH D H G := by
+  exact ⟨S.openEndpoint, S.closedEndpoint⟩
+
+theorem dualEndpointState_to_dualBridge
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    (S : DualEndpointState D H G) :
+    OPEN_BRIDGE D H G ∧ CLOSED_BRIDGE D H G := by
+  exact ⟨S.openEndpoint, S.closedEndpoint⟩
+
+theorem rpa_chain_from_dualEndpointState
+    {D : K14PhysicalHilbertData}
+    {H : K14HamiltonianOperator D}
+    {G : K14GapScale D}
+    (S : DualEndpointState D H G) :
+    (OPEN_MATH D H G ∧ CLOSED_MATH D H G) ∧
+      (OPEN_BRIDGE D H G ∧ CLOSED_BRIDGE D H G) ∧
+      MATH D H G ∧ FINAL_ROOT D H G := by
+  have hroot : FINAL_ROOT D H G := S.openEndpoint
+  exact ⟨⟨S.openEndpoint, S.closedEndpoint⟩,
+    ⟨S.openEndpoint, S.closedEndpoint⟩, hroot, hroot⟩
+
 abbrev OPEN_MATH
     (D : K14PhysicalHilbertData)
     (H : K14HamiltonianOperator D)
@@ -123,6 +215,7 @@ structure RPADualConfirmation
     (D : K14PhysicalHilbertData)
     (H : K14HamiltonianOperator D)
     (G : K14GapScale D) : Prop where
+  dualEndpoint : DualEndpointState D H G
   openMath : OPEN_MATH D H G
   closedMath : CLOSED_MATH D H G
   openBridge : OPEN_BRIDGE D H G
@@ -139,7 +232,7 @@ theorem rpa_confirmation_iff_final_root
   · intro R
     exact R.finalRoot
   · intro h
-    exact ⟨h, h, h, h, h, h⟩
+    exact ⟨⟨h, h, Iff.rfl⟩, h, h, h, h, h, h⟩
 
 theorem finalExternal_to_rpa_confirmation
     {C : RegulatedYM4Construction}
@@ -152,6 +245,10 @@ theorem finalExternal_to_rpa_confirmation
     RPADualConfirmation D H G := by
   exact (rpa_confirmation_iff_final_root).2 (finalExternal_to_FINAL_ROOT E)
 
+#print axioms MCore.YangMills.A1.Final.openEndpoint_ne_closedEndpoint
+#print axioms MCore.YangMills.A1.Final.openEndpoint_iff_closedEndpoint
+#print axioms MCore.YangMills.A1.Final.dualEndpointState_iff_finalRoot
+#print axioms MCore.YangMills.A1.Final.rpa_chain_from_dualEndpointState
 #print axioms MCore.YangMills.A1.Final.open_closed_math_identity
 #print axioms MCore.YangMills.A1.Final.dual_math_coexistence_iff_final_root
 #print axioms MCore.YangMills.A1.Final.dual_bridge_coexistence_iff_final_root
