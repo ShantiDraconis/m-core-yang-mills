@@ -1,43 +1,99 @@
-name: ym-material-payload-v13
+name: ym-unified-final-v13
 on:
   push:
     branches: [atk/ym-rejection-gauge-v13-20261006]
+  workflow_dispatch:
+
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ym-unified-final-v13-${{ github.ref }}
   cancel-in-progress: true
+
 permissions:
   contents: read
+
 jobs:
-  material-payload:
+  unified-final:
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+
       - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
         with:
           build: false
           test: false
           lint: false
-      - name: Build material payload
+
+      - name: G1 RPA dual endpoint + lattice
+        run: |
+          lake build             MCore.YangMills.A1.RPADualConfirmationV13             MCore.YangMills.A1.RPADualEndpointLatticeV13
+
+      - name: G2 Material payload
         run: lake build MCore.YangMills.A1.YMMaterialPayloadV13
+
+      - name: G3 Terminal continuum compression
+        run: lake build MCore.YangMills.A1.TerminalContinuumGapV13
+
+      - name: G4 Regulated continuum realization
+        run: lake build MCore.YangMills.A1.RegulatedContinuumRealizationV13
+
+      - name: G5 Open-math terminal frontier
+        run: lake env bash -lc 'LEAN_PATH="./lean:$LEAN_PATH" lean open_math/P02_YM_V13_ContinuumGap.lean'
+
+      - name: G6 Final closure certificate
+        run: lake build MCore.YangMills.A1.FinalClosureCertificateV13
+
       - name: Placeholder audit
         shell: bash
         run: |
           set -euo pipefail
-          if grep -R -n -E '\b(sorry|admit)\b' lean/MCore/YangMills/A1/YMMaterialPayloadV13.lean; then
+          files=(
+            lean/MCore/YangMills/A1/RPADualConfirmationV13.lean
+            lean/MCore/YangMills/A1/RPADualEndpointLatticeV13.lean
+            lean/MCore/YangMills/A1/YMMaterialPayloadV13.lean
+            lean/MCore/YangMills/A1/FinalClosureCertificateV13.lean
+            lean/MCore/YangMills/A1/FinalExternal.lean
+            lean/MCore/YangMills/A1/ExactFinalProducer.lean
+            open_math/P02_YM_V13_ContinuumGap.lean
+          )
+          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' "${files[@]}"; then
             exit 1
           fi
-      - name: Axiom audit
+
+      - name: Unified axiom audit
         shell: bash
         run: |
           set -euo pipefail
-          cat >/tmp/YMMaterialPayloadChecks.lean <<'EOF'
+          cat >/tmp/YMUnifiedFinalChecks.lean <<'EOF'
+          import MCore.YangMills.A1.RPADualConfirmationV13
+          import MCore.YangMills.A1.RPADualEndpointLatticeV13
           import MCore.YangMills.A1.YMMaterialPayloadV13
+          import MCore.YangMills.A1.TerminalContinuumGapV13
+          import MCore.YangMills.A1.RegulatedContinuumRealizationV13
+          import MCore.YangMills.A1.FinalClosureCertificateV13
+
+          #print axioms MCore.YangMills.A1.Final.openEndpoint_ne_closedEndpoint
+          #print axioms MCore.YangMills.A1.Final.dualEndpointState_iff_finalRoot
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.CUBE_UP_TO_3_CLOSED
+          #print axioms MCore.YangMills.A1.Final.fullEndpointPayload_iff_finalRoot
+
           #print axioms MCore.YangMills.A1.Final.ymPayload_construction_and_reconstruction
           #print axioms MCore.YangMills.A1.Final.ymPayload_clustering
           #print axioms MCore.YangMills.A1.Final.ymPayload_to_finalExternal
           #print axioms MCore.YangMills.A1.Final.ymPayload_to_FINAL_ROOT
           #print axioms MCore.YangMills.A1.Final.ymPayload_to_rpa_confirmation
+
+          #print axioms MCore.YangMills.A1.ContinuumSpectralLimitV13.finite_lowSpectrumExclusion
+          #print axioms MCore.YangMills.A1.ContinuumSpectralLimitV13.eventual_lowSpectrumExclusion
+          #print axioms MCore.YangMills.A1.ContinuumSpectralLimitV13.continuum_gap_from_uniformFiniteEdge
+
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.derived_uniformFiniteEdge
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.continuum_gap
+
+          #print axioms MCore.YangMills.A1.Final.FORMAL_CHAIN_CLOSED
+          #print axioms MCore.YangMills.A1.Final.SCIENTIFIC_TARGET_REMAINS_OPEN_BRIDGE
+          #print axioms MCore.YangMills.A1.Final.NO_UNCONDITIONAL_PROMOTION
           EOF
-          lake env lean /tmp/YMMaterialPayloadChecks.lean
+          lake env lean /tmp/YMUnifiedFinalChecks.lean
