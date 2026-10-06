@@ -46,6 +46,9 @@ jobs:
           #print axioms MCore.YangMills.A1.Final.global_external_certificate_closes_rpa
           #print axioms MCore.YangMills.A1.Final.rpa_confirmation_iff_final_root
           #print axioms MCore.YangMills.A1.Final.finalExternal_to_rpa_confirmation
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.CUBE_UP_TO_3_CLOSED
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.normalize_fullFree
+          #print axioms MCore.YangMills.A1.Final.FreeEndpointState.fullFree_eq
           #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_idempotent
           #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_closed_full
           #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.normalize_dual
