@@ -102,14 +102,8 @@ theorem spectralWeight_sum
     (psi : HSpace) :
     ∑ i : Fin (Module.finrank ℂ HSpace), C.spectralWeight psi i =
       ‖psi‖ ^ 2 := by
-  calc
-    ∑ i : Fin (Module.finrank ℂ HSpace), C.spectralWeight psi i =
-        Complex.re (inner (C.eigenbasis.repr psi) (C.eigenbasis.repr psi)) := by
-      simp [spectralWeight, PiLp.inner_apply, Complex.re_sum, RCLike.inner_apply]
-    _ = Complex.re (inner psi psi) := by
-      rw [C.eigenbasis.repr.inner_map_map]
-    _ = ‖psi‖ ^ 2 := by
-      exact (norm_sq_eq_re_inner psi).symm
+  simpa [spectralWeight, OrthonormalBasis.repr_apply_apply] using
+    C.eigenbasis.sum_sq_norm_inner_right psi
 
 
 /-- Finite spectral expectation identity. -/
@@ -129,7 +123,9 @@ theorem spectralWeight_expectation
     simpa [eigenbasis, eigenvalue, linearHamiltonian] using
       (C.linearHamiltonian_isSymmetric).eigenvectorBasis_apply_self_apply rfl psi i
   rw [hdiag]
-  simp [spectralWeight, RCLike.inner_apply, Complex.mul_re]
+  rw [Complex.sq_norm]
+  simp [spectralWeight, RCLike.inner_apply, Complex.mul_re, Complex.normSq_apply]
+  ring
 
 
 /-- Vanishing of low spectral mass forces every strictly sub-gap weight to vanish. -/
