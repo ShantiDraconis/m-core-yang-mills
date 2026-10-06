@@ -1,0 +1,43 @@
+name: ym-material-payload-v13
+on:
+  push:
+    branches: [atk/ym-rejection-gauge-v13-20261006]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  material-payload:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Build material payload
+        run: lake build MCore.YangMills.A1.YMMaterialPayloadV13
+      - name: Placeholder audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '\b(sorry|admit)\b' lean/MCore/YangMills/A1/YMMaterialPayloadV13.lean; then
+            exit 1
+          fi
+      - name: Axiom audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/YMMaterialPayloadChecks.lean <<'EOF'
+          import MCore.YangMills.A1.YMMaterialPayloadV13
+          #print axioms MCore.YangMills.A1.Final.ymPayload_construction_and_reconstruction
+          #print axioms MCore.YangMills.A1.Final.ymPayload_clustering
+          #print axioms MCore.YangMills.A1.Final.ymPayload_to_finalExternal
+          #print axioms MCore.YangMills.A1.Final.ymPayload_to_FINAL_ROOT
+          #print axioms MCore.YangMills.A1.Final.ymPayload_to_rpa_confirmation
+          EOF
+          lake env lean /tmp/YMMaterialPayloadChecks.lean
