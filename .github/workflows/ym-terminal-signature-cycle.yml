@@ -1,7 +1,6 @@
 name: ym-terminal-signature-cycle
 on:
-  push:
-    branches: [atk/ym-rejection-gauge-v13-20261006]
+  workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
