@@ -13,7 +13,7 @@ spectral layer that Mathlib currently supports constructively via
 self-adjoint diagonalization.
 -/
 structure FiniteRegulatedHamiltonianV13
-    (HSpace : Type*)
+    (HSpace : Type)
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -23,7 +23,7 @@ structure FiniteRegulatedHamiltonianV13
 namespace FiniteRegulatedHamiltonianV13
 
 variable
-  {HSpace : Type*}
+  {HSpace : Type}
   [NormedAddCommGroup HSpace]
   [InnerProductSpace ℂ HSpace]
   [CompleteSpace HSpace]
