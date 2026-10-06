@@ -15,7 +15,7 @@ This carries actual Hilbert-space/operator data usable by Mathlib. It does not
 contain a gap bound and it does not assume the final spectral inequality.
 -/
 structure K14HamiltonianConcreteRealizationV13
-    (HSpace : Type*)
+    (HSpace : Type)
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace] where
@@ -28,7 +28,7 @@ structure K14HamiltonianConcreteRealizationV13
 
 /-- The concrete Hilbert model induces the real-energy K14 state model. -/
 def K14HamiltonianConcreteRealizationV13.toRealEnergyModel
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -44,9 +44,9 @@ def K14HamiltonianConcreteRealizationV13.toRealEnergyModel
   unitNorm := 1
   vacuum_normalized := C.vacuum_normalized
 
-/-- Concrete symmetry extracted once from the self-adjoint bounded operator. -/
+/-- Concrete symmetry extracted from the actual self-adjoint bounded operator. -/
 theorem K14HamiltonianConcreteRealizationV13.symmetric_concrete
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -55,12 +55,10 @@ theorem K14HamiltonianConcreteRealizationV13.symmetric_concrete
   exact ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp C.selfAdjoint_concrete
 
 /--
-The bounded concrete operator maps to K14 without postulating self-adjointness
-as an unrelated proposition. K14's proposition-valued flags are filled by
-actual proofs from the Mathlib operator.
+The bounded concrete operator maps to K14 with the actual analytic predicates.
 -/
 def K14HamiltonianConcreteRealizationV13.toK14Hamiltonian
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -69,29 +67,29 @@ def K14HamiltonianConcreteRealizationV13.toK14Hamiltonian
   domain := fun _ => True
   act := fun psi _ => C.H_op psi
   denselyDefined := True
-  symmetric := True
-  selfAdjoint := True
+  symmetric := C.H_op.toLinearMap.IsSymmetric
+  selfAdjoint := IsSelfAdjoint C.H_op
 
 theorem K14HamiltonianConcreteRealizationV13.toK14_selfAdjoint
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
     (C : K14HamiltonianConcreteRealizationV13 HSpace) :
-    C.toK14Hamiltonian.selfAdjoint := by
-  trivial
+    C.toK14Hamiltonian.selfAdjoint :=
+  C.selfAdjoint_concrete
 
 theorem K14HamiltonianConcreteRealizationV13.toK14_symmetric
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
     (C : K14HamiltonianConcreteRealizationV13 HSpace) :
-    C.toK14Hamiltonian.symmetric := by
-  trivial
+    C.toK14Hamiltonian.symmetric :=
+  C.symmetric_concrete
 
 @[simp] theorem K14HamiltonianConcreteRealizationV13.toK14_act
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
