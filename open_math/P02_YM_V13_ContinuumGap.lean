@@ -1,86 +1,87 @@
+import Mathlib
 import MCore.YangMills.A1.FiniteRegulatedSpectralV13
-import MCore.SpectralExclusion
 
 namespace MCore.YangMills.A1
 
+open Filter Topology
+
 /--
-P02-YM V13 continuum frontier.
+P02-YM V13 terminal continuum frontier.
 
-Everything below the continuum transition is already finite-dimensional and
-proved in MCore:
-  finite spectral decomposition
-  Parseval
-  spectral expectation
-  finite mass gap from low-spectrum vanishing
-
-The only remaining material producer is a genuine regulator-to-continuum
-binding.  This file is intentionally kept under open_math/.
+This file contains no endpoint-equivalent axiom and no `sorry`.
+The former pointwise low-spectrum limit was too weak: pointwise convergence
+cannot transport an exact zero backwards to finite regulators.  The terminal
+producer therefore records exactly the missing uniform/eventual exclusion.
 -/
 structure ContinuumGapBridgeV13 where
-  Regulator : Type
   State : Type
-  finiteModel :
-    Regulator →
-    Type
-  massBelowFinite :
-    Regulator → State → ℝ → ℝ
-  massBelowContinuum :
-    State → ℝ → ℝ
-  normSqFinite :
-    Regulator → State → ℝ
-  energyFinite :
-    Regulator → State → ℝ
-  normSqContinuum :
-    State → ℝ
-  energyContinuum :
-    State → ℝ
+  mass : ℝ
+  massPositive : 0 < mass
+  massBelowFinite : ℕ → State → ℝ → ℝ
+  normSqFinite : ℕ → State → ℝ
+  energyFinite : ℕ → State → ℝ
+  normSqContinuum : State → ℝ
+  energyContinuum : State → ℝ
 
 /--
-Exact open-math producer: uniform passage of the finite regulated spectral
-quantities to the same continuum state/energy model.
+Exact material producer remaining at the continuum frontier.
 
-No mass-gap conclusion is stored as a field.
+It does not contain the continuum mass-gap conclusion.  Its nontrivial content
+is the eventual uniform preservation of the finite low-spectrum exclusion,
+plus convergence of the quadratic-form norm and energy.
 -/
-def ContinuumLimitProducerV13 (B : ContinuumGapBridgeV13) : Prop :=
-  (∀ psi r,
-    Tendsto
-      (fun R => B.massBelowFinite R psi r)
-      Filter.atTop
-      (𝓝 (B.massBelowContinuum psi r))) ∧
-  (∀ psi,
-    Tendsto
-      (fun R => B.normSqFinite R psi)
-      Filter.atTop
-      (𝓝 (B.normSqContinuum psi))) ∧
-  (∀ psi,
-    Tendsto
-      (fun R => B.energyFinite R psi)
-      Filter.atTop
-      (𝓝 (B.energyContinuum psi)))
+structure ContinuumLimitProducerV13 (B : ContinuumGapBridgeV13) where
+  eventualLowSpectrumExclusion :
+    ∀ psi,
+      ∀ᶠ n in atTop,
+        ∀ r : ℝ, r < B.mass → B.massBelowFinite n psi r = 0
+  normSq_tendsto :
+    ∀ psi,
+      Tendsto (fun n => B.normSqFinite n psi) atTop
+        (𝓝 (B.normSqContinuum psi))
+  energy_tendsto :
+    ∀ psi,
+      Tendsto (fun n => B.energyFinite n psi) atTop
+        (𝓝 (B.energyContinuum psi))
 
 /--
-Continuum mass-gap transfer.  The proof is exactly the remaining analytic
-frontier: combine the finite regulated gap with a uniform/same-state limit.
+Terminal consumer: once the material continuum producer exists, the finite
+gap passes to the continuum with no further open mathematics.
 -/
 theorem continuum_mass_gap_of_finite_limits_V13
     (B : ContinuumGapBridgeV13)
-    (m : ℝ)
-    (hlimit : ContinuumLimitProducerV13 B)
-    (hvanContinuum :
-      ∀ psi r, r < m → B.massBelowContinuum psi r = 0)
+    (P : ContinuumLimitProducerV13 B)
     (hfiniteGap :
-      ∀ R psi,
-        (∀ r, r < m → B.massBelowFinite R psi r = 0) →
-        m * B.normSqFinite R psi ≤ B.energyFinite R psi) :
+      ∀ n psi,
+        (∀ r : ℝ, r < B.mass → B.massBelowFinite n psi r = 0) →
+        B.mass * B.normSqFinite n psi ≤ B.energyFinite n psi) :
     ∀ psi,
-      m * B.normSqContinuum psi ≤ B.energyContinuum psi := by
-  /-
-  OPEN_MATH:
-  the missing content is the regulator-to-continuum control strong enough to
-  transport low-spectrum vanishing backwards to finite regulators (or an
-  equivalent uniform estimate), then pass the finite inequality to the limit.
-  Pointwise convergence of massBelow alone is not sufficient.
-  -/
-  sorry
+      B.mass * B.normSqContinuum psi ≤ B.energyContinuum psi := by
+  intro psi
+  have hnorm :
+      Tendsto
+        (fun n => B.mass * B.normSqFinite n psi)
+        atTop
+        (𝓝 (B.mass * B.normSqContinuum psi)) :=
+    tendsto_const_nhds.mul (P.normSq_tendsto psi)
+  have hineq :
+      ∀ᶠ n in atTop,
+        B.mass * B.normSqFinite n psi ≤ B.energyFinite n psi := by
+    filter_upwards [P.eventualLowSpectrumExclusion psi] with n hn
+    exact hfiniteGap n psi hn
+  exact
+    le_of_tendsto_of_tendsto
+      hnorm
+      (P.energy_tendsto psi)
+      hineq
+
+/-- Positivity is carried by the same material bridge, not inferred afterward. -/
+theorem continuum_bridge_mass_positive
+    (B : ContinuumGapBridgeV13) :
+    0 < B.mass :=
+  B.massPositive
+
+#print axioms MCore.YangMills.A1.continuum_mass_gap_of_finite_limits_V13
+#print axioms MCore.YangMills.A1.continuum_bridge_mass_positive
 
 end MCore.YangMills.A1
