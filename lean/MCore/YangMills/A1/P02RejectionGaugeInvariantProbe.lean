@@ -1,5 +1,4 @@
-import Mathlib.Data.Real.NNReal
-import Mathlib.Algebra.Group.TypeTags
+import Mathlib
 
 namespace MCore.YangMills.A1
 
