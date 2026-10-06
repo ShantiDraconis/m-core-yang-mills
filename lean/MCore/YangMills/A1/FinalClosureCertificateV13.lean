@@ -9,7 +9,7 @@ Kernel-level closure certificate for the *formal composition layer*.
 This certificate records what is actually proved in MCore:
 1. any genuine FinalExternalCertificate closes FINAL_ROOT;
 2. any genuine K29 spectral realization closes the mass-gap predicate;
-3. no placeholder, sorry, or theorem-carrying custom axiom is introduced here.
+3. no placeholder or theorem-carrying custom axiom is introduced here.
 
 It deliberately does not assert existence of the external scientific witness.
 -/
