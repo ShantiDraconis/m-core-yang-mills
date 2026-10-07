@@ -104,7 +104,7 @@ theorem spectralWeight_sum
     ∑ i : Fin (Module.finrank ℂ HSpace), C.spectralWeight psi i =
       ‖psi‖ ^ 2 := by
   simpa [spectralWeight, OrthonormalBasis.repr_apply_apply] using
-    (sum_sq_norm_inner_right C.eigenbasis psi)
+    (sum_sq_norm_inner C.eigenbasis psi)
 
 
 /-- Finite spectral expectation identity. -/
