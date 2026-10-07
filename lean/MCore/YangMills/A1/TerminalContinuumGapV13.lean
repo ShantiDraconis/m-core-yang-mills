@@ -10,7 +10,7 @@ Terminal V13 limit data with no low-spectrum exclusion field.
 The finite spectral edge will derive exclusion constructively.
 -/
 structure ContinuumSpectralLimitV13
-    (HSpace : Type*)
+    (HSpace : Type)
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -39,7 +39,7 @@ structure ContinuumSpectralLimitV13
 namespace ContinuumSpectralLimitV13
 
 variable
-  {HSpace : Type*}
+  {HSpace : Type}
   [NormedAddCommGroup HSpace]
   [InnerProductSpace ℂ HSpace]
   [CompleteSpace HSpace]
@@ -54,9 +54,9 @@ theorem finite_lowSpectrumExclusion
     (r : ℝ)
     (hr : r < B.mass) :
     (B.finiteHamiltonian n).massBelowFinite psi r = 0 := by
-  apply (B.finiteHamiltonian n).massBelowFinite_eq_zero_of_weight_support_ge psi hr
-  intro i hi
-  exact B.uniformFiniteEdge n i
+  exact
+    (B.finiteHamiltonian n).massBelowFinite_eq_zero_of_weight_support_ge
+      psi hr (fun i _ => B.uniformFiniteEdge n i)
 
 /-- Therefore the eventual exclusion demanded by the continuum transfer is automatic. -/
 theorem eventual_lowSpectrumExclusion
@@ -64,9 +64,8 @@ theorem eventual_lowSpectrumExclusion
     ∀ᶠ n in atTop,
       ∀ r : ℝ, r < B.mass →
         (B.finiteHamiltonian n).massBelowFinite psi r = 0 := by
-  filter_upwards [] with n
-  intro r hr
-  exact B.finite_lowSpectrumExclusion n psi r hr
+  exact Filter.Eventually.of_forall fun n r hr =>
+    B.finite_lowSpectrumExclusion n psi r hr
 
 /--
 Terminal composition:
@@ -82,9 +81,9 @@ theorem continuum_gap_from_uniformFiniteEdge
           Complex.re
             (inner psi ((B.finiteHamiltonian n).linearHamiltonian psi)) := by
     intro n
-    apply (B.finiteHamiltonian n).finite_mass_gap_of_weight_support_ge psi
-    intro i hi
-    exact B.uniformFiniteEdge n i
+    exact
+      (B.finiteHamiltonian n).finite_mass_gap_of_weight_support_ge
+        psi (fun i _ => B.uniformFiniteEdge n i)
   have hnorm :
       Tendsto
         (fun n => B.mass * ‖psi‖ ^ 2)
@@ -95,9 +94,8 @@ theorem continuum_gap_from_uniformFiniteEdge
       ∀ᶠ n in atTop,
         B.mass * ‖psi‖ ^ 2 ≤
           Complex.re
-            (inner psi ((B.finiteHamiltonian n).linearHamiltonian psi)) := by
-    filter_upwards [] with n
-    exact hfinite n
+            (inner psi ((B.finiteHamiltonian n).linearHamiltonian psi)) :=
+    Filter.Eventually.of_forall hfinite
   exact
     le_of_tendsto_of_tendsto
       hnorm
