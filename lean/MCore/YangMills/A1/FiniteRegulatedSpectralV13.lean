@@ -148,7 +148,7 @@ theorem spectralWeight_eq_zero_of_eigenvalue_lt
     · simp [hji, C.spectralWeight_nonneg psi j]
     · simp [hji]
   have hi0 := hterms i (Finset.mem_univ i)
-  simpa using hi0
+  simpa only [if_pos le_rfl] using hi0
 
 /--
 If every eigenmode carrying nonzero spectral weight lies at or above m, then
