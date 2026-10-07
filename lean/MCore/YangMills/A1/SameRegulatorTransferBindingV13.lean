@@ -115,7 +115,7 @@ theorem same_regulator_eigenvalue_ge_transferGap_V13
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  rw [Complex.norm_real, abs_of_pos (Real.exp_pos _), mul_one] at htransfer
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), mul_one] at htransfer
   have htransfer' :
       Real.exp (-P.cutoffValue a * F.eigenvalue i / 2) ^ 2 ≤
         Real.exp (-P.cutoffValue a * B4.spectralGap a L) :=
