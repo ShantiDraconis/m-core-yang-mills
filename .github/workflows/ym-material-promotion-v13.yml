@@ -31,12 +31,13 @@ jobs:
         run: |
           lake build MCore.YangMills.A1.MaterialPromotionV13
           lake build MCore.YangMills.A1.ReducedMaterialCoreV14
+          lake build MCore.YangMills.A1.RecoveredContinuumK14V15
 
       - name: Placeholder audit
         shell: bash
         run: |
           set -euo pipefail
-          files=(lean/MCore/YangMills/A1/MaterialPromotionV13.lean lean/MCore/YangMills/A1/ReducedMaterialCoreV14.lean)
+          files=(lean/MCore/YangMills/A1/MaterialPromotionV13.lean lean/MCore/YangMills/A1/ReducedMaterialCoreV14.lean lean/MCore/YangMills/A1/RecoveredContinuumK14V15.lean)
           if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' "${files[@]}"; then
             exit 1
           fi
@@ -61,6 +62,7 @@ jobs:
           cat >/tmp/YMMaterialPromotionChecks.lean <<'EOF'
           import MCore.YangMills.A1.MaterialPromotionV13
           import MCore.YangMills.A1.ReducedMaterialCoreV14
+          import MCore.YangMills.A1.RecoveredContinuumK14V15
           #print axioms MCore.YangMills.A1.Final.YMMaterialPromotionPayloadV13.toFinalExternal
           #print axioms MCore.YangMills.A1.Final.material_payload_promotes_FINAL_ROOT_V13
           #print axioms MCore.YangMills.A1.Final.material_inhabitant_promotes_FINAL_ROOT_V13
@@ -68,6 +70,10 @@ jobs:
           #print axioms MCore.YangMills.A1.Final.YMReducedMaterialCoreV14.toPromotionPayload
           #print axioms MCore.YangMills.A1.Final.reduced_material_core_promotes_FINAL_ROOT_V14
           #print axioms MCore.YangMills.A1.Final.REDUCED_MATERIAL_INTERFACE_DOES_NOT_SELF_PROMOTE
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.normSqContinuum_eq_normSq
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.recovered_gapBound_V15
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.recovered_K14MassGap_V15
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.recovered_FINAL_ROOT_V15
           EOF
           lake env lean /tmp/YMMaterialPromotionChecks.lean 2>&1 | tee /tmp/ym-material-promotion-axioms.log
           if grep -E 'sorryAx|axiom ' /tmp/ym-material-promotion-axioms.log; then
