@@ -66,9 +66,67 @@ jobs:
             lean/MCore/YangMills/A1/ExactFinalProducer.lean
             open_math/P02_YM_V13_ContinuumGap.lean
           )
-          if sed -E 's/--.*$//' "${files[@]}" | grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)'; then
-            exit 1
-          fi
+          python - "${files[@]}" <<'PY'
+          import re
+          import sys
+
+          def strip_lean_comments(src: str) -> str:
+              out = []
+              i = 0
+              depth = 0
+              in_string = False
+              escaped = False
+              while i < len(src):
+                  if depth:
+                      if src.startswith('/-', i):
+                          depth += 1
+                          i += 2
+                      elif src.startswith('-/', i):
+                          depth -= 1
+                          i += 2
+                      else:
+                          if src[i] == '\n':
+                              out.append('\n')
+                          i += 1
+                      continue
+                  if in_string:
+                      ch = src[i]
+                      out.append(' ')
+                      if escaped:
+                          escaped = False
+                      elif ch == '\\\\':
+                          escaped = True
+                      elif ch == '"':
+                          in_string = False
+                      i += 1
+                      continue
+                  if src.startswith('--', i):
+                      while i < len(src) and src[i] != '\n':
+                          i += 1
+                      continue
+                  if src.startswith('/-', i):
+                      depth = 1
+                      i += 2
+                      continue
+                  if src[i] == '"':
+                      in_string = True
+                      out.append(' ')
+                      i += 1
+                      continue
+                  out.append(src[i])
+                  i += 1
+              return ''.join(out)
+
+          bad = re.compile(r'(?<![A-Za-z0-9_])(sorry|admit)(?![A-Za-z0-9_])')
+          failed = False
+          for path in sys.argv[1:]:
+              text = strip_lean_comments(open(path, encoding='utf-8').read())
+              for n, line in enumerate(text.splitlines(), 1):
+                  if bad.search(line):
+                      print(f"{path}:{n}:{line.strip()}")
+                      failed = True
+          raise SystemExit(1 if failed else 0)
+          PY
 
       - name: Unified axiom audit
         shell: bash
