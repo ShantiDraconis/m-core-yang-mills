@@ -20,7 +20,7 @@ structure SameRegulatorHamiltonianTransferBindingV13
     {C : RegulatedYM4Construction}
     {P : A1PhysicalData C}
     (B4 : PositiveTransferDataV2 C P)
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -51,7 +51,7 @@ theorem same_regulator_eigenvalue_ge_transferGap_V13
     {C : RegulatedYM4Construction}
     {P : A1PhysicalData C}
     {B4 : PositiveTransferDataV2 C P}
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
@@ -91,7 +91,7 @@ theorem same_regulator_eigenvalue_ge_uniformMass_V13
     {B3 : ReflectionPositivityDataV2 C P}
     {B4 : PositiveTransferDataV2 C P}
     (U : UniformRegulatorControlV2 C P B3 B4)
-    {HSpace : Type*}
+    {HSpace : Type}
     [NormedAddCommGroup HSpace]
     [InnerProductSpace ℂ HSpace]
     [CompleteSpace HSpace]
