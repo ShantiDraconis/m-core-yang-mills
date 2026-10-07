@@ -124,9 +124,8 @@ theorem spectralWeight_expectation
     simpa [eigenbasis, eigenvalue, linearHamiltonian] using
       (C.linearHamiltonian_isSymmetric).eigenvectorBasis_apply_self_apply rfl psi i
   rw [hdiag]
-  simp [spectralWeight, inner_smul_right, RCLike.inner_apply,
-    Complex.normSq_apply]
-  rw [Complex.sq_norm]
+  simp [spectralWeight, inner_smul_right, RCLike.inner_apply]
+  rw [Complex.sq_norm, Complex.normSq_apply]
   ring
 
 
