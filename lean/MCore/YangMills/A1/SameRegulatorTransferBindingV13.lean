@@ -7,6 +7,18 @@ namespace MCore.YangMills.A1
 
 open scoped ComplexConjugate
 
+/-- Pointwise complex scaling of a regulated L2 vector. -/
+instance regulatedL2VectorSMul
+    {C : RegulatedYM4Construction}
+    {a : C.Signature.Regulator}
+    {L : C.Signature.Volume} :
+    SMul ℂ (RegulatedL2Vector C a L) where
+  smul z psi :=
+    { toFun := fun x => z * psi.toFun x
+      squareIntegrable := by
+        have h := psi.squareIntegrable.const_mul (‖z‖ ^ 2)
+        simpa [norm_mul, mul_pow] using h }
+
 /--
 Same-regulator semantic binding between the finite Hamiltonian and the B4
 transfer operator.
