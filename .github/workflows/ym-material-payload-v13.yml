@@ -48,7 +48,7 @@ jobs:
       - name: G5 Open-math terminal frontier
         run: |
           lake build MCore.YangMills.A1.FiniteRegulatedSpectralV13
-          lake env bash -lc 'LEAN_PATH="./lean:$LEAN_PATH" lean open_math/P02_YM_V13_ContinuumGap.lean'
+          lake env lean open_math/P02_YM_V13_ContinuumGap.lean
 
       - name: G6 Final closure certificate
         run: lake build MCore.YangMills.A1.FinalClosureCertificateV13
