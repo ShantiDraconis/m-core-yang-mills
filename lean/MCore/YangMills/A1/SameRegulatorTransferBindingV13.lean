@@ -19,6 +19,29 @@ instance regulatedL2VectorSMul
         have h := psi.squareIntegrable.const_mul (‖z‖ ^ 2)
         simpa [norm_mul, mul_pow] using h }
 
+@[simp] theorem regulatedL2VectorSMul_toFun
+    {C : RegulatedYM4Construction}
+    {a : C.Signature.Regulator}
+    {L : C.Signature.Volume}
+    (z : ℂ) (psi : RegulatedL2Vector C a L) (x : (C.fiber a L).State) :
+    (z • psi).toFun x = z * psi.toFun x :=
+  rfl
+
+theorem regulatedNormSq_smul
+    {C : RegulatedYM4Construction}
+    {a : C.Signature.Regulator}
+    {L : C.Signature.Volume}
+    (z : ℂ) (psi : RegulatedL2Vector C a L) :
+    regulatedNormSq (z • psi) = ‖z‖ ^ 2 * regulatedNormSq psi := by
+  unfold regulatedNormSq
+  simp only [regulatedL2VectorSMul_toFun, norm_mul]
+  rw [show
+    (fun x => (‖z‖ * ‖psi.toFun x‖) ^ 2) =
+      (fun x => ‖z‖ ^ 2 * ‖psi.toFun x‖ ^ 2) by
+        funext x
+        ring]
+  rw [MeasureTheory.integral_const_mul]
+
 /--
 Same-regulator semantic binding between the finite Hamiltonian and the B4
 transfer operator.
@@ -84,11 +107,19 @@ theorem same_regulator_eigenvalue_ge_transferGap_V13
   rw [B.normSq_preserved] at htransfer
   have hnorm : ‖F.eigenbasis i‖ ^ 2 = (1 : ℝ) := by
     simp
-  simp [regulatedNormSq, norm_smul, hnorm] at htransfer
+  rw [regulatedNormSq_smul] at htransfer
+  simp [hnorm] at htransfer
+  have hsq :
+      Real.exp (-P.cutoffValue a * F.eigenvalue i / 2) ^ 2 =
+        Real.exp (-P.cutoffValue a * F.eigenvalue i) := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  rw [hsq] at htransfer
   have hexp :
       Real.exp (-P.cutoffValue a * F.eigenvalue i) ≤
-        Real.exp (-P.cutoffValue a * B4.spectralGap a L) := by
-    simpa [Real.exp_div, sq, mul_assoc] using htransfer
+        Real.exp (-P.cutoffValue a * B4.spectralGap a L) :=
+    htransfer
   have hlog :=
     (Real.exp_le_exp).mp hexp
   nlinarith
