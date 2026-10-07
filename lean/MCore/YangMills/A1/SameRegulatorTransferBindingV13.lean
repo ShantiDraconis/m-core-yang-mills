@@ -104,18 +104,23 @@ theorem same_regulator_eigenvalue_ge_transferGap_V13
       (B.toRegulated (F.eigenbasis i))
       (B.vacuumOrthogonal_of_eigenmode i)
   rw [B.transfer_on_eigenmode i] at htransfer
+  rw [regulatedNormSq_smul] at htransfer
   rw [B.normSq_preserved] at htransfer
   have hnorm : ‖F.eigenbasis i‖ ^ 2 = (1 : ℝ) := by
     simp
-  rw [regulatedNormSq_smul] at htransfer
-  simp [hnorm] at htransfer
+  rw [hnorm, mul_one] at htransfer
   have hsq :
       Real.exp (-P.cutoffValue a * F.eigenvalue i / 2) ^ 2 =
         Real.exp (-P.cutoffValue a * F.eigenvalue i) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  rw [hsq] at htransfer
+  have hcoeff :
+      ‖Complex.exp (-(↑(P.cutoffValue a) * ↑(F.eigenvalue i)) / 2)‖ ^ 2 =
+        Real.exp (-P.cutoffValue a * F.eigenvalue i) := by
+    rw [Complex.norm_exp]
+    simpa using hsq
+  rw [hcoeff] at htransfer
   have hexp :
       Real.exp (-P.cutoffValue a * F.eigenvalue i) ≤
         Real.exp (-P.cutoffValue a * B4.spectralGap a L) :=
