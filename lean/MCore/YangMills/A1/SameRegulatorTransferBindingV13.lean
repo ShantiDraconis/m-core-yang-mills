@@ -116,9 +116,10 @@ theorem same_regulator_eigenvalue_ge_transferGap_V13
     congr 1
     ring
   have hcoeff :
-      ‖((Real.exp (-P.cutoffValue a * F.eigenvalue i / 2) : ℝ) : ℂ)‖ ^ 2 =
+      ‖Complex.exp (-(↑(P.cutoffValue a) * ↑(F.eigenvalue i)) / 2)‖ ^ 2 =
         Real.exp (-P.cutoffValue a * F.eigenvalue i) := by
-    simp [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), hsq]
+    rw [Complex.norm_exp]
+    simpa using hsq
   rw [hcoeff, mul_one] at htransfer
   have hexp :
       Real.exp (-P.cutoffValue a * F.eigenvalue i) ≤
