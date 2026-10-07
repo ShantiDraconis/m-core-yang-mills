@@ -82,6 +82,7 @@ theorem RegulatedContinuumRealizationV13.recovered_gapBound_V15
       U.m0 psi (K.toK14Hamiltonian.act psi hpsi) := by
   rw [YMGapConcreteV13_gapBound_iff]
   rw [K.toK14_act]
+  change U.m0 * ‖psi‖ ^ 2 ≤ Complex.re (inner psi (K.H_op psi))
   rw [← I.energy_eq psi]
   rw [← R.normSqContinuum_eq_normSq U psi]
   exact R.continuum_gap U psi
