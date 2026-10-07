@@ -22,12 +22,12 @@ structure ContinuumSpectralLimitV13
   energyContinuum : HSpace → ℝ
   normSq_tendsto :
     ∀ psi,
-      Tendsto (fun n => ‖psi‖ ^ 2) atTop
+      Tendsto (fun (_n : ℕ) => ‖psi‖ ^ 2) atTop
         (𝓝 (normSqContinuum psi))
   energy_tendsto :
     ∀ psi,
       Tendsto
-        (fun n =>
+        (fun n : ℕ =>
           Complex.re
             (inner psi ((finiteHamiltonian n).linearHamiltonian psi)))
         atTop
@@ -76,7 +76,7 @@ theorem continuum_gap_from_uniformFiniteEdge
     (psi : HSpace) :
     B.mass * B.normSqContinuum psi ≤ B.energyContinuum psi := by
   have hfinite :
-      ∀ n,
+      ∀ n : ℕ,
         B.mass * ‖psi‖ ^ 2 ≤
           Complex.re
             (inner psi ((B.finiteHamiltonian n).linearHamiltonian psi)) := by
@@ -86,12 +86,12 @@ theorem continuum_gap_from_uniformFiniteEdge
         psi (fun i _ => B.uniformFiniteEdge n i)
   have hnorm :
       Tendsto
-        (fun n => B.mass * ‖psi‖ ^ 2)
+        (fun (_n : ℕ) => B.mass * ‖psi‖ ^ 2)
         atTop
         (𝓝 (B.mass * B.normSqContinuum psi)) := by
     exact tendsto_const_nhds.mul (B.normSq_tendsto psi)
   have hineq :
-      ∀ᶠ n in atTop,
+      ∀ᶠ n : ℕ in atTop,
         B.mass * ‖psi‖ ^ 2 ≤
           Complex.re
             (inner psi ((B.finiteHamiltonian n).linearHamiltonian psi)) :=
