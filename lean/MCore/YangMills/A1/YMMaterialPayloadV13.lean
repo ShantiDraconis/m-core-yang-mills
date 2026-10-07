@@ -121,7 +121,7 @@ theorem ymPayload_gap_preserved_under_limits
     F.gapPreservedUnderLimits :=
   P.adapter.limitBlock.gapPreservedUnderLimits
 
-theorem ymPayload_to_finalExternal
+def ymPayload_to_finalExternal
     {C : RegulatedYM4Construction}
     {F : K20ScientificFrontier}
     {D : K14PhysicalHilbertData}
