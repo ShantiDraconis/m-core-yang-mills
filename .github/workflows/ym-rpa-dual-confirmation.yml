@@ -1,0 +1,58 @@
+name: ym-rpa-dual-confirmation
+on:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  rpa-dual:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Build RPA dual confirmation
+        run: lake build MCore.YangMills.A1.RPADualConfirmationV13 MCore.YangMills.A1.RPADualEndpointLatticeV13
+      - name: Placeholder audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '\b(sorry|admit)\b' lean/MCore/YangMills/A1/RPADualConfirmationV13.lean; then
+            exit 1
+          fi
+      - name: Axiom audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/RPADualChecks.lean <<'EOF'
+          import MCore.YangMills.A1.RPADualConfirmationV13
+          import MCore.YangMills.A1.RPADualEndpointLatticeV13
+          #print axioms MCore.YangMills.A1.Final.openEndpoint_ne_closedEndpoint
+          #print axioms MCore.YangMills.A1.Final.openEndpoint_iff_closedEndpoint
+          #print axioms MCore.YangMills.A1.Final.dualEndpointState_iff_finalRoot
+          #print axioms MCore.YangMills.A1.Final.rpa_chain_from_dualEndpointState
+          #print axioms MCore.YangMills.A1.Final.open_closed_math_identity
+          #print axioms MCore.YangMills.A1.Final.dual_math_coexistence_iff_final_root
+          #print axioms MCore.YangMills.A1.Final.dual_bridge_coexistence_iff_final_root
+          #print axioms MCore.YangMills.A1.Final.rpa_internal_five_views
+          #print axioms MCore.YangMills.A1.Final.global_external_certificate_closes_rpa
+          #print axioms MCore.YangMills.A1.Final.rpa_confirmation_iff_final_root
+          #print axioms MCore.YangMills.A1.Final.finalExternal_to_rpa_confirmation
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.CUBE_UP_TO_3_CLOSED
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.normalize_fullFree
+          #print axioms MCore.YangMills.A1.Final.FreeEndpointState.fullFree_eq
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_idempotent
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.open_closed_full
+          #print axioms MCore.YangMills.A1.Final.CanonicalEndpointState.normalize_dual
+          #print axioms MCore.YangMills.A1.Final.fullEndpointPayload_iff_dualEndpointState
+          #print axioms MCore.YangMills.A1.Final.fullEndpointPayload_iff_finalRoot
+          #print axioms MCore.YangMills.A1.Final.globalExternalCertificate_to_fullEndpointPayload
+          EOF
+          lake env lean /tmp/RPADualChecks.lean

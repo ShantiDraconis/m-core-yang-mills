@@ -1,0 +1,43 @@
+name: ym-gauge-probe-fast
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ym-legacy-manual-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+jobs:
+  gauge-probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Compile gauge probe
+        run: lake build MCore.YangMills.A1.P02RejectionGaugeInvariantProbe
+      - name: Axiom audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '6'
+        run: |
+          set -euo pipefail
+          cat >/tmp/YMGaugeProbeChecks.lean <<'EOF'
+          import MCore.YangMills.A1.P02RejectionGaugeInvariantProbe
+          #print axioms MCore.YangMills.A1.GaugeProbe.gaugeGroupLaw
+          #print axioms MCore.YangMills.A1.GaugeProbe.gaugeInverseRestores
+          #print axioms MCore.YangMills.A1.GaugeProbe.gap_eq_of_gaugeEquivalent
+          #print axioms MCore.YangMills.A1.GaugeProbe.producer_implies_massGap
+          #print axioms MCore.YangMills.A1.gauge_invariance_does_not_force_mass_gap
+          #print axioms MCore.YangMills.A1.toyFreePhoton_has_no_uniformPositiveGapProducer
+          EOF
+          lake env lean /tmp/YMGaugeProbeChecks.lean 2>&1 | tee /tmp/ym-gauge-probe-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/ym-gauge-probe-axioms.log /tmp/ym-gauge-probe-footprint.txt

@@ -1,0 +1,37 @@
+name: ym-realization-v13-fast
+on:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+jobs:
+  realization-v13:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Compile regulated continuum realization
+        run: lake build MCore.YangMills.A1.RegulatedContinuumRealizationV13
+      - name: Axiom audit
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '2'
+        run: |
+          set -euo pipefail
+          cat >/tmp/YMRealizationV13Checks.lean <<'EOF'
+          import MCore.YangMills.A1.RegulatedContinuumRealizationV13
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.derived_uniformFiniteEdge
+          #print axioms MCore.YangMills.A1.RegulatedContinuumRealizationV13.continuum_gap
+          EOF
+          lake env lean /tmp/YMRealizationV13Checks.lean 2>&1 | tee /tmp/ym-realization-v13-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/ym-realization-v13-axioms.log /tmp/ym-realization-v13-footprint.txt

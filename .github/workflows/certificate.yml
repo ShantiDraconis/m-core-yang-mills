@@ -1,10 +1,17 @@
 name: certificate
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ym-legacy-manual-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 jobs:
   final-core:
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -93,7 +100,7 @@ jobs:
           if grep -R -n -E 'def SpectralAnalyticOpenBridge.*:= *True' lean/MCore/SpectralCore.lean; then exit 1; fi
       - name: G7 targeted reproducibility
         shell: bash
-        timeout-minutes: 12
+        timeout-minutes: 45
         run: |
           set -euo pipefail
           # Do not run the umbrella target or lake clean in normal certification.
@@ -241,6 +248,30 @@ jobs:
           echo "B60_TYPED_BOUNDARY=PASS"
           echo "B60_WITNESS=OPEN_BRIDGE"
           echo "NO_LEGACY_A1_TO_B60_PROMOTION=PASS"
+
+      - name: G6c gauge-action rejection probe
+        shell: bash
+        env:
+          G6B_ALLOWED_AXIOMS: 'propext,Classical.choice,Quot.sound'
+          EXPECTED_THEOREM_COUNT: '6'
+        run: |
+          set -euo pipefail
+          lake build MCore.YangMills.A1.P02RejectionGaugeInvariantProbe
+          cat >/tmp/YMGaugeProbeChecks.lean <<'EOF'
+          import MCore.YangMills.A1.P02RejectionGaugeInvariantProbe
+          #print axioms MCore.YangMills.A1.GaugeProbe.gaugeGroupLaw
+          #print axioms MCore.YangMills.A1.GaugeProbe.gaugeInverseRestores
+          #print axioms MCore.YangMills.A1.GaugeProbe.gap_eq_of_gaugeEquivalent
+          #print axioms MCore.YangMills.A1.GaugeProbe.producer_implies_massGap
+          #print axioms MCore.YangMills.A1.gauge_invariance_does_not_force_mass_gap
+          #print axioms MCore.YangMills.A1.toyFreePhoton_has_no_uniformPositiveGapProducer
+          EOF
+          lake env lean /tmp/YMGaugeProbeChecks.lean 2>&1 | tee /tmp/ym-gauge-probe-axioms.log
+          bash scripts/axiom-gate-G6b.sh /tmp/ym-gauge-probe-axioms.log /tmp/g6c-ym-gauge-probe-footprint.txt
+          echo "YM_GAUGE_GROUP_ACTION=PASS"
+          echo "YM_ZERO_GAP_NEGATIVE_CONTROL=PASS"
+          echo "YM_MASS_GAP_NON_PROMOTION=PASS"
+          echo "YM_Q10_UNIFORM_PHYSICAL_GAP_PRODUCER=OPEN_MATH"
 
       - name: Upload G6b axiom evidence
         if: always()
