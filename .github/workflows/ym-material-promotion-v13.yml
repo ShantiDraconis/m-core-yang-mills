@@ -1,0 +1,69 @@
+name: ym-material-promotion-v13
+
+on:
+  push:
+    branches: [atk/ym-material-promotion-v13-20261007]
+  workflow_dispatch:
+
+concurrency:
+  group: ym-material-promotion-v13-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  material-promotion:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596
+        with:
+          build: false
+          test: false
+          lint: false
+
+      - name: Build material promotion interface
+        run: lake build MCore.YangMills.A1.MaterialPromotionV13
+
+      - name: Placeholder audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          f=lean/MCore/YangMills/A1/MaterialPromotionV13.lean
+          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' "$f"; then
+            exit 1
+          fi
+
+      - name: Endpoint-circularity audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          f=lean/MCore/YangMills/A1/MaterialPromotionV13.lean
+          # FINAL_ROOT and K14MassGap may appear only in theorem/consumer declarations,
+          # never as structure fields. Inspect the payload body specifically.
+          sed -n '/structure YMMaterialPromotionPayloadV13/,/def YMMaterialPromotionPayloadV13.toFinalExternal/p' "$f" >/tmp/payload.txt
+          if grep -n -E '(^|[[:space:]])(FINAL_ROOT|K14MassGap|ProofCertificate)([[:space:]]|$)' /tmp/payload.txt; then
+            echo "Circular endpoint field detected"
+            exit 1
+          fi
+
+      - name: Axiom audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/YMMaterialPromotionChecks.lean <<'EOF'
+          import MCore.YangMills.A1.MaterialPromotionV13
+          #print axioms MCore.YangMills.A1.Final.YMMaterialPromotionPayloadV13.toFinalExternal
+          #print axioms MCore.YangMills.A1.Final.material_payload_promotes_FINAL_ROOT_V13
+          #print axioms MCore.YangMills.A1.Final.material_inhabitant_promotes_FINAL_ROOT_V13
+          #print axioms MCore.YangMills.A1.Final.MATERIAL_INTERFACE_DOES_NOT_SELF_PROMOTE
+          EOF
+          lake env lean /tmp/YMMaterialPromotionChecks.lean 2>&1 | tee /tmp/ym-material-promotion-axioms.log
+          if grep -E 'sorryAx|axiom ' /tmp/ym-material-promotion-axioms.log; then
+            exit 1
+          fi
