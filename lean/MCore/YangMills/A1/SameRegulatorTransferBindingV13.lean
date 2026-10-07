@@ -115,15 +115,15 @@ theorem same_regulator_eigenvalue_ge_transferGap_V13
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hcoeff :
-      ‖((Real.exp (-P.cutoffValue a * F.eigenvalue i / 2) : ℝ) : ℂ)‖ ^ 2 =
-        Real.exp (-P.cutoffValue a * F.eigenvalue i) := by
-    simp [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), hsq]
-  rw [hcoeff, mul_one] at htransfer
+  have htransfer' :
+      Real.exp (-P.cutoffValue a * F.eigenvalue i / 2) ^ 2 ≤
+        Real.exp (-P.cutoffValue a * B4.spectralGap a L) := by
+    simpa [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)] using htransfer
+  rw [hsq] at htransfer'
   have hexp :
       Real.exp (-P.cutoffValue a * F.eigenvalue i) ≤
         Real.exp (-P.cutoffValue a * B4.spectralGap a L) :=
-    htransfer
+    htransfer'
   have hlog :=
     (Real.exp_le_exp).mp hexp
   nlinarith
