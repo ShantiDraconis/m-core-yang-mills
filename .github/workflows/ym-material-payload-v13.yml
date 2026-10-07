@@ -66,7 +66,7 @@ jobs:
             lean/MCore/YangMills/A1/ExactFinalProducer.lean
             open_math/P02_YM_V13_ContinuumGap.lean
           )
-          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' "${files[@]}"; then
+          if sed -E 's/--.*$//' "${files[@]}" | grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)'; then
             exit 1
           fi
 
