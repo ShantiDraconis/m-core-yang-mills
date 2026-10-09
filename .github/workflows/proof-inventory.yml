@@ -1,0 +1,55 @@
+name: Proof inventory
+
+# Kernel-derived registry: builds every module of the Lean library (not only
+# the modules the root file imports), records each theorem's axioms, flags
+# vacuous Prop definitions and derives PROVED / REFUTED status from the kernel.
+# Fails on sorryAx, on project-declared axioms used by a theorem, and on a
+# broken module in the default build. Orphan-module failures are warnings.
+
+on:
+  push:
+    paths:
+      - '**/*.lean'
+      - 'lakefile.*'
+      - 'lean-toolchain'
+      - 'lake-manifest.json'
+      - 'scripts/proof_inventory.py'
+      - '.github/workflows/proof-inventory.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies (Mathlib cache)
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Kernel-derived proof inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          python3 scripts/proof_inventory.py --out inventory --strict --check-committed
+      - name: Upload inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proof-inventory
+          path: inventory/
+          if-no-files-found: warn
