@@ -358,6 +358,11 @@ def main():
 
     print(f"[inventory] {len(mods)} modules; building all of them")
     failed, rc, log = build(root, mods)
+    # Lake also marks dependents of a failing module as failed; a module with no
+    # error of its own whose imports include a failing module is BLOCKED.
+    for m in sorted(failed):
+        if not failed[m] and any(d in failed and failed[d] for d in closure(m, mods) if d != m):
+            del failed[m]
     blocked = {}
     for m in mods:
         if m in failed:
@@ -501,6 +506,8 @@ def main():
     if gh:
         with open(os.environ.get("GITHUB_STEP_SUMMARY", os.devnull), "a") as f:
             f.write(md)
+        # machine-readable summary, readable through the check-run annotations API
+        print("::notice title=proof-inventory-summary::" + json.dumps(summary, separators=(",", ":")))
         for r in modules:
             if r["status"] != "OK" and not r["in_default_build"]:
                 print(f"::warning file={r['path']}::module outside default build is {r['status']}: "
@@ -514,7 +521,8 @@ def main():
 
     if a.strict:
         problems = []
-        problems += [f"default-build module {r['module']} is {r['status']}" for r in modules
+        problems += [f"default-build module {r['module']} is {r['status']}: "
+                     f"{r.get('first_error') or ('blocked by ' + r.get('blocked_by', ''))}" for r in modules
                      if r["status"] != "OK" and r["in_default_build"]]
         problems += [f"{t['name']} uses sorryAx" for t in theorems if t["status"] == "USES_SORRY"]
         problems += [f"{t['name']} uses a project axiom" for t in theorems if t["status"] == "USES_PROJECT_AXIOM"]
