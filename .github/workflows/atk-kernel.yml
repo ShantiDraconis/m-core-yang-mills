@@ -1,0 +1,82 @@
+name: ATK kernel check
+
+on:
+  push:
+    paths:
+      - 'atk-kernel/**'
+      - '.github/workflows/atk-kernel.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kernel:
+    name: Lean 4 + Mathlib — compilação e auditoria de axiomas
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: atk-kernel
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar elan (gerenciador do Lean)
+        shell: bash
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o elan-init.sh
+          bash elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Versões
+        shell: bash
+        run: |
+          mkdir -p reports
+          lean --version | tee reports/toolchain.txt
+          lake --version
+
+      - name: Baixar Mathlib já compilada (cache oficial)
+        shell: bash
+        run: |
+          lake exe cache get || (lake update && lake exe cache get)
+
+      - name: lake build
+        id: build
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          lake build 2>&1 | tee reports/build.log
+
+      - name: "Auditoria por arquivo (kernel + #print axioms)"
+        shell: bash
+        run: |
+          : > reports/file_status.txt
+          for f in ATK/*.lean; do
+            m=$(basename "$f" .lean)
+            if lake env lean "$f" > "reports/audit_${m}.log" 2>&1; then
+              echo "$f OK" >> reports/file_status.txt
+            else
+              echo "$f FAIL" >> reports/file_status.txt
+            fi
+          done
+          cat reports/file_status.txt
+          cp lake-manifest.json reports/ || true
+
+      - name: Relatório de certificação
+        id: report
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/check_axioms.py
+          code=$?
+          cat reports/report.md >> "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: Publicar relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atk-kernel-report
+          path: atk-kernel/reports/
+
