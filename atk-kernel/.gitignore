@@ -1,0 +1,5 @@
+.lake/
+build/
+*.olean
+reports/
+__pycache__/
