@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   inventory:
@@ -45,7 +45,10 @@ jobs:
         run: |
           set -euo pipefail
           export PATH="$HOME/.elan/bin:$PATH"
-          python3 scripts/proof_inventory.py --out inventory --strict --check-committed
+          extra=""
+          # pull requests must ship a regenerated inventory; pushes only warn
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then extra="--fail-if-stale"; fi
+          python3 scripts/proof_inventory.py --out inventory --strict --check-committed $extra
       - name: Upload inventory
         if: always()
         uses: actions/upload-artifact@v4
@@ -53,3 +56,14 @@ jobs:
           name: proof-inventory
           path: inventory/
           if-no-files-found: warn
+      - name: Record the inventory on this evidence branch
+        if: always() && github.event_name == 'push' && startsWith(github.ref_name, 'atk/proof-inventory-')
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "proof-inventory"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inventory/
+          if git diff --cached --quiet; then echo "inventory unchanged"; exit 0; fi
+          git commit -m "Record kernel-derived inventory for ${GITHUB_SHA::8} [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

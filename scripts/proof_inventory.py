@@ -175,7 +175,7 @@ def run (roots : List String) (onlyModule : Option String) : CoreM String := do
           out := out.push s!"THM\t{u}\t{m}\t{showNames (axiomsOf n)}"
     | .axiomInfo _ =>
         if let some u := userName env n then
-          out := out.push s!"AXDECL\t{u}\t{m}"
+          out := out.push s!"AXDECL\t{u}\t{m}\t{n}"
     | _ => pure ()
   for (n, (m, arity0, vac)) in propDefs.toList do
     if let some u := userName env n then
@@ -256,12 +256,25 @@ def build(root: Path, mods):
         if m.group(1) in mods:
             failed.setdefault(m.group(1), "")
     by_path = {v["path"]: k for k, v in mods.items()}
-    for m in re.finditer(r"^error: (?:\./)*([^:\n]+\.lean):(\d+):(\d+): (.*)$", log, re.M):
+    lines = log.splitlines()
+    head = re.compile(r"^error: (?:\./)*([^:\n]+\.lean):(\d+):(\d+): (.*)$")
+    stop = re.compile(r"^(error|warning|info|trace):|^[✖✔⚠] ")
+    for i, line in enumerate(lines):
+        m = head.match(line)
+        if not m:
+            continue
         mod = by_path.get(m.group(1))
-        if mod is not None:
-            failed.setdefault(mod, "")
-            if not failed[mod]:
-                failed[mod] = f"{m.group(1)}:{m.group(2)}:{m.group(3)}: {m.group(4)}"[:300]
+        if mod is None:
+            continue
+        failed.setdefault(mod, "")
+        if failed[mod]:
+            continue
+        block = [f"{m.group(1)}:{m.group(2)}:{m.group(3)}: {m.group(4)}"]
+        for nxt in lines[i + 1:i + 40]:
+            if stop.match(nxt):
+                break
+            block.append(nxt)
+        failed[mod] = "\n".join(block)[:1500]
     return failed, r.returncode, log
 
 
@@ -333,7 +346,9 @@ def parse_tsv(texts):
                 row["inhabited_by"] |= {x for x in parts[5].split(",") if x}
                 row["refuted_by"] |= {x for x in parts[6].split(",") if x}
             elif parts[0] == "AXDECL":
-                axdecls[(parts[1], parts[2])] = True
+                # parts[3] is the kernel name; for a private axiom it differs from the
+                # user-facing name, and theorem dependency lists use the kernel name.
+                axdecls[(parts[1], parts[2])] = parts[3] if len(parts) > 3 else parts[1]
     return thms, props, axdecls
 
 
@@ -343,6 +358,8 @@ def main():
     ap.add_argument("--out", default="inventory")
     ap.add_argument("--strict", action="store_true")
     ap.add_argument("--check-committed", action="store_true")
+    ap.add_argument("--fail-if-stale", action="store_true",
+                    help="with --check-committed: exit 1 when the committed inventory differs")
     ap.add_argument("--loose-dir", action="append", default=None,
                     help="directory of stand-alone .lean files to compile with lake env lean (default: audit)")
     a = ap.parse_args()
@@ -395,7 +412,7 @@ def main():
     print(f"[inventory] kernel extraction: {len(groups)} environment group(s), {len(clashes)} name clash(es)")
     thms, props, axdecls = parse_tsv(texts)
 
-    pkg_axioms = {n for n, _ in axdecls}
+    pkg_axioms = {n for n, _ in axdecls} | set(axdecls.values())
     theorems = []
     for (n, mod) in sorted(thms):
         ax = thms[(n, mod)]
@@ -499,7 +516,9 @@ def main():
     old_json = jpath.read_text() if jpath.exists() else None
     jpath.write_text(new_json)
     md = render_md(inv)
-    (out / "PROOF_INVENTORY.md").write_text(md)
+    mpath = out / "PROOF_INVENTORY.md"
+    old_md = mpath.read_text() if mpath.exists() else None
+    mpath.write_text(md)
     print(f"[inventory] wrote {jpath} and PROOF_INVENTORY.md")
     print(json.dumps(summary, indent=1))
 
@@ -510,14 +529,17 @@ def main():
         print("::notice title=proof-inventory-summary::" + json.dumps(summary, separators=(",", ":")))
         for r in modules:
             if r["status"] != "OK" and not r["in_default_build"]:
-                print(f"::warning file={r['path']}::module outside default build is {r['status']}: "
-                      f"{r.get('first_error') or r.get('blocked_by')}")
+                print(f"::warning file={r['path']}::" + gh_escape(f"module outside default build is {r['status']}: "
+                      f"{r.get('first_error') or r.get('blocked_by')}"))
         for p in prop_rows:
             if p["status"] == "VACUOUS":
                 print(f"::warning::vacuous Prop definition {p['name']} ({p['module']}) ends in True")
-    if a.check_committed and old_json is not None and old_json != new_json:
-        msg = "committed inventory/PROOF_INVENTORY.json is out of date; regenerate with scripts/proof_inventory.py"
-        print(f"::warning::{msg}" if gh else f"[inventory] WARNING: {msg}")
+    stale = a.check_committed and ((old_json is not None and old_json != new_json) or
+                                   (old_md is not None and old_md != md))
+    if stale:
+        msg = "committed inventory/PROOF_INVENTORY.json/.md is out of date; regenerate with scripts/proof_inventory.py"
+        level = "error" if a.fail_if_stale else "warning"
+        print(f"::{level}::{msg}" if gh else f"[inventory] {level.upper()}: {msg}")
 
     if a.strict:
         problems = []
@@ -528,8 +550,14 @@ def main():
         problems += [f"{t['name']} uses a project axiom" for t in theorems if t["status"] == "USES_PROJECT_AXIOM"]
         if problems:
             for p in problems[:50]:
-                print(f"::error::{p}" if gh else f"[inventory] ERROR: {p}")
+                print("::error::" + gh_escape(p) if gh else f"[inventory] ERROR: {p}")
             sys.exit(1)
+    if stale and a.fail_if_stale:
+        sys.exit(1)
+
+
+def gh_escape(text):
+    return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
 
 def render_md(inv):
@@ -545,7 +573,7 @@ def render_md(inv):
     if bad:
         L += ["| Module | Status | In default build | Detail |", "| --- | --- | --- | --- |"]
         for m in bad:
-            d = (m.get("first_error") or m.get("blocked_by") or "").replace("|", "\\|")
+            d = (m.get("first_error") or m.get("blocked_by") or "").split("\n")[0].replace("|", "\\|")
             L.append(f"| `{m['module']}` | {m['status']} | {'yes' if m['in_default_build'] else 'no'} | {d[:160]} |")
     else:
         L.append("None. Every module of the library compiles.")
