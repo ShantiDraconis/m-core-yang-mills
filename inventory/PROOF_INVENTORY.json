@@ -1,0 +1,2755 @@
+{
+ "schema": "proof-inventory.v1",
+ "generated_by": "scripts/proof_inventory.py (kernel-derived; do not edit by hand)",
+ "toolchain": "leanprover/lean4:v4.19.0",
+ "libraries": [
+  {
+   "name": "MCore",
+   "srcDir": "lean"
+  }
+ ],
+ "policy": {
+  "standard_axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "theorem_status": "CLEAN = only standard axioms; USES_SORRY = depends on sorryAx; USES_PROJECT_AXIOM = depends on an axiom declared in this library",
+  "prop_status": "PROVED/REFUTED = a CLEAN theorem has exactly that Prop (or its negation) as its type; VACUOUS = the definition body ends in True; NO_PROOF_IN_LIBRARY = no theorem of that exact type exists here (this is not a claim that it is open mathematics)",
+  "scope": "closed (arity-0) Prop definitions, plus any Prop-valued definition that is vacuous"
+ },
+ "summary": {
+  "modules_total": 59,
+  "modules_ok": 58,
+  "modules_failed": 1,
+  "modules_blocked": 0,
+  "modules_outside_default_build": 4,
+  "standalone_files_total": 0,
+  "standalone_files_failed": 0,
+  "theorems_total": 321,
+  "theorems_clean": 321,
+  "theorems_using_sorry": 0,
+  "theorems_using_project_axiom": 0,
+  "theorems_nonstandard_axioms": 0,
+  "project_axioms_declared": 0,
+  "props_reported": 0,
+  "props_proved": 0,
+  "props_refuted": 0,
+  "props_vacuous": 0,
+  "props_no_proof_in_library": 0
+ },
+ "project_axioms": [],
+ "environment_groups": 1,
+ "name_clashes": [],
+ "modules": [
+  {
+   "module": "MCore",
+   "path": "lean/MCore.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.ATK_HARD_YM_4D_GAP",
+   "path": "lean/MCore/ATK_HARD_YM_4D_GAP.lean",
+   "status": "FAILED",
+   "in_default_build": false,
+   "first_error": "lean/MCore/ATK_HARD_YM_4D_GAP.lean:5:7: unknown identifier 'hard_YM_4D_IR_clustering_gap'"
+  },
+  {
+   "module": "MCore.AttackDAG.K3AlgebraAttacks",
+   "path": "lean/MCore/AttackDAG/K3AlgebraAttacks.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.Audit",
+   "path": "lean/MCore/Audit.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.Boundary",
+   "path": "lean/MCore/Boundary.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.FinalCore",
+   "path": "lean/MCore/FinalCore.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.Frontier.K3Gaps",
+   "path": "lean/MCore/Frontier/K3Gaps.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K0",
+   "path": "lean/MCore/K0.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K1",
+   "path": "lean/MCore/K1.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K10",
+   "path": "lean/MCore/K10.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K11",
+   "path": "lean/MCore/K11.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K12",
+   "path": "lean/MCore/K12.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K13",
+   "path": "lean/MCore/K13.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K14",
+   "path": "lean/MCore/K14.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K15",
+   "path": "lean/MCore/K15.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K16",
+   "path": "lean/MCore/K16.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K17",
+   "path": "lean/MCore/K17.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K18",
+   "path": "lean/MCore/K18.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K19",
+   "path": "lean/MCore/K19.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K2",
+   "path": "lean/MCore/K2.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K20",
+   "path": "lean/MCore/K20.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K21",
+   "path": "lean/MCore/K21.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K22",
+   "path": "lean/MCore/K22.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K23",
+   "path": "lean/MCore/K23.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K24",
+   "path": "lean/MCore/K24.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K25",
+   "path": "lean/MCore/K25.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K26",
+   "path": "lean/MCore/K26.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K27",
+   "path": "lean/MCore/K27.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K28",
+   "path": "lean/MCore/K28.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K29",
+   "path": "lean/MCore/K29.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K3",
+   "path": "lean/MCore/K3.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K30",
+   "path": "lean/MCore/K30.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K4",
+   "path": "lean/MCore/K4.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K5",
+   "path": "lean/MCore/K5.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K6",
+   "path": "lean/MCore/K6.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K7",
+   "path": "lean/MCore/K7.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K8",
+   "path": "lean/MCore/K8.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K9",
+   "path": "lean/MCore/K9.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K9.Classical",
+   "path": "lean/MCore/K9/Classical.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.PhysicalGapScaling",
+   "path": "lean/MCore/PhysicalGapScaling.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.Research.ParallelClosure",
+   "path": "lean/MCore/Research/ParallelClosure.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.Signature",
+   "path": "lean/MCore/Signature.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.SpectralConcreteAdapter",
+   "path": "lean/MCore/SpectralConcreteAdapter.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.SpectralCore",
+   "path": "lean/MCore/SpectralCore.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.SpectralExclusion",
+   "path": "lean/MCore/SpectralExclusion.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "path": "lean/MCore/YangMills/A1/B60ConcretePhysicalAdapter.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.B6TerminalWitness",
+   "path": "lean/MCore/YangMills/A1/B6TerminalWitness.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.FrontierDecomposition",
+   "path": "lean/MCore/YangMills/A1/FrontierDecomposition.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.YangMills.A1.FrontierDecompositionV2",
+   "path": "lean/MCore/YangMills/A1/FrontierDecompositionV2.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "path": "lean/MCore/YangMills/A1/HardenedPhysicalInterfaces.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.Hardening",
+   "path": "lean/MCore/YangMills/A1/Hardening.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "path": "lean/MCore/YangMills/A1/HardeningV2.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.K14ClusteringAdapter",
+   "path": "lean/MCore/YangMills/A1/K14ClusteringAdapter.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.PhantomBridgeTriviality",
+   "path": "lean/MCore/YangMills/A1/PhantomBridgeTriviality.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.PositiveControl",
+   "path": "lean/MCore/YangMills/A1/PositiveControl.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "path": "lean/MCore/YangMills/A1/RegulatedConstruction.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.UniformIntegerClustering",
+   "path": "lean/MCore/YangMills/A1/UniformIntegerClustering.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.UniformityFirewalls",
+   "path": "lean/MCore/YangMills/A1/UniformityFirewalls.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.YangMills.A1.UniformityTriviality",
+   "path": "lean/MCore/YangMills/A1/UniformityTriviality.lean",
+   "status": "OK",
+   "in_default_build": true
+  }
+ ],
+ "standalone_files": [],
+ "props": [],
+ "theorems": [
+  {
+   "name": "MCore.B6TerminalWitness.blocks",
+   "module": "MCore.YangMills.A1.B6TerminalWitness",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.B6TerminalWitness.witness",
+   "module": "MCore.YangMills.A1.B6TerminalWitness",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ConcreteHilbertAdapter.intertwines",
+   "module": "MCore.SpectralConcreteAdapter",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ConcreteHilbertAdapter.mapsDomain",
+   "module": "MCore.SpectralConcreteAdapter",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ConcreteHilbertAdapter.mapsOrthogonal",
+   "module": "MCore.SpectralConcreteAdapter",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ConcreteHilbertAdapter.mapsPhysical",
+   "module": "MCore.SpectralConcreteAdapter",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ConcreteHilbertAdapter.ratePositive",
+   "module": "MCore.SpectralConcreteAdapter",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ConcreteHilbertAdapter.spectralLowerBound",
+   "module": "MCore.SpectralConcreteAdapter",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.DecayToSpectralExclusion.transfer",
+   "module": "MCore.SpectralCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ExponentialDecayData.C_nonneg",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ExponentialDecayData.m_pos",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ExponentialDecayData.upperBound",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.FinalScientificFrontier.construction",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.FinalScientificFrontier.infrared",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.FinalScientificFrontier.limits",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K10ClassicalLaws.identity_law",
+   "module": "MCore.K10",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K14PhysicalHilbertData.vacuum_normalized",
+   "module": "MCore.K14",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K14VacuumAxiom.vacuum_mem_domain",
+   "module": "MCore.K14",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K14VacuumAxiom.vacuum_zero",
+   "module": "MCore.K14",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K20AuditState.noPromotionFirewall",
+   "module": "MCore.K20",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.constructiveYM4",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.continuumLimitControl",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.gapPreservedUnderLimits",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.observableCyclicity",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.physicalHilbertRealization",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.reflectionPositiveReconstruction",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.semigroupSpectralTransfer",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.thermodynamicLimitControl",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.uniformExponentialClustering",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K21FrontierWitnesses.uniformRegulatedGap",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22ConstructionBlock.constructiveYM4",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22ConstructionBlock.physicalHilbertRealization",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22ConstructionBlock.reflectionPositiveReconstruction",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22InfraredBlock.observableCyclicity",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22InfraredBlock.semigroupSpectralTransfer",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22InfraredBlock.uniformExponentialClustering",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22LimitBlock.continuumLimitControl",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22LimitBlock.gapPreservedUnderLimits",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22LimitBlock.thermodynamicLimitControl",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K22LimitBlock.uniformRegulatedGap",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K23ConstructiveYM4Data.realizesConstructiveYM4",
+   "module": "MCore.K23",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K24MeasureToK23Bridge.existenceFeeds",
+   "module": "MCore.K24",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K24MeasureToK23Bridge.gaugeSectorFeeds",
+   "module": "MCore.K24",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K24MeasureToK23Bridge.reflectionFeeds",
+   "module": "MCore.K24",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K24MeasureToK23Bridge.tightnessFeedsConvergence",
+   "module": "MCore.K24",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K25ClusteringToInfraredBridge.clusteringFeeds",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K25ClusteringToInfraredBridge.cyclicityFeeds",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K25ClusteringToInfraredBridge.transferFeeds",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K25PointwiseClustering.holdsAt",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K25UniformExponentialClustering.holds",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K26CyclicityWitness.closureCoversPhysical",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K26CyclicityWitness.generatedPhysical",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K26CyclicityWitness.vacuumPhysical",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K26DecayToSpectralBridge.transfer",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K26ObservableDecayWitness.onGeneratedStates",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K26ToFrontierBridge.cyclicityFeeds",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K26ToFrontierBridge.spectralTransferFeeds",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27LimitWitness.continuum",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27LimitWitness.preservation",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27LimitWitness.thermodynamic",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27PointwisePositiveGap.positiveAt",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27ToFrontierBridge.continuumFeeds",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27ToFrontierBridge.preservationFeeds",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27ToFrontierBridge.regulatedGapFeeds",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27ToFrontierBridge.thermodynamicFeeds",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27UniformPositiveGap.commonGapPositive",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K27UniformPositiveGap.uniformLowerBound",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K28FrontierBlocks.construction",
+   "module": "MCore.K28",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K28FrontierBlocks.infrared",
+   "module": "MCore.K28",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K28FrontierBlocks.limits",
+   "module": "MCore.K28",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K29SpectralGapRealization.excludesLowSpectrum",
+   "module": "MCore.K29",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K29SpectralGapRealization.gapPositive",
+   "module": "MCore.K29",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30PointwiseClusteringV2.holds",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30SpectralTransferObligations.exclusionFromObligations",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30SpectralTransferObligations.positiveGap",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30SpectralTransferWitness.clusteringToSemigroup",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30SpectralTransferWitness.density",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30SpectralTransferWitness.physicalSector",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30SpectralTransferWitness.spectralExclusion",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.K30UniformExponentialClusteringV2.holds",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.OpenBridgeFirewall.certificate_blocked",
+   "module": "MCore.K5",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.OpenBridgeFirewall.open_status",
+   "module": "MCore.K5",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.PhysicalTransferGapData.cutoff_pos",
+   "module": "MCore.PhysicalGapScaling",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.PhysicalTransferGapData.transferNorm_le_one",
+   "module": "MCore.PhysicalGapScaling",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.PhysicalTransferGapData.transferNorm_nonneg",
+   "module": "MCore.PhysicalGapScaling",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.PositiveSpectralLaplaceData.lowerBound",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ProofCertificate.proof",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ProofCertificate.status_proved",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.Research.ExactResidual.backward",
+   "module": "MCore.Research.ParallelClosure",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.Research.ExactResidual.forward",
+   "module": "MCore.Research.ParallelClosure",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.Research.ParallelAttack.exact",
+   "module": "MCore.Research.ParallelClosure",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.Research.return_to_primary",
+   "module": "MCore.Research.ParallelClosure",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.A1PhysicalData.cutoffCofinal",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.A1PhysicalData.observableNontrivial",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.A1PhysicalData.volumeCofinal",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.A1ScientificWitness.measureInvariance",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.A1ScientificWitness.observableInvariance",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.A1ScientificWitnessV2.measureInvariance",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.A1ScientificWitnessV2.observableInvariance",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.constructionBlock",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.constructionFromA1",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.excitationInDomain",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.excitationOrthogonalVacuum",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.excitationPhysical",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.infraredBlock",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.limitBlock",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.mappedStatesPhysical",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.observableStatesPhysical",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.B60ConcretePhysicalAdapter.transferWitness",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundPositiveTransferData.admissible",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundPositiveTransferData.contraction",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundPositiveTransferData.nonzero",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundPositiveTransferData.positive",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundPositiveTransferData.symmetric",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundReflectionPositivityData.admissible",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundReflectionPositivityData.hermitianReflection",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundReflectionPositivityData.involutive",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundReflectionPositivityData.nonnegative",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundReflectionPositivityData.nontrivial",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.BoundUniformRegulatorControl.nontrivialFinite",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.HardenedA1ScientificWitness.measureInvariance",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.HardenedA1ScientificWitness.observableInvariance",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.LegacyK24Adapter.cutoffTight",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.LegacyK24Adapter.existence",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.LegacyK24Adapter.gaugeSector",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.LegacyK24Adapter.reflection",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.LegacyK24Adapter.volumeTight",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.MeasureInvariance.map_eq",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.MeasureInvariance.measurableGauge",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.ObservableInvariance.invariant",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferData.contraction",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferData.positive",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferData.symmetric",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_contraction",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_observable_state",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_positive",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_spectral_gap_controls_transfer",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_spectral_gap_nonneg",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_symmetric",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_transfer_from_C",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.PositiveTransferDataV2.h_vacuum_fixed",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.ReflectionPositivityData.hermitianReflection",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.ReflectionPositivityData.nonnegative",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.ReflectionPositivityDataV2.h_pairing_def",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.ReflectionPositivityDataV2.h_reflection_pos",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.RegulatedL2Vector.squareIntegrable",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControl.cutoffLimit",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControl.jointLimit",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControl.nonnegative",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControl.volumeLimit",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControlV2.h_gap_eq",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControlV2.h_reflection_available",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControlV2.h_uniform",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControlV2.ha0",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.UniformRegulatorControlV2.hm0",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_blocking_node_is_uniformity",
+   "module": "MCore.YangMills.A1.FrontierDecomposition",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_decomposition_count",
+   "module": "MCore.YangMills.A1.FrontierDecomposition",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_exactly_one_blocking_node",
+   "module": "MCore.YangMills.A1.FrontierDecomposition",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_scientific_open_bridge_iff_B1_B2",
+   "module": "MCore.YangMills.A1.PhantomBridgeTriviality",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_uniformity_bridge_inhabited_for_every_construction",
+   "module": "MCore.YangMills.A1.UniformityTriviality",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_v2_blocking_node_is_k20_k30",
+   "module": "MCore.YangMills.A1.FrontierDecompositionV2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_v2_has_exactly_one_blocking_node",
+   "module": "MCore.YangMills.A1.FrontierDecompositionV2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_v2_has_six_nodes",
+   "module": "MCore.YangMills.A1.FrontierDecompositionV2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_v2_invalidates_exactly_three_legacy_interfaces",
+   "module": "MCore.YangMills.A1.FrontierDecompositionV2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_v2_open_bridge_exposes_B1_B2_B3_B4_B5",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.a1_witness_supplies_uniformity",
+   "module": "MCore.YangMills.A1.Hardening",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.adapter_requires_all_coordinates",
+   "module": "MCore.YangMills.A1.RegulatedConstruction",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.b60_adapter_closes_conditional_chain",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.b60_legacy_endpoint_contains_only_B1_B2",
+   "module": "MCore.YangMills.A1.B60ConcretePhysicalAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.bound_reflection_excludes_zero_pairing",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.bound_transfer_excludes_zero_operator",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.bound_uniformity_excludes_zero_estimate",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.finite_volume_gap_firewall",
+   "module": "MCore.YangMills.A1.UniformityFirewalls",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.hardened_a1_nontriviality_packet",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.hardened_a1_supplies_B1_B2",
+   "module": "MCore.YangMills.A1.HardenedPhysicalInterfaces",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.legacy_a1_endpoint_reduces_to_B1_B2",
+   "module": "MCore.YangMills.A1.FrontierDecompositionV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.pointwise_cutoff_volume_positive_not_uniform",
+   "module": "MCore.YangMills.A1.UniformityFirewalls",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.pointwise_to_uniform_bridge_vacuously_holds",
+   "module": "MCore.YangMills.A1.UniformityTriviality",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.positive_cutoff_gap_firewall",
+   "module": "MCore.YangMills.A1.UniformityFirewalls",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.positive_transfer_data_inhabited_for_every_construction",
+   "module": "MCore.YangMills.A1.PhantomBridgeTriviality",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.reflection_positivity_data_inhabited_for_every_construction",
+   "module": "MCore.YangMills.A1.PhantomBridgeTriviality",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.toy_a1_scientific_witness",
+   "module": "MCore.YangMills.A1.PositiveControl",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.toy_measure_invariance",
+   "module": "MCore.YangMills.A1.PositiveControl",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.toy_observable_invariance",
+   "module": "MCore.YangMills.A1.PositiveControl",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.uniform_regulator_control_inhabited_for_every_construction",
+   "module": "MCore.YangMills.A1.UniformityTriviality",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.uniform_v2_gap_is_transfer_gap",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.uniform_v2_gap_not_identically_zero",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.YangMills.A1.uniform_v2_mass_nonzero",
+   "module": "MCore.YangMills.A1.HardeningV2",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.b6_terminal_witness_closes_mass_gap",
+   "module": "MCore.YangMills.A1.B6TerminalWitness",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.boundary_ne_regular",
+   "module": "MCore.K0",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.bridge_not_certified",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.candidate_ne_provedProperty",
+   "module": "MCore.K0",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.concrete_adapter_mass_gap",
+   "module": "MCore.SpectralConcreteAdapter",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.decay_implies_exclusion",
+   "module": "MCore.SpectralCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.exponential_growth_escape",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.final_core_closes_conditional_chain",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.final_core_no_promotion",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.final_core_target_still_open",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.final_frontier_blocks_close_k20",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.final_spectral_realization_implies_mass_gap",
+   "module": "MCore.FinalCore",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.finite_volume_gap_not_uniform",
+   "module": "MCore.PhysicalGapScaling",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k10_classical_scope",
+   "module": "MCore.K10",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k10_identity_gauge",
+   "module": "MCore.K10",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k10_no_promotion",
+   "module": "MCore.K10",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k10_quantum_not_promoted",
+   "module": "MCore.K10",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k10_target_still_open",
+   "module": "MCore.K10",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k11_gap_still_separate",
+   "module": "MCore.K11",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k11_hilbert_still_separate",
+   "module": "MCore.K11",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k11_no_promotion",
+   "module": "MCore.K11",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k11_quantum_scope",
+   "module": "MCore.K11",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k11_target_still_open",
+   "module": "MCore.K11",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k12_continuum_scope",
+   "module": "MCore.K12",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k12_gap_still_separate",
+   "module": "MCore.K12",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k12_hilbert_still_separate",
+   "module": "MCore.K12",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k12_no_promotion",
+   "module": "MCore.K12",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k12_target_still_open",
+   "module": "MCore.K12",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k13_gap_still_separate",
+   "module": "MCore.K13",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k13_hilbert_scope",
+   "module": "MCore.K13",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k13_no_promotion",
+   "module": "MCore.K13",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k13_target_still_open",
+   "module": "MCore.K13",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k14_conditional_mass_gap",
+   "module": "MCore.K14",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k14_no_promotion",
+   "module": "MCore.K14",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k14_target_still_open",
+   "module": "MCore.K14",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k15_complete_program_implies_clustering",
+   "module": "MCore.K15",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k15_complete_program_implies_mass_gap",
+   "module": "MCore.K15",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k15_no_promotion",
+   "module": "MCore.K15",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k15_target_still_open",
+   "module": "MCore.K15",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k16_no_promotion",
+   "module": "MCore.K16",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k16_obligations_imply_mass_gap",
+   "module": "MCore.K16",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k16_refinement_completes_k15",
+   "module": "MCore.K16",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k16_target_still_open",
+   "module": "MCore.K16",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k17_clustering_and_cyclicity_imply_semigroup_decay",
+   "module": "MCore.K17",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k17_no_promotion",
+   "module": "MCore.K17",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k17_target_still_open",
+   "module": "MCore.K17",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k18_clustering_chain_implies_mass_gap",
+   "module": "MCore.K18",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k18_no_promotion",
+   "module": "MCore.K18",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k18_semigroup_decay_implies_mass_gap",
+   "module": "MCore.K18",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k18_target_still_open",
+   "module": "MCore.K18",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k19_no_promotion",
+   "module": "MCore.K19",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k19_target_still_open",
+   "module": "MCore.K19",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k19_uniform_gap_survives_limits_conditionally",
+   "module": "MCore.K19",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k1_not_proved",
+   "module": "MCore.K1",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k1_status_openBridge",
+   "module": "MCore.K1",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k20_closed_frontier_implies_mass_gap",
+   "module": "MCore.K20",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k20_frontier_not_marked_closed",
+   "module": "MCore.K20",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k20_interfaces_certified",
+   "module": "MCore.K20",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k20_no_promotion",
+   "module": "MCore.K20",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k20_target_still_open",
+   "module": "MCore.K20",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k21_no_promotion",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k21_target_still_open",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k21_witnesses_close_frontier",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k21_witnesses_imply_mass_gap_conditionally",
+   "module": "MCore.K21",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k22_blocks_assemble_witnesses",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k22_blocks_imply_mass_gap_conditionally",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k22_no_promotion",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k22_target_still_open",
+   "module": "MCore.K22",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k23_inputs_build_construction_block",
+   "module": "MCore.K23",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k23_no_promotion",
+   "module": "MCore.K23",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k23_target_still_open",
+   "module": "MCore.K23",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k24_measure_controls_feed_k23",
+   "module": "MCore.K24",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k24_no_promotion",
+   "module": "MCore.K24",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k24_target_still_open",
+   "module": "MCore.K24",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k25_no_promotion",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k25_target_still_open",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k25_uniform_clustering_builds_infrared_block",
+   "module": "MCore.K25",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k26_bridge_supplies_infrared_auxiliaries",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k26_no_promotion",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k26_target_still_open",
+   "module": "MCore.K26",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k27_bridge_builds_limit_block",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k27_no_promotion",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k27_target_still_open",
+   "module": "MCore.K27",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k28_blocks_recover_frontier",
+   "module": "MCore.K28",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k28_conditional_mass_gap",
+   "module": "MCore.K28",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k28_no_promotion",
+   "module": "MCore.K28",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k28_target_still_open",
+   "module": "MCore.K28",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k29_blocks_and_transfer_yield_mass_gap",
+   "module": "MCore.K29",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k29_no_promotion",
+   "module": "MCore.K29",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k29_realization_is_mass_gap",
+   "module": "MCore.K29",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k29_target_still_open",
+   "module": "MCore.K29",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k29_transfer_builds_k20_bridge",
+   "module": "MCore.K29",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k2_node_not_proved",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k2_node_status_openBridge",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k30_no_promotion",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k30_target_still_open",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k30_witness_closes_conditional_chain",
+   "module": "MCore.K30",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_attack_cannot_promote",
+   "module": "MCore.AttackDAG.K3AlgebraAttacks",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_attack_route_only",
+   "module": "MCore.AttackDAG.K3AlgebraAttacks",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_frontier_open",
+   "module": "MCore.Frontier.K3Gaps",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_gap_not_certified",
+   "module": "MCore.K3",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_gap_not_proved",
+   "module": "MCore.K3",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_gap_status_openBridge",
+   "module": "MCore.K3",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k4_no_promotion",
+   "module": "MCore.K4",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k4_status_openBridge",
+   "module": "MCore.K4",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k5_openBridge_cannot_certify",
+   "module": "MCore.K5",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k6_source_open",
+   "module": "MCore.K6",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k6_target_not_certified",
+   "module": "MCore.K6",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k6_target_open",
+   "module": "MCore.K6",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_dependency_reachable",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_source_open",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_target_not_certified",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_target_open",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_classical_label",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_continuum_label",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_gap_label",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_no_promotion",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_nontrivial_label",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_quantum_label",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_target_still_open",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k9_no_promotion",
+   "module": "MCore.K9",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k9_quantum_still_labelled_open",
+   "module": "MCore.K9",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k9_refines_classical_label",
+   "module": "MCore.K9",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k9_target_still_open",
+   "module": "MCore.K9",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.physical_mass_bound_iterates",
+   "module": "MCore.PhysicalGapScaling",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.pointwise_pos_not_uniform",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.positive_cutoff_gap_not_physical_uniform",
+   "module": "MCore.PhysicalGapScaling",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.positive_mass_below_rate_contradiction",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.realized_exclusion",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.spectral_exclusion_at_subrate",
+   "module": "MCore.SpectralExclusion",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.uniform_integer_clustering_to_K14",
+   "module": "MCore.YangMills.A1.K14ClusteringAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.uniform_physical_mass_lower_bound_implies_integer_clustering",
+   "module": "MCore.YangMills.A1.UniformIntegerClustering",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.uniform_physical_mass_lower_bound_to_K14_clustering",
+   "module": "MCore.YangMills.A1.K14ClusteringAdapter",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  }
+ ]
+}

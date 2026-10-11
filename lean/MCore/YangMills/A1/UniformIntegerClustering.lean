@@ -27,6 +27,8 @@ theorem uniform_physical_mass_lower_bound_implies_integer_clustering
   rcases hR a L ha ha_lt with ⟨hcut, hmass⟩
   rcases hmass with ⟨_, hstep⟩
   refine ⟨hcut, ?_⟩
+  -- `hstep` is stated with `(R a L).cutoff`; `hcut` identifies it with `a`.
+  rw [hcut] at hstep
   exact physical_mass_bound_iterates
     (R a L).transferNorm a m0 n
     (R a L).transferNorm_nonneg hstep
