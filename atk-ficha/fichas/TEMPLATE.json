@@ -1,0 +1,66 @@
+{
+  "id": "nome-curto-da-proposta",
+  "problema": "NS | RH | YM | BSD | HODGE | BEAL | PNP",
+  "alvo": "um só: enunciado em ATK/Exact.lean ou itens da lista de 72",
+  "onde_quebra_hoje": "o que já foi refutado ou medido (ex.: S ≤ θνz + C·y² quebra ∝ λ)",
+  "proposta": {
+    "nome": "nome do funcional/operador",
+    "definicao": "fórmula explícita",
+    "classe": "CancellationFunctional | CriticalNorm | SpectralOperator | ...",
+    "_NS": {
+      "termos_rhs": [
+        {
+          "nome": "F",
+          "vetor": [
+            3,
+            3
+          ]
+        }
+      ],
+      "classe_medida": "saída de new_functional.py",
+      "conhecida_na_literatura": "",
+      "controle_dinamico": "como F fica controlado ao longo da solução",
+      "como_evita_barreira_tao": "que estrutura de NS usa que a NS média de Tao não tem"
+    },
+    "_RH": {
+      "taxa": {
+        "s": 1,
+        "K": null
+      },
+      "como_falha_davenport_heilbronn": "onde usa o produto de Euler"
+    },
+    "_YM": {
+      "dimensao": 4,
+      "usa_estrutura_nao_abeliana_em": ""
+    },
+    "_BSD": {
+      "falhas_na_base_cremona": null,
+      "argumento_geral": ""
+    },
+    "_HODGE": {
+      "codimensao": 2,
+      "usa_projetividade_em": "",
+      "usa_coeficientes_racionais_em": ""
+    },
+    "_BEAL": {
+      "usa_expoentes_maiores_que_2_em": ""
+    },
+    "_PNP": {
+      "barreiras": {
+        "relativizacao": "",
+        "provas_naturais": "",
+        "algebrizacao": ""
+      }
+    }
+  },
+  "deve_falhar_em": [
+    "objetos onde a proposta TEM que falhar (ver ATK_FICHA.md)"
+  ],
+  "teste_numerico": "comando e resultado (antes do Lean)",
+  "revisao": {
+    "contradiz": "",
+    "nao_segue": "",
+    "nota": ""
+  },
+  "veredito_esperado": "REJEITADA | INCOMPLETA | PASSA_GATE"
+}

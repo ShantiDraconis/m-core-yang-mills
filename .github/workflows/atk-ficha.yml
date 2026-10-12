@@ -1,0 +1,24 @@
+name: ATK ficha gate
+
+on:
+  push:
+    paths:
+      - 'atk-ficha/**'
+      - '.github/workflows/atk-ficha.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: "FICHA ATK — condições necessárias (nenhuma prova)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Portão das propostas
+        shell: bash
+        run: |
+          DN=""
+          if [ -f atk-kernel/numerics/dn_N1500_prec45.csv ]; then DN="--dn atk-kernel/numerics/dn_N1500_prec45.csv"; fi
+          python3 atk-ficha/ficha_gate.py atk-ficha/fichas/*.json $DN

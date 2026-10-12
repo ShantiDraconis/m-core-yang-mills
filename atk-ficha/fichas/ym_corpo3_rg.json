@@ -1,0 +1,18 @@
+{
+  "id": "YM-Corpo3 S_renorm com fluxo RG",
+  "problema": "YM",
+  "alvo": "itens 34, 54–57",
+  "onde_quebra_hoje": "não há construção 4D",
+  "proposta": {
+    "nome": "S_renorm",
+    "definicao": "∫|F_A|² + λ_RG(ℓ)·∫|F_A|³_ℓ",
+    "classe": "NonPerturbativeRG",
+    "dimensao": 4,
+    "usa_estrutura_nao_abeliana_em": ""
+  },
+  "teste_numerico": "rede 4D: só dá estimativa numérica (ex.: SU(3), M_0++/√σ = 3.405(21), Athenodorou–Teper 2020) — não prova",
+  "revisao": {
+    "contradiz": "a contagem de escala está errada: em 4D, ∫|F|² é invariante (λ⁰), não λ³; ∫|F|³ tem dimensão 6 e é irrelevante no grupo de renormalização"
+  },
+  "veredito_esperado": "REJEITADA"
+}
