@@ -1,4 +1,6 @@
-# atk-kernel
+# atk-kernel — verificação formal de resultados auxiliares
+
+**Escopo da certificação:** `CERTIFIED` identifica uma declaração específica aceita pelo kernel com as dependências auditadas; não certifica automaticamente a conjectura original. Teoremas condicionais continuam dependentes de suas hipóteses, e modelos abstratos exigem uma ligação demonstrada aos objetos matemáticos originais. A promoção para prova terminal requer um teorema incondicional do enunciado fiel, com auditoria das dependências.
 
 Pasta independente do restante do repositório (lakefile e Mathlib próprios).
 
