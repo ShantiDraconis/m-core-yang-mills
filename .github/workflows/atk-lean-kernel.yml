@@ -1,0 +1,38 @@
+name: ATK Lean Kernel
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - atk/lean-kernel-setup-20261016
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Lean and Lake using repository lean-toolchain
+        uses: leanprover/lean-action@v1
+        with:
+          build: false
+      - name: Report toolchain
+        run: |
+          lean --version
+          lake --version
+      - name: Build available Lake targets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f lakefile.toml || -f lakefile.lean ]]; then
+            lake update
+            lake exe cache get || echo "Mathlib cache unavailable; compiling from source"
+            lake build
+          else
+            echo "No lakefile found at repository root; no kernel build attempted."
+            exit 2
+          fi
